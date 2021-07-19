@@ -61,3 +61,6 @@ build
 #application.properties
 backend/src/main/resource/*.properties
 
+#vue.config.js
+frontend/vue.config.js
+
