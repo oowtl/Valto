@@ -1,6 +1,6 @@
 <template>
   <!-- main 으로 시작 -->
-  <Main/>
+  <Main />
 </template>
 
 <script>

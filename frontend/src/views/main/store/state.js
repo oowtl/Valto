@@ -34,6 +34,6 @@ export default {
   activeMenu: 'home',
   menus: menuData,
   userId: '',
+  LoadingStatus: false,
 }
 
-// const accessToken = "";

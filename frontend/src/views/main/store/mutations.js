@@ -15,3 +15,14 @@ export function setMenuActiveMenuName (state, menuName) {
 export function setUserId (state, userId) {
   state.userId = userId
 }
+
+//LoadingStatus 변화
+export function startSpinner(state){
+  state.LoadingStatus = true;
+}
+
+export function endSpinner(state){
+  state.LoadingStatus = false;
+}
+
+
