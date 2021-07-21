@@ -4,6 +4,16 @@
     :gutter="10"
     :style="{ 'width': width }">
     <div class="hide-on-small">
+      <!-- <loading :active="isLoading"
+      :can-cancel="true"
+        :on-cancel="onCancel"
+        :is-full-page="fullPage"></loading> -->
+      <!-- <label><input type="checkbox" v-model="fullPage">Full page?</label> -->
+      <!-- <button @click.prevent="doAjax">fetch Data</button> -->
+      <loading
+          :show="show"
+          :label="label">
+      </loading>
       <el-menu
         :default-active="String(state.activeIndex)"
         active-text-color="#ffd04b"
@@ -11,7 +21,7 @@
         @select="menuSelect">
         <el-menu-item v-for="(item, index) in state.menuItems" :key="index" :index="index.toString()">
           <i v-if="item.icon" :class="['ic', item.icon]"/>
-          <span>{{ item.title }}</span>
+          <el-button @click.prevent="doAjax">{{ item.title }}</el-button>
         </el-menu-item>
       </el-menu>
     </div>
@@ -37,9 +47,13 @@
 }
 </style>
 <script>
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+// Import component
+import Loading from 'vue-full-loading';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: 'main-header',
@@ -51,6 +65,34 @@ export default {
     }
   },
   setup() {
+
+    // const isLoading = ref(false);
+    // const fullPage = ref(true);
+
+    const show = ref(false);
+
+    const doAjax = () => {
+      show.value = true;
+
+      setTimeout(() => {
+        show.value = false
+      }, 1000)
+      // // console.log('fullPage'+fullPage.value)
+      // isLoading.value = true;
+      // // fullPage.value = true;
+
+      // setTimeout(() => {
+      //   isLoading.value = false
+      // }, 2000)
+      // show.value = true;
+    }
+
+    // const onCancel= ()=> {
+    //     console.log('User cancelled the loader.');
+    //     //because the props is single flow direction, you need to set isLoading status normally.
+    //     isLoading.value = false;
+    // }
+
     const store = useStore()
     const router = useRouter()
 
@@ -93,7 +135,10 @@ export default {
       })
     }
 
-    return { state, menuSelect }
+    return { state, menuSelect , doAjax, show}
+  },
+  components:{
+    Loading
   }
 }
 </script>

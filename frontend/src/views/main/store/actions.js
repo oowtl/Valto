@@ -4,6 +4,7 @@ import util from '../../../common/util.js'
 import router from '@/common/lib/vue-router.js'
 
 export function requestLogin ({ state }, payload) {
+  console.log(state)
   // console.log('requestLogin', state, payload)
   // console.log("payload" + payload.id)
   const url = '/auth/login'
@@ -24,15 +25,17 @@ export function onPageEnter ({ state }) {
 
 //회원가입
 export function requestJoin({state}, payload){
-  const url = "/users"
+  console.log(state)
+  const url = '/users'
   let body = payload //회원가입 폼 JSON객체
   return $axios.post(url, body);
 }
 
 //아이디 중복 체크
 export function checkId({state}, payload){
+  console.log(state)
   console.log( payload)
-  const url = "/users/" +  payload
+  const url = '/users/' +  payload
   // let body = payload
   return $axios.get(url);
 }
@@ -43,7 +46,7 @@ export function axiosErrorHandler ({ commit }, payload) {
   const err = payload
 
   if (err.response) {
-    alert('요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.')
+    // alert('요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.')
     console.log(err.response)
     if (err.response.data.status === 401) {
       console.log('here')
@@ -67,6 +70,7 @@ export function axiosErrorHandler ({ commit }, payload) {
   }
 }
 
+//로그아웃
 export function setLogout({ commit }) {
   localStorage.removeItem('jwt')
   commit('setUserId', '')
@@ -76,3 +80,12 @@ export function setLogout({ commit }) {
   console.log('logout')
 }
 
+
+//방 검색
+export function searchRoomList({state}, payload){
+  console.log(state)
+  console.log(payload)
+  const url = '/conferences/' +  payload
+  // let body = payload
+  return $axios.get(url);
+}

@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/home/home'
 import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
-import store from '@/views/main/store/index'
 
+// eslint-disable-next-line no-undef
 const fullMenu = require('@/views/main/menu.json')
 function makeRoutesFromMenu () {
   let routes = Object.keys(fullMenu).map((key) => {
@@ -33,16 +33,6 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach(function(to, from, next){
-//   store.commit('root/startSpinner');
-//   setTimeout(() => {
-//       next();
-//   }, 1);
-// })
 
-
-// router.afterEach(function(to, from) {
-//   store.commit('root/endSpinner');
-// })
 
 export default router

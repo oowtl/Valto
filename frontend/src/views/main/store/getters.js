@@ -21,3 +21,8 @@ export function getIsLoggedIn (state) {
 export function getUserId (state) {
   return state.userId
 }
+
+// 방 검색시 업데이트
+export function roomList(state){
+  return state.roomList
+}

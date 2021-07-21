@@ -51,7 +51,7 @@
 <script>
 import { reactive, computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 // import axios from 'axios'
 
 export default {
@@ -69,7 +69,7 @@ export default {
     // 마운드 이후 바인딩 될 예정 - 컨텍스트에 노출시켜야함. <return>
     const loginForm = ref(null)
 
-    const router = useRouter()
+    // const router = useRouter()
 
     /*
       // Element UI Validator

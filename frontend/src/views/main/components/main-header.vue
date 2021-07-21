@@ -8,9 +8,12 @@
       <div class="tool-wrapper">
         <div class="search-field">
           <el-input
-            placeholder="검색"
+
+            placeholder="화상 컨퍼런스 제목 검색"
             prefix-icon="el-icon-search"
-            v-model="state.searchValue">
+            v-model="state.searchValue"
+            @keyup.enter="searchRoom">
+            <!--  나중에 메소드 이름은 다시 정할것 -->
           </el-input>
         </div>
         <div class="button-wrapper" v-if="!state.loginFlag">
@@ -23,6 +26,8 @@
       </div>
 
     </div>
+
+    <!-- 모바일 화면 -->
     <div class="hide-on-big">
       <div class="menu-icon-wrapper" @click="changeCollapse"><i class="el-icon-menu"></i></div>
       <div class="logo-wrapper" @click="clickLogo"><div class="ic ic-logo"/></div>
@@ -36,7 +41,7 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button class="mobile-sidebar-btn login-btn" icon="el-icon-switch-button" @click="clickLogout">로그인</el-button>
+            <el-button class="mobile-sidebar-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
           <el-menu
             :default-active="String(state.activeIndex)"
@@ -55,7 +60,7 @@
   </el-row>
 </template>
 <script>
-import { onMounted, reactive, computed } from 'vue'
+import {  reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -136,7 +141,29 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout}
+    // 검색 클릭 or 엔터시
+    const searchRoom = () =>{
+      console.log(state.searchValue)
+      let condition = {
+        title: state.searchValue,
+        sort: 'call_start_time',
+        sortBy: 'ASC',
+        page: state.page,
+        size: 0,
+        // conference_category:
+      }
+
+      store.dispatch('root/searchRoomList', condition)
+      .then(function(result){
+        store.commit('root/UPDATE_ROOMLIST', result)
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    }
+
+
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout , searchRoom}
   }
 }
 </script>

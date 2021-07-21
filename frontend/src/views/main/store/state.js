@@ -1,4 +1,5 @@
 // ROOT STATE 변수 정의 및 기본값 대입
+// eslint-disable-next-line no-undef
 const menuData = require('@/views/main/menu.json')
 
 /**
@@ -34,6 +35,12 @@ export default {
   activeMenu: 'home',
   menus: menuData,
   userId: '',
-  LoadingStatus: false,
+
+  roomList: [
+    {
+      title: '(...)',
+      // 룸 리스트에 필요한 정보들 추가할 것
+    }
+  ]
 }
 

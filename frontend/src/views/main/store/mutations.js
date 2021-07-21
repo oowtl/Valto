@@ -16,13 +16,8 @@ export function setUserId (state, userId) {
   state.userId = userId
 }
 
-//LoadingStatus 변화
-export function startSpinner(state){
-  state.LoadingStatus = true;
+
+// 검색시 방 리스트 업데이트
+export function UPDATE_ROOMLIST(state, payload){
+  state.roomList = payload
 }
-
-export function endSpinner(state){
-  state.LoadingStatus = false;
-}
-
-

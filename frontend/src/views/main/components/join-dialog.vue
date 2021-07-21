@@ -11,7 +11,7 @@
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="id" label="아이디" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.id" autocomplete="off"></el-input>
+        <el-input v-model="state.form.userId" autocomplete="off"></el-input>
         <el-button @click="userIdCheck">중복확인</el-button>
       </el-form-item>
 
@@ -67,9 +67,9 @@
 }
 </style>
 <script>
-import { reactive, computed, ref, onMounted } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 // import PasswordChecker from "vue-password-checker";
 export default {
   name: 'join-dialog',
@@ -91,7 +91,7 @@ export default {
     // const loginForm = ref(null)
     const joinForm = ref(null)
 
-    const router = useRouter()
+    // const router = useRouter()
 
     /*
       // Element UI Validator
@@ -103,7 +103,7 @@ export default {
         department: '',
         position: '',
         name: '',
-        id: '',
+        userId: '',
         password: '',
         passwordCheck: '',
         align: 'left'
@@ -120,7 +120,7 @@ export default {
           { required: true,  message: '최대 30자까지 입력 가능합니다.',  max:30 }
           // 중복된 아이디 체크 에러 메세지
         ],
-        id: [
+        userId: [
           { required: true, message: '필수 입력 항목입니다.'},
           { required: true, message: '최대 16 글짜까지 입력 가능합니다.', max:16 }
         ],
@@ -151,8 +151,8 @@ export default {
 
     //비밀번호 숫자,영문,특수문자 확인
     const checkPassword = function() {
-      console.log("upw" + state.form.password)
-      console.log("passwordFlag" + state.passwordFlag)
+      console.log('upw' + state.form.password)
+      console.log('passwordFlag' + state.passwordFlag)
       if (/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(state.form.password)){
         state.passwordFlag = true
       } else {
@@ -173,21 +173,21 @@ export default {
       joinForm.value.validate((valid) => {
         if (valid) {
           console.log('submit')
-          console.log(state.form.password)
-          console.log(state.form.passwordCheck)
+          // console.log(state.form.password)
+          // console.log(state.form.passwordCheck)
+          console.log(state.form.userId)
           store.dispatch('root/requestJoin', {
             department: state.form.department,
             position: state.form.position,
             name: state.form.name,
-            id: state.form.id,
             password: state.form.password,
-            passwordCheck: state.form.passwordCheck
+            passwordCheck: state.form.passwordCheck,
+            userId: state.form.userId
           })
 
           .then(function (result) {
-            console.log("result.id" +result.id)
-            if(result.status === 200){
-               alert("회원가입 성공")
+            if(result.status === 201){
+               alert('회원가입 성공')
               emit('closeJoinDialog')
             }
 
@@ -205,13 +205,15 @@ export default {
     const userIdCheck = function() {
       store.dispatch('root/checkId', state.form.id)
       .then( function (result){
-        if(result.status == 200){
-          alert("사용가능한 아이디입니다.")
+        if(result.status === 201){
+          alert('사용가능한 아이디입니다.')
           // console.log("아이디가 중복되었습니다.")
         }
       })
-      .catch( function (err){
-        alert(err)
+      .catch(function (err){
+          console.log(err.status)
+          alert('아이디가 중복되었습니다.')
+
       })
 
     }

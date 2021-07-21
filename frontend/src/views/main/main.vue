@@ -14,7 +14,6 @@
       </el-aside>
       <el-main>
         <router-view></router-view>
-        <spinner :loading = "$store.state.LoadingStatus" />
       </el-main>
     </el-container>
     <main-footer :height="`110px`"/>
@@ -39,7 +38,6 @@ import MainHeader from './components/main-header'
 import MainSidebar from './components/main-sidebar'
 import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
-import Spinner from './components/spinner'
 
 export default {
   name: 'Main',
@@ -49,13 +47,12 @@ export default {
     MainFooter,
     LoginDialog,
     JoinDialog,
-    Spinner
   },
   data () {
     return {
       loginDialogOpen: false,
       joinDialogOpen: false,
-      localLoginFlag: false
+      localLoginFlag: false,
     }
   },
   methods: {
