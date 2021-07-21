@@ -105,7 +105,7 @@ export default {
         if (valid) {
           // console.log('submit')
           store.dispatch('root/requestLogin', { id: state.form.id, password: state.form.password })
-          .then(function (result) {
+          .then(result => {
             // console.log("result" + result.status);
             if(result.status === 200){
 

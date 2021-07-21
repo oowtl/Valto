@@ -31,7 +31,7 @@ export function requestJoin({state}, payload){
 
 //아이디 중복 체크
 export function checkId({state}, payload){
-  console.log( payload)
+  console.log(payload)
   const url = "/users/" +  payload
   // let body = payload
   return $axios.get(url);
@@ -67,6 +67,7 @@ export function axiosErrorHandler ({ commit }, payload) {
   }
 }
 
+// 로그아웃
 export function setLogout({ commit }) {
   localStorage.removeItem('jwt')
   commit('setUserId', '')
@@ -76,3 +77,13 @@ export function setLogout({ commit }) {
   console.log('logout')
 }
 
+// 내 프로필
+// state가 굳이 필요한가
+// export function getMyProfile({ state }) {
+//   const url = '/users/me'
+//   const request = {
+//     method: 'get',
+//     url: url,
+//   }
+//   return util.commonAxios(state, request)
+// }

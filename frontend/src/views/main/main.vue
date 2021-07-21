@@ -4,10 +4,8 @@
       :height="`70px`"
       @openLoginDialog="onOpenLoginDialog"
       @openJoinDialog="onOpenJoinDialog"
+      @openProfileDialog="onOpenProfileDialog"
       />
-
-
-
     <el-container class="main-container">
       <el-aside class="hide-on-small" width="240px">
         <main-sidebar
@@ -21,10 +19,16 @@
   </el-container>
   <login-dialog
     :open="loginDialogOpen"
-    @closeLoginDialog="onCloseLoginDialog"/>
+    @closeLoginDialog="onCloseLoginDialog"
+  />
   <join-dialog
     :open="joinDialogOpen"
-    @closeJoinDialog="onCloseJoinDialog"/>
+    @closeJoinDialog="onCloseJoinDialog"
+  />
+  <profile-dialog
+    :open="profileDialogOpen"
+    @closeProfileDialog="onCloseProfileDialog"
+  />
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -39,6 +43,7 @@ import MainHeader from './components/main-header'
 import MainSidebar from './components/main-sidebar'
 import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
+import ProfileDialog from './components/profile-dialog'
 
 export default {
   name: 'Main',
@@ -47,13 +52,15 @@ export default {
     MainSidebar,
     MainFooter,
     LoginDialog,
-    JoinDialog
+    JoinDialog,
+    ProfileDialog,
   },
   data () {
     return {
       loginDialogOpen: false,
       joinDialogOpen: false,
-      localLoginFlag: false
+      profileDialogOpen: false,
+      localLoginFlag: false,
     }
   },
   methods: {
@@ -68,7 +75,13 @@ export default {
     },
     onCloseJoinDialog () {
       this.joinDialogOpen = false
-    }
+    },
+    onOpenProfileDialog () {
+      this.profileDialogOpen = true
+    },
+    onCloseProfileDialog () {
+      this.profileDialogOpen = false
+    },
   }
 }
 </script>
