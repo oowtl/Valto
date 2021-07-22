@@ -21,16 +21,16 @@ public class QUser extends EntityPathBase<User> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
-    public final StringPath department = createString("department");
+    public final NumberPath<Integer> point = createNumber("point", Integer.class);
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Integer> id = _super.id;
 
     public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
 
-    public final StringPath position = createString("position");
+    public final StringPath nickname = createString("nickName");
 
     public final StringPath userId = createString("userId");
 

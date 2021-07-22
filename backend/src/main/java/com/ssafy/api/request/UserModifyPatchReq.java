@@ -14,8 +14,8 @@ import lombok.Setter;
 public class UserModifyPatchReq {
 	@ApiModelProperty(name="유저 Name", example="홍길동")
 	String name;
-	@ApiModelProperty(name="유저 Department", example="SSAFY")
-	String department;
-	@ApiModelProperty(name="유저 Postion", example="교육생")
-	String position;
+	@ApiModelProperty(name="유저 NickName", example="SSAFY")
+	String nickName;
+	@ApiModelProperty(name="유저 Password", example="your_password")
+	String password;
 }
