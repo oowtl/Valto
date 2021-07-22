@@ -78,12 +78,13 @@ export function setLogout({ commit }) {
 }
 
 // 내 프로필
-// state가 굳이 필요한가
-// export function getMyProfile({ state }) {
-//   const url = '/users/me'
-//   const request = {
-//     method: 'get',
-//     url: url,
-//   }
-//   return util.commonAxios(state, request)
-// }
+// state가 필요한가?
+export function requestUpdateProfile({ state }, payload) {
+  const url = '/users/' +  payload.userId
+  const request = {
+    method: 'post',
+    url: url,
+    data: payload
+  }
+  return util.commonAxios(state, request)
+}

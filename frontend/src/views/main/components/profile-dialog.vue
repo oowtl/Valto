@@ -10,8 +10,8 @@
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="id" label="아이디" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.id" autocomplete="off" :disabled="true"></el-input>
+      <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
+        <el-input v-model="state.form.userId" autocomplete="off" :disabled="true"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -71,28 +71,12 @@ export default {
   setup(props, { emit }) {
     const store = useStore()
     const profileForm = ref(null)
-
-    // 비밀번호 조합 확인
-    // const checkPassword = function() {
-    //   if (/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(state.form.password)){
-    //     return callback(new Error('Please input the age'));
-    //   } else if {
-
-    //   } else {
-    //   }
-    // }
-
-    /*
-      // Element UI Validator
-      // rules의 객체 키 값과 form의 객체 키 값이 같아야 매칭되어 적용됨
-      //
-    */
     const state = reactive({
       form: {
         department: '',
         position: '',
         name: '',
-        id: '',
+        userId: '',
         align: 'left'
       },
 
@@ -116,25 +100,22 @@ export default {
 
     const clickUpdateProfile = function () {
       // 회원가입 클릭 시 validate 체크 후 그 결과 값에 따라, 로그인 API 호출 또는 경고창 표시
-      joinForm.value.validate((valid) => {
+      form.value.validate((valid) => {
         if (valid) {
-
-          store.dispatch('root/', {
+          store.dispatch('root/requestUpdateProfile', {
             department: state.form.department,
             position: state.form.position,
             name: state.form.name,
-            id: state.form.id,
+            userId: state.form.userId,
             password: state.form.password,
             passwordCheck: state.form.passwordCheck
           })
-
           .then(function (result) {
-            console.log("result.id" +result.id)
+            console.log("result.userId" +result.userId)
             if(result.status === 201){
-              alert("회원가입 성공")
+              alert('프로필을 수정하였습니다.')
               emit('closeJoinDialog')
             }
-
           })
           .catch(function (err) {
             alert(err)
@@ -149,21 +130,22 @@ export default {
       state.form.department = ''
       state.form.position = ''
       state.form.name = ''
-      state.form.id = ''
+      state.form.userId = ''
       emit('closeProfileDialog')
     }
 
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
         console.log('profile dialog opened')
-        store.dispatch('root/onPageEnter')
+        store.dispatch('root/profile받아오기')
+        // 전적, 포인트, 닉네임
           .then(function (result) {
             console.log('me request successful')
             console.log(result)
             state.form.department = result.data.department
             state.form.position = result.data.position
             state.form.name = result.data.username
-            state.form.id = result.data.userId
+            state.form.userId = result.data.userId
           })
           .catch(function (err) {
             store.dispatch('root/axiosErrorHandler', err)
