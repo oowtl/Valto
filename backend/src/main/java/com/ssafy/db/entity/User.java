@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
@@ -15,20 +16,24 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class User extends BaseEntity{
-    String position;
-    String department;
-    String name;
-    String userId;
-
+	String userId; //아이디
+    String name; // 이름
+    @Column(name="nickname")
+    String nickName; // 별명
+    int point; // 포인트
+    
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    String password;
-
-	@Override
+    String password; // 비밀번호
+    
+    @Override
 	public String toString() {
-		return "User [position=" + position + ", department=" + department + ", name=" + name + ", userId=" + userId
+		return "User [userId=" + userId + ", name=" + name + ", nickName=" + nickName + ", point=" + point
 				+ ", password=" + password + "]";
 	}
+
+	
+
     
     
 }

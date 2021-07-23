@@ -18,8 +18,14 @@ public class UserRegisterPostReq {
 	String password;
 	@ApiModelProperty(name="유저 Name", example="홍길동")
 	String name;
-	@ApiModelProperty(name="유저 Department", example="SSAFY")
-	String department;
-	@ApiModelProperty(name="유저 Postion", example="교육생")
-	String position;
+	@ApiModelProperty(name="유저 NickName", example="SSAFY")
+	String nickName;
+	int point;
+	@Override
+	public String toString() {
+		return "UserRegisterPostReq [userId=" + userId + ", password=" + password + ", name=" + name + ", nickName="
+				+ nickName + ", point=" + point + "]";
+	}
+	
+	
 }
