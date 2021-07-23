@@ -66,6 +66,7 @@ export default {
       joinDialogOpen: false,
       localLoginFlag: false,
       profileDialogOpen: false,
+      createRoomDialogOpen: false,
     }
   },
   methods: {
