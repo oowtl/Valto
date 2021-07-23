@@ -24,6 +24,7 @@ import com.ssafy.common.auth.SsafyUserDetails;
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.common.util.JwtTokenUtil;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.UserRecord;
 import com.ssafy.db.repository.UserRepositorySupport;
 
 import io.swagger.annotations.Api;
@@ -68,20 +69,19 @@ public class UserController {
         @ApiResponse(code = 404, message = "사용자 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
     })
-	public ResponseEntity<UserRes> getUserInfo(@ApiIgnore Authentication authentication) {
+	public ResponseEntity<UserRes> getAuth(@ApiIgnore Authentication authentication) {
 		/**
 		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
 		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
 		 */
-		System.out.println(authentication.getDetails().toString());
+//		System.out.println(authentication.getDetails().toString());
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
 		String userId = userDetails.getUsername();
-		User user = userService.getUserByUserId(userId);
 		
-		return ResponseEntity.status(200).body(UserRes.of(user));
+		return ResponseEntity.status(200).body(UserRes.of(userService.getUserByUserId(userId)));
 	}
 	
-	@GetMapping("/id/{userId}")
+	@GetMapping("/{userId}/id")
 	@ApiOperation(value = "아이디 중복 검사 요청", notes = "회원가입 시 아이디 중복 여부를 응답한다.") 
     @ApiResponses({
         @ApiResponse(code = 200, message = "사용 가능한 아이디"),
@@ -98,7 +98,7 @@ public class UserController {
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "possible userId"));
 	}
 	
-	@GetMapping("/nick/{nickName}")
+	@GetMapping("/{nickName}/nick")
 	@ApiOperation(value = "닉네임 중복 검사 요청", notes = "회원가입 시 닉네임 중복 여부를 응답한다.") 
     @ApiResponses({
         @ApiResponse(code = 200, message = "사용 가능한 아이디"),
@@ -156,6 +156,23 @@ public class UserController {
 		}
 		
 		return ResponseEntity.status(403).body(BaseResponseBody.of(403, "권한 없음"));
+	}
+	
+	@GetMapping("/myProfile")
+	@ApiOperation(value = "회원 정보 확인", notes = "해당 회원 정보를 확인한다.") 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공"),
+        @ApiResponse(code = 403, message = "권한 없음"),
+        @ApiResponse(code = 500, message = "서버 오류")
+    })
+	public ResponseEntity<? extends BaseResponseBody> getUserInfo(@ApiIgnore Authentication authentication){
+				
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		User user = userService.getUserByUserId(userId);
+		UserRecord userRecord = userService.getUserByUserRecord(userId);
+		
+		return ResponseEntity.status(200).body(UserRes.of(user));
 	}
 		
 }
