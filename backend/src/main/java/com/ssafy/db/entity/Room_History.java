@@ -1,8 +1,12 @@
 package com.ssafy.db.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,21 +15,23 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Conference_history extends BaseEntity{
+public class Room_History extends BaseEntity{
 	
-	// conference id
+	// room id
 	@ManyToOne
-	@JoinColumn(name = "conference_id") // fk
-	private Conference conference;
+	@JoinColumn(name = "roomId") // fk
+	private Room roomId;
 	
 	// user id
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "userId")
+	private User userId;
 	
 	//action
-	
-	
+	Short action;
+		
 	//inserted time
+	@Temporal(TemporalType.TIMESTAMP)
+	Date insertedTime;
 	
 }

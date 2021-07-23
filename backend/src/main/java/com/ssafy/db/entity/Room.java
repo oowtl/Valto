@@ -5,15 +5,13 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.istack.NotNull;
 
 
 /**
@@ -22,29 +20,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Getter
 @Setter
-public class Conference extends BaseEntity{
+public class Room extends BaseEntity{
 
 	// owner_id
 	@ManyToOne
-	@JoinColumn(name = "owner_id") // fk
-	private User user;
+	@JoinColumn(name = "ownerId") // fk
+	private User ownerId;
 	
-	// conference_category
-	@ManyToOne
-	@JoinColumn(name = "conference_category") // fk
-	private Conference_category conferenceCategory; 
+	private Date localDateTime;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreationTimestamp // 생성 시 시간을 저장해준다.
-	private Date callStartTime;
+	@NotNull
+	private String title; // 방 제목
+	@NotNull
+	private Integer participants; // 참가자 수
+	@NotNull
+	private Integer observers; // 관전자 수
+	@NotNull
+	private Integer times; // 발언 시간 제한
+	@NotNull
+	private String topicAgree; // 주제 1
+	@NotNull
+	private String topicOpposite; // 주제 2
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date callEndTime;
+	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String roomPassword; // 방 비밀번호 (null 이면 없음)
 	
-	private String thumbnailUrl;
-	private String title;
-	private String description;
-	private Boolean isActive;
-	
-
 }

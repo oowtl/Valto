@@ -17,22 +17,17 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class User_Conference extends BaseEntity {
+public class User_Room extends BaseEntity {
 	
 	// conference
 	@ManyToOne
-	@JoinColumn(name = "conference_id")
+	@JoinColumn(name = "roomId")
 	@NotNull
-	private Conference confernce;
+	private Room roomId;
 	
 	// user id
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "userId")
 	@NotNull
-	private User user;
-	
-	Short action;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	Date insertedTime;
+	private User userId;
 }
