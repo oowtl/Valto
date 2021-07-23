@@ -1,38 +1,250 @@
 <template>
   <el-dialog custom-class="join-dialog" title="회원가입" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" :rules="state.rules" ref="joinForm" :label-position="state.form.align">
-      <el-form-item prop="department" label="소속" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.department" autocomplete="off" ></el-input>
+    <el-form :model="state.form" status-icon :rules="state.rules" ref="joinForm" >
+      <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
+        <el-input v-model="state.form.userId" autocomplete="off"></el-input>
+        <!-- <el-button @click="axiosCheckId">중복확인</el-button> -->
+        <!-- <p v-if="!!state.validId">사용 가능한 ID입니다.</p> -->
       </el-form-item>
-      <el-form-item prop="position" label="직책" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.position" autocomplete="off" ></el-input>
+      <el-form-item prop="password" label="비밀번호" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.password" autocomplete="off" show-password></el-input>
+      </el-form-item>
+      <el-form-item prop="passwordConfirm" label="비밀번호 확인" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.passwordConfirm" autocomplete="off" show-password></el-input>
+      </el-form-item>
+      <el-form-item prop="nickname" label="닉네임" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.nickname" autocomplete="off" ></el-input>
       </el-form-item>
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.userId" autocomplete="off"></el-input>
-        <el-button @click="userIdCheck">중복확인</el-button>
-      </el-form-item>
-
-      <el-form-item prop="password" label="비밀번호" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.password" autocomplete="off" show-password @blur="checkPassword"></el-input>
-        <div v-if="!state.passwordFlag">유효하지 않는 비밀번호입니다.</div>
-        <div v-else>유효한 비밀번호입니다.</div>
-      </el-form-item>
-
-      <el-form-item prop="passwordCheck" label="비밀번호 확인" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.passwordCheck" autocomplete="off" show-password @blur="passwordCheckValid"></el-input>
-        <div v-if="!state.passwordCheckFlag">비밀번호가 동일하지 않습니다.</div>
-      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="clickJoin">회원가입</el-button>
+        <!-- <el-button type="primary" @click="clickJoin">회원가입</el-button> -->
+        <el-button type="primary" @click="clickJoin" :disabled="state.isInvalid">회원가입</el-button>
       </span>
     </template>
   </el-dialog>
 </template>
+<script>
+import { reactive, computed, ref } from 'vue'
+import { useStore } from 'vuex'
+export default {
+  name: 'join-dialog',
+
+  props: {
+    open: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  setup(props, { emit }) {
+    const store = useStore()
+    const joinForm = ref(null)
+    const flag = ref({
+      userId: false,
+      password: false,
+      passwordConfirm: false,
+      nickname: false,
+      name: false,
+    })
+
+    // 아이디, 닉네임 입력 대기용 dummy function
+    const dummyValidation = function (rule, value, callback) {
+      console.log('wating for blur')
+    }
+
+    // 아이디
+    const checkUserId = function (rule, value, callback) {
+      if (!value) {
+        flag.value.userId = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value.length > 16) {
+        flag.value.userId = false
+        return callback(new Error('최대 16자까지 입력 가능합니다.'))
+      } else {
+        store.dispatch('root/checkId', state.form.userId)
+        .then(function (result) {
+          if (result.status === 200){
+            console.log('id is available')
+            flag.value.userId = true
+            console.log(flag.value.userId)
+            return callback()
+          }
+        })
+        .catch(function (err) {
+          // if (err.response.data.status === 409) {
+          flag.value.userId = false
+          return callback(new Error('이미 존재하는 ID입니다.'))
+        })
+      }
+    }
+
+    // 비밀번호 조합 확인
+    const checkPassword = function (rule, value, callback) {
+      if (!value) {
+        flag.value.password = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value.length < 9) {
+        flag.value.password = false
+        return callback(new Error('최소 9글자를 입력해야 합니다.'))
+      } else if (value.length > 16) {
+        flag.value.password = false
+        return callback(new Error('최대 16글자까지 입력 가능합니다.'))
+      } else if (!/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(value)) {
+        flag.value.password = false
+        return callback(new Error('비밀번호는 영문, 숫자, 특수문자가 조합되어야 합니다.'))
+      } else {
+        joinForm.value.validateField('passwordConfirm')
+        flag.value.password = true
+        return callback()
+      }
+    }
+
+    // 비밀번호 일치 확인
+    const checkConfirm = function (rule, value, callback) {
+      if (!value) {
+        flag.value.passwordConfirm = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value !== state.form.password) {
+        flag.value.passwordConfirm = false
+        return callback(new Error('입력한 비밀번호와 일치하지 않습니다.'))
+      } else {
+        flag.value.passwordConfirm = true
+        return callback()
+      }
+    }
+
+    // 닉네임
+    const checkNickname = function (rule, value, callback) {
+      if (!value) {
+        flag.value.nickname = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value.length < 2) {
+        flag.value.nickname = false
+        return callback(new Error('최소 2글자를 입력해야 합니다.'))
+      } else if (value.length > 30) {
+        flag.value.nickname = false
+        return callback(new Error('최대 30글자까지 입력 가능합니다.'))
+      } else {
+        store.dispatch('root/checkNickname', state.form.nickname)
+        .then(function (result) {
+          if (result.status === 200){
+            console.log('nickname is available')
+            flag.value.nickname = true
+            return callback()
+          }
+        })
+        .catch(function (err) {
+          // if (err.response.data.status === 409) {
+          console.log('닉네임중복')
+          flag.value.nickname = false
+          return callback(new Error('이미 존재하는 ID입니다.'))
+        })
+      }
+    }
+
+
+    // 이름
+    const checkName = function (rule, value, callback) {
+      if (!value) {
+        flag.value.name = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value.length < 2) {
+        flag.value.name = false
+        return callback(new Error('최소 2글자를 입력해야 합니다.'))
+      } else if (value.length > 30) {
+        flag.value.name = false
+        return callback(new Error('최대 30글자까지 입력 가능합니다.'))
+      } else {
+        flag.value.name = true
+        return callback()
+      }
+    }
+
+    const state = reactive({
+      isInvalid: computed(() => {
+        return Object.values(flag.value).some(bool => bool === false)
+      }),
+      form: {
+        nickname: '',
+        name: '',
+        userId: '',
+        password: '',
+        passwordConfirm: '',
+        align: 'left'
+      },
+      rules: {
+        userId: [
+          { validator: dummyValidation, trigger: 'change' },
+          { validator: checkUserId, trigger: 'blur' },
+          { required: true },
+        ],
+        password: [
+          { validator: checkPassword, trigger: ['blur', 'change'] },
+          { required: true },
+        ],
+        passwordConfirm: [
+          { validator: checkConfirm, trigger: ['blur', 'change'] },
+          { required: true },
+        ],
+        nickname: [
+          { validator: dummyValidation, trigger: 'change' },
+          { validator: checkNickname, trigger: 'blur' },
+          { required: true },
+        ],
+        name: [
+          { validator: checkName, trigger: ['blur', 'change'] },
+          { required: true },
+        ],
+      },
+      dialogVisible: computed(() => props.open),
+      formLabelWidth: '120px',
+    })
+
+
+
+    // 회원가입 실행
+    const clickJoin = function () {
+      if (!state.isInvalid) {
+        store.dispatch('root/requestJoin', {
+          userId: state.form.id,
+          password: state.form.password,
+          nickname: state.form.nickname,
+          name: state.form.name,
+        })
+          .then(function (result) {
+            console.log("result.id" + result.userId)
+            // status code 수정
+            if(result.status === 201){
+              alert("회원가입 성공")
+              handleClose()
+            }
+          })
+          .catch(function (err) {
+            alert(err)
+          })
+        } else {
+          alert('Validate error!')
+        }
+    }
+
+    // 닫기
+    const handleClose = function () {
+      state.form.nickname = ''
+      state.form.name = ''
+      state.form.userId = ''
+      state.form.password = ''
+      state.form.passwordConfirm = ''
+      emit('closeJoinDialog')
+    }
+
+    return { state, handleClose, joinForm, clickJoin, dummyValidation, flag }
+  }
+}
+</script>
 <style>
 .join-dialog {
   width: 400px !important;
@@ -55,7 +267,7 @@
   color: red;
 }
 .join-dialog .el-input__suffix {
-  display: none;
+  /* display: none; */
 }
 .join-dialog .el-dialog__footer {
   margin: 0 calc(50% - 80px);
@@ -66,167 +278,3 @@
   width: 120px;
 }
 </style>
-<script>
-import { reactive, computed, ref } from 'vue'
-import { useStore } from 'vuex'
-// import { useRouter } from 'vue-router'
-// import PasswordChecker from "vue-password-checker";
-export default {
-  name: 'join-dialog',
-
-  props: {
-    open: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  // components:{
-  //   PasswordChecker
-  // },
-
-  setup(props, { emit }) {
-    const store = useStore()
-    // 마운드 이후 바인딩 될 예정 - 컨텍스트에 노출시켜야함. <return>
-    // const loginForm = ref(null)
-    const joinForm = ref(null)
-
-    // const router = useRouter()
-
-    /*
-      // Element UI Validator
-      // rules의 객체 키 값과 form의 객체 키 값이 같아야 매칭되어 적용됨
-      //
-    */
-    const state = reactive({
-      form: {
-        department: '',
-        position: '',
-        name: '',
-        userId: '',
-        password: '',
-        passwordCheck: '',
-        align: 'left'
-      },
-      rules: {
-        department: [
-          { required: false, message: '최대 30자까지 입력 가능합니다.',trigger: 'blur', max: 30}
-        ],
-        position:[
-          { required: false, message: '최대 30자까지 입력 가능합니다.', max:30}
-        ],
-        name: [
-          { required: true, message: '필수 입력 항목입니다.'},
-          { required: true,  message: '최대 30자까지 입력 가능합니다.',  max:30 }
-          // 중복된 아이디 체크 에러 메세지
-        ],
-        userId: [
-          { required: true, message: '필수 입력 항목입니다.'},
-          { required: true, message: '최대 16 글짜까지 입력 가능합니다.', max:16 }
-        ],
-        password: [
-
-
-          { required: true, message: '필수 입력 항목입니다.'},
-          { required: true, message: '최소 9 글자를 입력해야합니다.', trigger: 'blur',min: 9},
-          { required: true, message: '최대 16 글자까지 입력가능합니다.', trigger: 'blur',max: 16}
-        ],
-        passwordCheck:[
-          {required: true, message: '필수 입력 항목입니다.'},
-          { required: true, message: '최소 9 글자를 입력해야합니다.', trigger: 'blur',min: 9},
-          { required: true, message: '최대 16 글자까지 입력가능합니다.', trigger: 'blur',max: 16}
-          //password와 동일하지 않은경우 에러 메세지
-          //password 숫자, 문자, 특수문자
-        ]
-      },
-      dialogVisible: computed(() => props.open),
-      formLabelWidth: '120px',
-      passwordFlag: false,
-      passwordCheckFlag: true
-    })
-
-    // onMounted(() => {
-    //   console.log(joinForm.value)
-    // })
-
-    //비밀번호 숫자,영문,특수문자 확인
-    const checkPassword = function() {
-      console.log('upw' + state.form.password)
-      console.log('passwordFlag' + state.passwordFlag)
-      if (/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(state.form.password)){
-        state.passwordFlag = true
-      } else {
-        state.passwordFlag = false
-      }
-    }
-    //비밀번호 일치 유무 확인
-    const passwordCheckValid = function(){
-      if(state.form.password === state.form.passwordCheck){
-        state.passwordCheckFlag = true
-      }else{
-        state.passwordCheckFlag = false
-      }
-    }
-
-    const clickJoin = function () {
-      // 회원가입 클릭 시 validate 체크 후 그 결과 값에 따라, 로그인 API 호출 또는 경고창 표시
-      joinForm.value.validate((valid) => {
-        if (valid) {
-          console.log('submit')
-          // console.log(state.form.password)
-          // console.log(state.form.passwordCheck)
-          console.log(state.form.userId)
-          store.dispatch('root/requestJoin', {
-            department: state.form.department,
-            position: state.form.position,
-            name: state.form.name,
-            password: state.form.password,
-            passwordCheck: state.form.passwordCheck,
-            userId: state.form.userId
-          })
-
-          .then(function (result) {
-            if(result.status === 201){
-               alert('회원가입 성공')
-              emit('closeJoinDialog')
-            }
-
-          })
-          .catch(function (err) {
-             alert(err)
-          })
-        } else {
-          alert('Validate error!')
-        }
-      });
-    }
-
-    //아이디 중복 검사
-    const userIdCheck = function() {
-      store.dispatch('root/checkId', state.form.id)
-      .then( function (result){
-        if(result.status === 201){
-          alert('사용가능한 아이디입니다.')
-          // console.log("아이디가 중복되었습니다.")
-        }
-      })
-      .catch(function (err){
-          console.log(err.status)
-          alert('아이디가 중복되었습니다.')
-
-      })
-
-
-    }
-
-
-    const handleClose = function () {
-      state.form.userId = ''
-      state.form.password = ''
-      emit('closeJoinDialog')
-    }
-
-    return { state, handleClose ,joinForm , clickJoin , userIdCheck, checkPassword, passwordCheckValid}
-  }
-}
-</script>

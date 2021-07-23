@@ -21,8 +21,7 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
-          <el-button type="primary" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방 생성</el-button>
-          <el-button icon="">프로필</el-button>
+          <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
       </div>
@@ -43,9 +42,8 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button class="mobile-sidebar-btn" type="primary" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방 생성</el-button>
-            <el-button class="mobile-sidebar-btn" >프로필</el-button>
-            <el-button class="mobile-sidebar-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
+            <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
+            <el-button class="login-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
           <el-menu
             :default-active="String(state.activeIndex)"
@@ -126,18 +124,18 @@ export default {
       })
     }
 
-    //로그인 클릭시
+    // 로그인 클릭시
     const clickLogin = () => {
-      // console.log("test")
       emit('openLoginDialog')
     }
-    //로그아웃 클릭시
+
+    // 로그아웃 클릭시
     const clickLogout = () => {
       store.dispatch('root/setLogout')
     }
-    //회원가입 클릭시
+
+    // 회원가입 클릭시
     const clickJoin = () => {
-      // console.log("test")
       emit('openJoinDialog')
     }
     //방 생성 클릭시
@@ -146,11 +144,16 @@ export default {
       emit('openCreateRoomDialog')
     }
 
+    // 내 프로필 클릭시
+    const clickProfile = () => {
+      emit('openProfileDialog')
+    }
+
     const changeCollapse = () => {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout, clickCreateRoom}
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout }
   }
 }
 </script>

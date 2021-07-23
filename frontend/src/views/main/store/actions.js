@@ -4,9 +4,6 @@ import util from '../../../common/util.js'
 import router from '@/common/lib/vue-router.js'
 
 export function requestLogin ({ state }, payload) {
-  console.log(state)
-  // console.log('requestLogin', state, payload)
-  // console.log("payload" + payload.id)
   const url = '/auth/login'
   let body = payload //id, password JSON객체
   return $axios.post(url, body)
@@ -24,18 +21,21 @@ export function onPageEnter ({ state }) {
 }
 
 //회원가입
-export function requestJoin({state}, payload){
-  console.log(state)
-  const url = '/users'
-  let body = payload //회원가입 폼 JSON객체
+export function requestJoin({state}, payload) {
+  const url = "/users"
+  let body = payload
   return $axios.post(url, body);
 }
 
 //아이디 중복 체크
-export function checkId({state}, payload){
-  console.log(payload)
-  const url = "/users/" +  payload
-  // let body = payload
+export function checkId({ state }, payload) {
+  const url = '/users/' +  payload + '/id'
+  return $axios.get(url);
+}
+
+// 닉네임 중복 체크
+export function checkNickname({ state }, payload) {
+  const url = '/users/' +  payload + '/nick'
   return $axios.get(url);
 }
 
@@ -69,7 +69,7 @@ export function axiosErrorHandler ({ commit }, payload) {
   }
 }
 
-//로그아웃
+// 로그아웃
 export function setLogout({ commit }) {
   localStorage.removeItem('jwt')
   commit('setUserId', '')
@@ -84,4 +84,26 @@ export function requestCreateRoom({state}, payload){
   const url = "/room"
   let body = payload
   return $axios.post(url, body);
+}
+
+// 내 프로필 확인하기
+export function requestMyProfile({ state }) {
+  const url = '/users/myprofile'
+  const request = {
+    method: 'get',
+    url: url,
+  }
+  return util.commonAxios(state, request)
+}
+
+// 내 프로필 수정요청
+// state가 필요한가?
+export function requestUpdateProfile({ state }, payload) {
+  const url = '/users/' +  payload.userId
+  const request = {
+    method: 'patch',
+    url: url,
+    data: payload
+  }
+  return util.commonAxios(state, request)
 }
