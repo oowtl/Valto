@@ -210,16 +210,16 @@ export default {
     const clickJoin = function () {
       if (!state.isInvalid) {
         store.dispatch('root/requestJoin', {
-          userId: state.form.id,
+          userId: state.form.userId,
           password: state.form.password,
-          nickname: state.form.nickname,
+          nickName: state.form.nickname,
           name: state.form.name,
         })
           .then(function (result) {
-            console.log("result.id" + result.userId)
+            console.log('result.id' + result.userId)
             // status code 수정
             if(result.status === 201){
-              alert("회원가입 성공")
+              alert('회원가입 성공')
               handleClose()
             }
           })
