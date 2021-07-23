@@ -212,21 +212,21 @@ plugins.forEach(plugin => {
 app.mount('#app')
 
 // pageEnter함수 호출을 위한 라우터 전역 가드
-router.beforeEach(function (to, from, next) {
-  let token = localStorage.getItem('jwt')
-  if (!token) {
-    store.commit('root/setUserId', '')
-    console.log('no token detected, main.js')
-  } else {
-    store.dispatch('root/onPageEnter')
-      .then(function (result) {
-        console.log('logged in, page entered. main.js')
-        store.commit('root/setUserId', result.data.userId)
-        // do sth
-      })
-      .catch(function (err) {
-        store.dispatch('root/axiosErrorHandler', err)
-      })
-    }
-  next()
-})
+// router.beforeEach(function (to, from, next) {
+//   let token = localStorage.getItem('jwt')
+//   if (!token) {
+//     store.commit('root/setUserId', '')
+//     console.log('no token detected, main.js')
+//   } else {
+//     store.dispatch('root/onPageEnter')
+//       .then(function (result) {
+//         console.log('logged in, page entered. main.js')
+//         store.commit('root/setUserId', result.data.userId)
+//         // do sth
+//       })
+//       .catch(function (err) {
+//         store.dispatch('root/axiosErrorHandler', err)
+//       })
+//     }
+//   next()
+// })

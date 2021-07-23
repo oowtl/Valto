@@ -10,8 +10,8 @@
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="id" label="아이디" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.id" autocomplete="off"></el-input>
+      <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
+        <el-input v-model="state.form.userId" autocomplete="off"></el-input>
         <el-button @click="userIdCheck">중복확인</el-button>
       </el-form-item>
 
@@ -103,7 +103,7 @@ export default {
         department: '',
         position: '',
         name: '',
-        id: '',
+        userId: '',
         password: '',
         passwordCheck: '',
         align: 'left'
@@ -120,7 +120,7 @@ export default {
           { required: true,  message: '최대 30자까지 입력 가능합니다.',  max:30 }
           // 중복된 아이디 체크 에러 메세지
         ],
-        id: [
+        userId: [
           { required: true, message: '필수 입력 항목입니다.'},
           { required: true, message: '최대 16 글짜까지 입력 가능합니다.', max:16 }
         ],
@@ -179,13 +179,13 @@ export default {
             department: state.form.department,
             position: state.form.position,
             name: state.form.name,
-            id: state.form.id,
+            userId: state.form.userId,
             password: state.form.password,
             passwordCheck: state.form.passwordCheck
           })
 
           .then(function (result) {
-            console.log("result.id" +result.id)
+            console.log("result.userId" +result.userId)
             if(result.status === 200){
                alert("회원가입 성공")
               emit('closeJoinDialog')
@@ -203,22 +203,25 @@ export default {
 
     //아이디 중복 검사
     const userIdCheck = function() {
-      store.dispatch('root/checkId', state.form.id)
-      .then( function (result){
-        if(result.status == 200){
+      console.log('asdfasdf')
+      store.dispatch('root/checkId', state.form.userId)
+      .then( result => {
+        if(result.status == 201){
           alert("사용가능한 아이디입니다.")
           // console.log("아이디가 중복되었습니다.")
         }
       })
+      console.log('asdfasdf')
       .catch( function (err){
         alert(err)
       })
+
 
     }
 
 
     const handleClose = function () {
-      state.form.id = ''
+      state.form.userId = ''
       state.form.password = ''
       emit('closeJoinDialog')
     }

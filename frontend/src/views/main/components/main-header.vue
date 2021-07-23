@@ -18,6 +18,8 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
+          <el-button type="primary" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방 생성</el-button>
+          <el-button @click="" icon="">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
       </div>
@@ -36,7 +38,9 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button class="mobile-sidebar-btn login-btn" icon="el-icon-switch-button" @click="clickLogout">로그인</el-button>
+            <el-button class="mobile-sidebar-btn" type="primary" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방 생성</el-button>
+            <el-button class="mobile-sidebar-btn" @click="" icon="">프로필</el-button>
+            <el-button class="mobile-sidebar-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
           <el-menu
             :default-active="String(state.activeIndex)"
@@ -131,12 +135,17 @@ export default {
       // console.log("test")
       emit('openJoinDialog')
     }
+    //방 생성 클릭시
+    const clickCreateRoom = () => {
+      console.log("clickCreateRoom")
+      emit('openCreateRoomDialog')
+    }
 
     const changeCollapse = () => {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout}
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout, clickCreateRoom}
   }
 }
 </script>
@@ -190,6 +199,9 @@ export default {
   .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.login-btn {
     color: white;
   }
+  .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.register-btn {
+    color: white;
+  }
   .mobile-sidebar-wrapper .mobile-sidebar .logo-wrapper {
     display: block
   }
@@ -233,15 +245,15 @@ export default {
     background-image: url('../../../assets/images/ssafy-logo.png');
   }
   .main-header .hide-on-small .tool-wrapper {
-    width: 50%;
+    width: 80%;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 45%;
+    width: 55%;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper .el-button {
-    width: 45%;
+    width: 30%;
     height: 50px;
     cursor: pointer;
     margin-right: 1%;

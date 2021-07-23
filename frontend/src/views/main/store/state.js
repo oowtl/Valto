@@ -33,7 +33,7 @@ export default {
   isDesktopPlatform: IsDesktop,
   activeMenu: 'home',
   menus: menuData,
-  userId: '',
+  userId: 'ssafy',
 }
 
 // const accessToken = "";
