@@ -40,10 +40,14 @@ public class RoomController {
 			@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo) {
 		
+		/**
+		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
+		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
+		 */
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
-		String userId = userDetails.getUsername();
+		String validatedUserId = userDetails.getUsername();
 				
-		Room room = roomService.createRoom(roomCreateInfo);
+		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		
 		return ResponseEntity.status(201).body(RoomPostRes.of(room));
 	}

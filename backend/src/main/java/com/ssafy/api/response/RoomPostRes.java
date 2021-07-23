@@ -14,8 +14,8 @@ import lombok.Setter;
 @Setter
 @ApiModel("RoomPostResponse")
 public class RoomPostRes {
-	@ApiModelProperty(name = "ownerId")
-	User ownerId;
+	@ApiModelProperty(name = "userId (ownerId)")
+	String userId;
 	@ApiModelProperty(name = "participants")
 	Integer participants;
 	@ApiModelProperty(name = "observers")
@@ -23,6 +23,8 @@ public class RoomPostRes {
 	@ApiModelProperty(name = "times")
 	Integer times;
 	
+	@ApiModelProperty(name = "title")
+	String title;
 	@ApiModelProperty(name = "topicAgree")
 	String topicAgree;
 	@ApiModelProperty(name = "topicOpposite")
@@ -30,10 +32,11 @@ public class RoomPostRes {
 	
 	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
-		res.setOwnerId(room.getOwnerId());
+		res.setUserId(room.getUserId().getUserId());
 		res.setParticipants(room.getParticipants());
 		res.setObservers(room.getObservers());
 		res.setTimes(room.getTimes());
+		res.setTitle(room.getTitle());
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
 		return res;
