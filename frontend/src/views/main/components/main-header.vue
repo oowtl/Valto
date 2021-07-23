@@ -8,9 +8,12 @@
       <div class="tool-wrapper">
         <div class="search-field">
           <el-input
-            placeholder="검색"
+
+            placeholder="화상 컨퍼런스 제목 검색"
             prefix-icon="el-icon-search"
-            v-model="state.searchValue">
+            v-model="state.searchValue"
+            @keyup.enter="searchRoom">
+            <!--  나중에 메소드 이름은 다시 정할것 -->
           </el-input>
         </div>
         <div class="button-wrapper" v-if="!state.loginFlag">
@@ -18,11 +21,14 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
+          <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
       </div>
 
     </div>
+
+    <!-- 모바일 화면 -->
     <div class="hide-on-big">
       <div class="menu-icon-wrapper" @click="changeCollapse"><i class="el-icon-menu"></i></div>
       <div class="logo-wrapper" @click="clickLogo"><div class="ic ic-logo"/></div>
@@ -36,7 +42,8 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button class="mobile-sidebar-btn login-btn" icon="el-icon-switch-button" @click="clickLogout">로그인</el-button>
+            <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
+            <el-button class="login-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
           <el-menu
             :default-active="String(state.activeIndex)"
@@ -55,7 +62,7 @@
   </el-row>
 </template>
 <script>
-import { onMounted, reactive, computed } from 'vue'
+import {  reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -117,26 +124,36 @@ export default {
       })
     }
 
-    //로그인 클릭시
+    // 로그인 클릭시
     const clickLogin = () => {
-      // console.log("test")
       emit('openLoginDialog')
     }
-    //로그아웃 클릭시
+
+    // 로그아웃 클릭시
     const clickLogout = () => {
       store.dispatch('root/setLogout')
     }
-    //회원가입 클릭시
+
+    // 회원가입 클릭시
     const clickJoin = () => {
-      // console.log("test")
       emit('openJoinDialog')
+    }
+    //방 생성 클릭시
+    const clickCreateRoom = () => {
+      console.log("clickCreateRoom")
+      emit('openCreateRoomDialog')
+    }
+
+    // 내 프로필 클릭시
+    const clickProfile = () => {
+      emit('openProfileDialog')
     }
 
     const changeCollapse = () => {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin , clickLogout}
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout }
   }
 }
 </script>
@@ -190,6 +207,9 @@ export default {
   .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.login-btn {
     color: white;
   }
+  .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.register-btn {
+    color: white;
+  }
   .mobile-sidebar-wrapper .mobile-sidebar .logo-wrapper {
     display: block
   }
@@ -233,15 +253,15 @@ export default {
     background-image: url('../../../assets/images/ssafy-logo.png');
   }
   .main-header .hide-on-small .tool-wrapper {
-    width: 50%;
+    width: 80%;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 45%;
+    width: 55%;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper .el-button {
-    width: 45%;
+    width: 30%;
     height: 50px;
     cursor: pointer;
     margin-right: 1%;

@@ -15,3 +15,9 @@ export function setMenuActiveMenuName (state, menuName) {
 export function setUserId (state, userId) {
   state.userId = userId
 }
+
+
+// 검색시 방 리스트 업데이트
+export function UPDATE_ROOMLIST(state, payload){
+  state.roomList = payload
+}

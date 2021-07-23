@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.api.request.UserModifyPatchReq;
 import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.UserRecord;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
 
@@ -30,12 +31,12 @@ public class UserServiceImpl implements UserService {
 	public User createUser(UserRegisterPostReq userRegisterInfo) {
 		User user = new User();
 
-		user.setUserId(userRegisterInfo.getUser_id());
+		user.setUserId(userRegisterInfo.getUserId());
 		// 보안을 위해서 유저 패스워드 암호화 하여 디비에 저장.
 		user.setPassword(passwordEncoder.encode(userRegisterInfo.getPassword()));
-		user.setDepartment(userRegisterInfo.getDepartment());
+		user.setNickName(userRegisterInfo.getNickName());
 		user.setName(userRegisterInfo.getName());
-		user.setPosition(userRegisterInfo.getPosition());
+		user.setPoint(0);
 		return userRepository.save(user);
 	}
 
@@ -48,14 +49,23 @@ public class UserServiceImpl implements UserService {
 		
 		return userRepositorySupport.findUserByUserId(userId).orElse(new User());
 	}
+	
+	@Override
+	public User getUserByNickName(String nickName) {
+		// 닉네임 조회
+		User empty = new User();
+		empty.setNickName("");
+		
+		return userRepositorySupport.findUserByNickName(nickName).orElse(new User());
+	}
 
 	@Override
 	public User modifyUser(UserModifyPatchReq userModifyInfo, String userId) {
 		User user = userRepositorySupport.findUserByUserId(userId).get();
 //		user.setUserId(userId);
 		user.setName(userModifyInfo.getName());
-		user.setPosition(userModifyInfo.getPosition());
-		user.setDepartment(userModifyInfo.getDepartment());
+		user.setNickName(userModifyInfo.getNickName());
+		user.setPassword(userModifyInfo.getPassword());
 		
 		return userRepository.save(user);
 	}
@@ -71,4 +81,6 @@ public class UserServiceImpl implements UserService {
 		
 		return 1;
 	}
+
+	
 }

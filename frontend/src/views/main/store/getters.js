@@ -21,3 +21,8 @@ export function getIsLoggedIn (state) {
 export function getUserId (state) {
   return state.userId
 }
+
+// 비공개 방 설정
+// export function getIsChecked (state) {
+//   return state.checked ? true : false
+// }

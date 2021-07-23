@@ -8,6 +8,14 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <!-- kurento -->
+    <script src="/webjars/webrtc-adapter/release/adapter.js"></script>
+    <script src="/group-call/js/kurento/lib/kurento-utils.js"></script>
+    <!-- JQuery, WebSocket, STOMP -->
+    <script src="/webjars/jquery/dist/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

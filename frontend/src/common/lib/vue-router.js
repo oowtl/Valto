@@ -3,9 +3,10 @@ import Home from '@/views/home/home'
 import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
 
+// eslint-disable-next-line no-undef
 const fullMenu = require('@/views/main/menu.json')
 function makeRoutesFromMenu () {
-  let routes = Object.keys(fullMenu).map((key) => { 
+  let routes = Object.keys(fullMenu).map((key) => {
     if (key === 'home') {
       return { path: fullMenu[key].path, name: key, component: Home  }
     } else if (key === 'history') {
@@ -26,14 +27,12 @@ function makeRoutesFromMenu () {
 }
 
 const routes = makeRoutesFromMenu()
-
+//routes 부터 수정했음
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-router.afterEach((to) => {
-  console.log(to)
-})
+
 
 export default router
