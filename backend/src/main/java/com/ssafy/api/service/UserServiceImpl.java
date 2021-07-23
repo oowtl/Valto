@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.api.request.UserModifyPatchReq;
 import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.UserRecord;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
 

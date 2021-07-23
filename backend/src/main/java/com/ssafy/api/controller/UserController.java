@@ -47,7 +47,7 @@ public class UserController {
 	@PostMapping()
 	@ApiOperation(value = "회원 가입", notes = "<strong>아이디와 패스워드</strong>를 통해 회원가입 한다.") 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "성공"),
+        @ApiResponse(code = 201, message = "성공"),
         @ApiResponse(code = 401, message = "인증 실패"),
         @ApiResponse(code = 404, message = "사용자 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
@@ -91,11 +91,11 @@ public class UserController {
 	public ResponseEntity<? extends BaseResponseBody> isDuplicateId(@PathVariable("userId") String userId){
 
 		if(userId.equals(userService.getUserByUserId(userId).getUserId())) {
-			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 사용자 ID 입니다."));
+			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "exist userId"));
 		}
 		
 		
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "사용 가능한 아이디 입니다."));
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "possible userId"));
 	}
 	
 	@GetMapping("/nick/{nickName}")
@@ -108,17 +108,17 @@ public class UserController {
 	public ResponseEntity<? extends BaseResponseBody> isDuplicateNick(@PathVariable("nickName") String nickName){
 
 		if(nickName.equals(userService.getUserByNickName(nickName).getNickName())) {
-			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 사용자 ID 입니다."));
+			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "exist nickName"));
 		}
 		
 		
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "사용 가능한 아이디 입니다."));
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "possible nickName"));
 	}
 	
 	@PatchMapping("/{userId}")
 	@ApiOperation(value = "회원 정보 수정", notes = "해당 회원 정보를 수정한다.") 
     @ApiResponses({
-        @ApiResponse(code = 200, message = "성공"),
+        @ApiResponse(code = 201, message = "성공"),
         @ApiResponse(code = 403, message = "권한 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
     })
@@ -131,7 +131,7 @@ public class UserController {
 		String inputUserId = userDetails.getUsername();
 		if(inputUserId.equals(userId)) {
 			User user = userService.modifyUser(modifyInfo, userId);
-			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+			return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
 		}
 		
 		return ResponseEntity.status(403).body(BaseResponseBody.of(403, "권한 없음"));
