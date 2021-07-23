@@ -33,9 +33,8 @@ export function requestJoin({state}, payload){
 
 //아이디 중복 체크
 export function checkId({state}, payload){
-  console.log(state)
-  console.log( payload)
-  const url = '/users/' +  payload
+  console.log(payload)
+  const url = "/users/" +  payload
   // let body = payload
   return $axios.get(url);
 }
@@ -80,12 +79,9 @@ export function setLogout({ commit }) {
   console.log('logout')
 }
 
-
-//방 검색
-export function searchRoomList({state}, payload){
-  console.log(state)
-  console.log(payload)
-  const url = '/conferences/' +  payload
-  // let body = payload
-  return $axios.get(url);
+// 방 생성
+export function requestCreateRoom({state}, payload){
+  const url = "/room"
+  let body = payload
+  return $axios.post(url, body);
 }

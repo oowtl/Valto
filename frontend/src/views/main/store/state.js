@@ -35,12 +35,5 @@ export default {
   activeMenu: 'home',
   menus: menuData,
   userId: '',
-
-  roomList: [
-    {
-      title: '(...)',
-      // 룸 리스트에 필요한 정보들 추가할 것
-    }
-  ]
 }
 

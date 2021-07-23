@@ -10,7 +10,7 @@
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="id" label="아이디" :label-width="state.formLabelWidth" >
+      <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
         <el-input v-model="state.form.userId" autocomplete="off"></el-input>
         <el-button @click="userIdCheck">중복확인</el-button>
       </el-form-item>
@@ -216,11 +216,12 @@ export default {
 
       })
 
+
     }
 
 
     const handleClose = function () {
-      state.form.id = ''
+      state.form.userId = ''
       state.form.password = ''
       emit('closeJoinDialog')
     }

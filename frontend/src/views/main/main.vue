@@ -4,9 +4,13 @@
       :height="`70px`"
       @openLoginDialog="onOpenLoginDialog"
       @openJoinDialog="onOpenJoinDialog"
+      @openCreateRoomDialog="onOpenCreateRoomDialog"
       />
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> ef2d194a3ebeed4bf6c0459a0cbc0a9e294e14cf
     <el-container class="main-container">
       <el-aside class="hide-on-small" width="240px">
         <main-sidebar
@@ -24,6 +28,9 @@
   <join-dialog
     :open="joinDialogOpen"
     @closeJoinDialog="onCloseJoinDialog"/>
+  <createroom-dialog
+    :open="createRoomDialogOpen"
+    @closeCreateRoomDialog="onCloseCreateRoomDialog"/>
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -38,6 +45,7 @@ import MainHeader from './components/main-header'
 import MainSidebar from './components/main-sidebar'
 import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
+import CreateroomDialog from './components/createroom-dialog'
 
 export default {
   name: 'Main',
@@ -47,12 +55,20 @@ export default {
     MainFooter,
     LoginDialog,
     JoinDialog,
+<<<<<<< HEAD
+=======
+    CreateroomDialog
+>>>>>>> ef2d194a3ebeed4bf6c0459a0cbc0a9e294e14cf
   },
   data () {
     return {
       loginDialogOpen: false,
       joinDialogOpen: false,
       localLoginFlag: false,
+<<<<<<< HEAD
+=======
+      createRoomDialogOpen: false
+>>>>>>> ef2d194a3ebeed4bf6c0459a0cbc0a9e294e14cf
     }
   },
   methods: {
@@ -67,6 +83,12 @@ export default {
     },
     onCloseJoinDialog () {
       this.joinDialogOpen = false
+    },
+    onOpenCreateRoomDialog () {
+      this.createRoomDialogOpen = true
+    },
+    onCloseCreateRoomDialog () {
+      this.createRoomDialogOpen = false
     }
   }
 }
