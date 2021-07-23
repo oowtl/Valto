@@ -21,6 +21,7 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
+          <el-button @click="clickCreateRoom" icon="el-icon-user-solid">방생성 </el-button>
           <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
@@ -140,7 +141,7 @@ export default {
     }
     //방 생성 클릭시
     const clickCreateRoom = () => {
-      console.log("clickCreateRoom")
+      console.log('clickCreateRoom')
       emit('openCreateRoomDialog')
     }
 
@@ -153,7 +154,7 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout }
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom}
   }
 }
 </script>

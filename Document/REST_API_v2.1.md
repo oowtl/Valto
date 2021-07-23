@@ -319,7 +319,7 @@
 
     ```json
     {
-    	"ownerId" : integer,   
+    	"userId" : "String",   
         "participants" : integer,
         "observers" : integer,
     	"times" : integer,
@@ -354,7 +354,7 @@
 
     ```json
     {
-        "ownerId" : integer,   
+        "userId" : "String",
         "participants" : integer,
         "observers" : integer,
         "times" : integer,
@@ -389,7 +389,7 @@
     {
     	"content": [
             {
-                "ownerId" : integer,   
+                "userId" : "String",   
                 "participants" : integer,
                 "observers" : integer,
                 "times" : integer,
@@ -423,7 +423,7 @@
        	"participants" : integer,
         "observers" : integer,
     	"times" : integer,
-        "ownerId" : "String",
+        "userId" : "String",
         "title" : "String",
         "topicAgree" : "String",
         "topicOpposite" : "String",
@@ -484,7 +484,7 @@
        	"participants" : integer,
         "observers" : integer,
     	"times" : integer,
-        "ownerId" : "String",
+        "userId" : "String",
         "title" : "String",
         "topicAgree" : "String",
         "topicOpposite" : "String",

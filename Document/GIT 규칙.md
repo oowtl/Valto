@@ -4,7 +4,7 @@
 
 ## Branch 규칙
 
-- `features /  (front or back) / 기능`
+- `(front or back) / 기능`
 
   - 기능 이름 짓기
     - 명사+동사 ( roomcreate, roomdelete)
@@ -14,19 +14,22 @@
 - 예시
 
   - ```text
-    features
-    	front
-    		roomcreate
-    		roomdelete
-    	back
-    		roomdelete
+    master
+    develop
+    front
+    	roomcreate
+    	roomdelete
+    	...
+    back
+    	roomdelete
+    	...
     ```
 
 
 
 ## commit 메세지 규칙
 
-- `[ (jira issue key) ] (front or back) | 상태 | 기능 `
+- `[ (jira issue key) ] (front or back) / featureName : (주석) `
 
   - `jira issue key`
 
@@ -50,7 +53,7 @@
   - 예시
 
     - ```text
-      [S05P12D103-66] front | working | 방 목록 없음 띄우기 
+      [S05P12D103-66] front / roomcreate : 주석... 
       ```
 
 

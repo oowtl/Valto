@@ -4,6 +4,7 @@ import util from '../../../common/util.js'
 import router from '@/common/lib/vue-router.js'
 
 export function requestLogin ({ state }, payload) {
+  console.log(state)
   const url = '/auth/login'
   let body = payload //id, password JSON객체
   return $axios.post(url, body)
@@ -21,20 +22,23 @@ export function onPageEnter ({ state }) {
 }
 
 //회원가입
-export function requestJoin({state}, payload) {
-  const url = "/users"
+export function requestJoin({ state }, payload) {
+  console.log(state)
+  const url = '/users'
   let body = payload
   return $axios.post(url, body);
 }
 
 //아이디 중복 체크
 export function checkId({ state }, payload) {
+  console.log(state)
   const url = '/users/' +  payload + '/id'
   return $axios.get(url);
 }
 
 // 닉네임 중복 체크
 export function checkNickname({ state }, payload) {
+  console.log(state)
   const url = '/users/' +  payload + '/nick'
   return $axios.get(url);
 }
@@ -80,8 +84,9 @@ export function setLogout({ commit }) {
 }
 
 // 방 생성
-export function requestCreateRoom({state}, payload){
-  const url = "/room"
+export function requestCreateRoom({ state }, payload){
+  console.log(state)
+  const url = '/room'
   let body = payload
   return $axios.post(url, body);
 }
