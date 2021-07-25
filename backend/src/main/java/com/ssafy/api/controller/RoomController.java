@@ -1,14 +1,21 @@
 package com.ssafy.api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
+import com.ssafy.api.response.RoomListGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
 import com.ssafy.common.auth.SsafyUserDetails;
@@ -50,6 +57,26 @@ public class RoomController {
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		
 		return ResponseEntity.status(201).body(RoomPostRes.of(room));
+	}
+	
+	@GetMapping("s")
+	@ApiOperation(value = "전체 방목록 조회", notes = "방 전체 목록을 조회한다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message ="Success")
+	})
+	public ResponseEntity<RoomListGetRes> checkRoomList (
+			// 파라미터를 string 으로 받아서 판단
+			@RequestParam(value ="title", defaultValue ="null", required =false) @ApiParam( value = "제목으로 조회") String IN_title ,
+			@RequestParam(value ="topic", defaultValue ="null", required =false) @ApiParam( value = "주제로 조회") String IN_topic) {
+		
+		RoomListGetReq roomListGetInfo = new RoomListGetReq();
+		roomListGetInfo.setTitle(IN_title);
+		roomListGetInfo.setTopic(IN_topic);
+		
+		List<Room> getRoomsList = roomService.checkRoomList(roomListGetInfo);
+		
+		return ResponseEntity.status(200).body(RoomListGetRes.of(getRoomsList));
+		
 	}
 	
 	

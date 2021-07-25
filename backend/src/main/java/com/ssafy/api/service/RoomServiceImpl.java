@@ -1,9 +1,13 @@
 package com.ssafy.api.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.repository.RoomRepository;
@@ -50,6 +54,31 @@ public class RoomServiceImpl implements RoomService {
 		
 		return roomRepository.save(room);
 		
+	}
+	
+	@Override
+	public List<Room> checkRoomList(RoomListGetReq roomListGetInfo) {
+		// TODO Auto-generated method stub
+		
+		// roomListGetInfo 에 따라서 다르게 넣어준다.
+		// only title, only topic, topic and title
+		
+		// topic and title
+		if ((roomListGetInfo.getTitle() != "null") && (roomListGetInfo.getTopic() != "null")) {
+			return roomRepository.findAll();
+		}
+		
+		// only title
+		if (roomListGetInfo.getTitle() != "null") {
+			return roomRepository.findAll();
+		}
+		
+		// only topic
+		if (roomListGetInfo.getTopic() != "null") {
+			return roomRepository.findAll();
+		}
+		
+		return roomRepository.findAll();
 	}
 	
 }
