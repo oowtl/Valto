@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
+import com.ssafy.api.request.RoomUpdatePatchReq;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.repository.RoomRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
@@ -92,6 +93,22 @@ public class RoomServiceImpl implements RoomService {
 		// TODO Auto-generated method stub		
 		
 		return roomRepository.findById(Integer.parseInt(roomId));
+	}
+	
+	@Override
+	public Room updateRoom(RoomUpdatePatchReq roomUpdateInfo, String roomId) {
+		// TODO Auto-generated method stub
+		
+		Room room = roomRepository.findById(Integer.parseInt(roomId));
+		
+		room.setParticipants(roomUpdateInfo.getParticipants());
+		room.setObservers(roomUpdateInfo.getObservers());
+		room.setTimes(roomUpdateInfo.getTimes());
+		room.setTitle(roomUpdateInfo.getTitle());
+		room.setTopicAgree(roomUpdateInfo.getTopicAgree());
+		room.setTopicOpposite(roomUpdateInfo.getTopicOpposite());
+		
+		return roomRepository.save(room);
 	}
 	
 }

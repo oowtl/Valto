@@ -7,15 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
+import com.ssafy.api.request.RoomUpdatePatchReq;
 import com.ssafy.api.response.RoomListGetRes;
 import com.ssafy.api.response.RoomOneErrorRes;
 import com.ssafy.api.response.RoomOneGetRes;
@@ -99,4 +102,37 @@ public class RoomController {
 		}
 		return ResponseEntity.status(200).body(RoomOneGetRes.of(room));
 	}
+	
+	@PatchMapping("/{roomId}")
+	@ApiOperation(value="방 정보 변경", notes="방 id 를 통해서 방 정보를 변경한다.")
+	@ApiResponses({
+		@ApiResponse(code=200, message="Success")
+	})
+	public ResponseEntity<RoomOneGetRes> updateRoom(
+			@ApiIgnore Authentication authentication,
+			@RequestBody @ApiParam(value="방 수정 정보", required=true) RoomUpdatePatchReq roomUpdateInfo,
+			@PathVariable("roomId") String roomId) {
+	
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		
+		Room room = roomService.getRoomByRoomId(roomId);
+		
+		// room 이 없을 경우
+		if (room == null) {
+			return ResponseEntity.status(400).body(RoomOneErrorRes.of(400, "no Exist Room"));
+		}
+		
+		// 방장과 유저 아이디가 다를 경우
+		if (!userId.equals(room.getUserId().getUserId())) {
+			return ResponseEntity.status(400).body(RoomOneErrorRes.of(403, "Bang Jang Na Wa"));
+		}
+		
+		// 검사를 마치면 수정을 해보자.
+		Room resRoom = roomService.updateRoom(roomUpdateInfo, roomId);
+		return ResponseEntity.status(200).body(RoomOneGetRes.of(resRoom));
+	}
+	
+	
+	
 }
