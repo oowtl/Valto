@@ -28,6 +28,7 @@ public class RoomListGetRes {
 		
 		for (Room room : getRoomsList) {
 			HashMap<String, Object> mapRoom = new HashMap<>();
+			mapRoom.put("roomId", room.getId());
 			mapRoom.put("userId", room.getUserId().getNickName());
 			mapRoom.put("participants", room.getParticipants());
 			mapRoom.put("observers", room.getObservers());

@@ -11,4 +11,5 @@ import com.ssafy.db.entity.Room;
 public interface RoomService {
 	Room createRoom(RoomPostReq roomPostRequestInfo ,String validatedUserId);
 	List<Room> checkRoomList(RoomListGetReq roomListGetInfo);
+	Room getRoomByRoomId(String roomId);
 }

@@ -371,7 +371,7 @@
 
 
 
-### [GET] `/rooms`
+### [GET] `/room`
 
 - Request
 
@@ -389,6 +389,7 @@
     {
     	"content": [
             {
+                "roomdId" : Integer,
                 "userId" : "String",   
                 "participants" : integer,
                 "observers" : integer,
@@ -407,7 +408,7 @@
 
 
 
-### [GET] `/rooms/{String : roomId}`
+### [GET] `/room/{String : roomId}`
 
 - Request
 
@@ -498,7 +499,7 @@
 
 
 
-### [DELETE] `/rooms/{String : roomId}`
+### [DELETE] `/room/{String : roomId}`
 
 - Request
 

@@ -87,4 +87,11 @@ public class RoomServiceImpl implements RoomService {
 		return roomRepository.findAll();
 	}
 	
+	@Override
+	public Room getRoomByRoomId(String roomId) {
+		// TODO Auto-generated method stub		
+		
+		return roomRepository.findById(Integer.parseInt(roomId));
+	}
+	
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
 import com.ssafy.api.response.RoomListGetRes;
+import com.ssafy.api.response.RoomOneErrorRes;
+import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
 import com.ssafy.common.auth.SsafyUserDetails;
+import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
 
 import io.swagger.annotations.Api;
@@ -79,5 +83,20 @@ public class RoomController {
 		
 	}
 	
-	
+	@GetMapping("/{roomId}")
+	@ApiOperation(value="상세 방 목록 조회(개별)", notes="방 id 를 통해서 방 상세 정보를 조회한다.")
+	@ApiResponses({
+		@ApiResponse(code=200, message="Success"),
+		@ApiResponse(code=400, message="noExist roomId")
+	})
+	public ResponseEntity<RoomOneGetRes> checkOneRoom (
+			@PathVariable("roomId") String roomId) {
+			
+		Room room = roomService.getRoomByRoomId(roomId);
+		
+		if (room == null) {
+			return ResponseEntity.status(400).body(RoomOneErrorRes.of(400, "noExist roomId"));
+		}
+		return ResponseEntity.status(200).body(RoomOneGetRes.of(room));
+	}
 }
