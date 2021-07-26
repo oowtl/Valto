@@ -111,4 +111,18 @@ public class RoomServiceImpl implements RoomService {
 		return roomRepository.save(room);
 	}
 	
+	@Override
+	public String deleteRoom(String roomId) {
+		// TODO Auto-generated method stub
+		
+		Room room = roomRepository.findById(Integer.parseInt(roomId));
+		
+		// room 자체 삭제전 다른 행위, 필요하다면 할 것!
+		
+		
+		roomRepository.delete(room);
+		
+		return "Success";
+	}
+	
 }

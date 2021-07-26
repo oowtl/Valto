@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.api.request.RoomDeleteReq;
 import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
 import com.ssafy.api.request.RoomUpdatePatchReq;
@@ -125,7 +127,7 @@ public class RoomController {
 		
 		// 방장과 유저 아이디가 다를 경우
 		if (!userId.equals(room.getUserId().getUserId())) {
-			return ResponseEntity.status(400).body(RoomOneErrorRes.of(403, "Bang Jang Na Wa"));
+			return ResponseEntity.status(403).body(RoomOneErrorRes.of(403, "Bang Jang Na Wa"));
 		}
 		
 		// 검사를 마치면 수정을 해보자.
@@ -133,6 +135,37 @@ public class RoomController {
 		return ResponseEntity.status(200).body(RoomOneGetRes.of(resRoom));
 	}
 	
+	
+	@DeleteMapping("/{userId}")
+	@ApiOperation(value="방 삭제", notes="해당 방을 삭제한다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message ="success"),
+		@ApiResponse(code = 403, message ="no owner")
+	})
+	public ResponseEntity<? extends BaseResponseBody> deleteRoom(
+			@ApiIgnore Authentication authentication,
+			@RequestBody @ApiParam(value = "방 삭제 정보", required= true) RoomDeleteReq roomDeleteInfo,
+			@PathVariable("roomId") String roomId){
+		
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		
+		Room room = roomService.getRoomByRoomId(roomId);
+		
+		// room 이 없을 경우
+		if (room == null) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
+		}
+		
+		// 방장과 유저 아이디가 다를 경우
+		if (!userId.equals(room.getUserId().getUserId())) {
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no owner"));
+		}
+		
+		String message = roomService.deleteRoom(roomId);
+		
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, message));
+	}
 	
 	
 }

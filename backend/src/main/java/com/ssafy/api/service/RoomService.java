@@ -14,4 +14,5 @@ public interface RoomService {
 	List<Room> checkRoomList(RoomListGetReq roomListGetInfo);
 	Room getRoomByRoomId(String roomId);
 	Room updateRoom(RoomUpdatePatchReq roomUpdateInfo, String roomId);
+	String deleteRoom(String roomId);
 }
