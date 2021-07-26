@@ -59,7 +59,7 @@ public class RoomController {
 		return ResponseEntity.status(201).body(RoomPostRes.of(room));
 	}
 	
-	@GetMapping("s")
+	@GetMapping()
 	@ApiOperation(value = "전체 방목록 조회", notes = "방 전체 목록을 조회한다.")
 	@ApiResponses({
 		@ApiResponse(code = 200, message ="Success")

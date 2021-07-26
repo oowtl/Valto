@@ -457,7 +457,7 @@
 
 
 
-### [PATCH] `/rooms/{String : roomId}`
+### [PATCH] `/room/{String : roomId}`
 
 - Request
 

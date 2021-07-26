@@ -2,6 +2,7 @@ package com.ssafy.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,20 +63,25 @@ public class RoomServiceImpl implements RoomService {
 		
 		// roomListGetInfo 에 따라서 다르게 넣어준다.
 		// only title, only topic, topic and title
+				
 		
 		// topic and title
-		if ((roomListGetInfo.getTitle() != "null") && (roomListGetInfo.getTopic() != "null")) {
-			return roomRepository.findAll();
+		if (!(roomListGetInfo.getTitle().equals("null")) && (!roomListGetInfo.getTopic().equals("null"))) {
+			
+			return roomRepository.findByTopicAgreeOrTopicOppositeOrTitle
+					(roomListGetInfo.getTopic(), roomListGetInfo.getTopic(), roomListGetInfo.getTitle());
 		}
 		
 		// only title
-		if (roomListGetInfo.getTitle() != "null") {
-			return roomRepository.findAll();
+		if (!roomListGetInfo.getTitle().equals("null")) {
+						
+			return roomRepository.findByTitle(roomListGetInfo.getTitle());
 		}
 		
 		// only topic
-		if (roomListGetInfo.getTopic() != "null") {
-			return roomRepository.findAll();
+		if (!roomListGetInfo.getTopic().equals("null")) {		
+			
+			return roomRepository.findByTopicAgreeOrTopicOpposite(roomListGetInfo.getTopic(), roomListGetInfo.getTopic());
 		}
 		
 		return roomRepository.findAll();

@@ -18,19 +18,30 @@ import lombok.Setter;
 public class RoomListGetRes {
 	
 	@ApiModelProperty(name="content")
-	List<Room> content;
+	ArrayList<HashMap> content;
 	
 	public static RoomListGetRes of(List<Room> getRoomsList) {
 		
-		ArrayList roomList = new ArrayList<>();
+		RoomListGetRes roomList = new RoomListGetRes();
+		
+		ArrayList<HashMap> roomListArray = new ArrayList<HashMap>();
 		
 		for (Room room : getRoomsList) {
-			HashMap<String, ?> mapRoom = new HashMap<>();
-			mapRoom.put("userId", room.getUserId());
-			mapRoom.put("participants", room.getParticipants());		
+			HashMap<String, Object> mapRoom = new HashMap<>();
+			mapRoom.put("userId", room.getUserId().getNickName());
+			mapRoom.put("participants", room.getParticipants());
+			mapRoom.put("observers", room.getObservers());
+			mapRoom.put("times", room.getTimes());
+			mapRoom.put("title", room.getTitle());
+			mapRoom.put("topicAgree", room.getTopicAgree());
+			mapRoom.put("topicOpposite", room.getTopicOpposite());
 			
+			roomListArray.add(mapRoom);
 		}
 		
+		roomList.setContent(roomListArray);
+		
+		return roomList;
 		
 	}
 	
