@@ -25,9 +25,12 @@ import com.ssafy.api.response.RoomListGetRes;
 import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
+import com.ssafy.api.service.UserRoomService;
 import com.ssafy.common.auth.SsafyUserDetails;
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
+import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.User_Room;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +49,9 @@ public class RoomController {
 	@Autowired
 	RoomService roomService;
 	
+	@Autowired
+	UserRoomService userRoomService;
+	
 	@PostMapping()
 	@ApiOperation(value = " 방 생성 ", notes =" request 에서 받은 정보를 통해서 방을 생성한다. ")
 	@ApiResponses({
@@ -61,8 +67,12 @@ public class RoomController {
 		 */
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
-				
+		
+		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
+		
+		// User_Room 생성하기
+		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId());
 		
 		return ResponseEntity.status(201).body(RoomPostRes.of(room));
 	}
@@ -107,7 +117,9 @@ public class RoomController {
 	@PatchMapping("/{roomId}")
 	@ApiOperation(value="방 정보 변경", notes="방 id 를 통해서 방 정보를 변경한다.")
 	@ApiResponses({
-		@ApiResponse(code=200, message="Success")
+		@ApiResponse(code=200, message="Success"),
+		@ApiResponse(code = 400, message ="no Exist Room"),
+		@ApiResponse(code = 403, message ="no owner")
 	})
 	public ResponseEntity<? extends BaseResponseBody> updateRoom(
 			@ApiIgnore Authentication authentication,
@@ -126,7 +138,7 @@ public class RoomController {
 		
 		// 방장과 유저 아이디가 다를 경우
 		if (!userId.equals(room.getUserId().getUserId())) {
-			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "Bang Jang Na Wa"));
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no Room Creater"));
 		}
 		
 		// 검사를 마치면 수정을 해보자.
@@ -139,6 +151,7 @@ public class RoomController {
 	@ApiOperation(value="방 삭제", notes="해당 방을 삭제한다.")
 	@ApiResponses({
 		@ApiResponse(code = 200, message ="success"),
+		@ApiResponse(code = 400, message ="no Exist Room"),
 		@ApiResponse(code = 403, message ="no owner")
 	})
 	public ResponseEntity<? extends BaseResponseBody> deleteRoom(
@@ -166,5 +179,75 @@ public class RoomController {
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, message));
 	}
 	
+	@PostMapping("/{roomId}/admission")
+	@ApiOperation(value="방 입장하기", notes="유저가 방에 입장한다.")
+	@ApiResponses({
+		@ApiResponse(code=200, message="Success"),
+		@ApiResponse(code=400, message="no Exist Room"),
+		@ApiResponse(code=400, message="already enter room user")
+	})
+	public ResponseEntity<? extends BaseResponseBody> enterRoom(
+			@ApiIgnore Authentication authentication,
+			@PathVariable("roomId") String roomId){
+		
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		
+		Room room = roomService.getRoomByRoomId(roomId);
+		
+		// 방이 없을 경우
+		if (room == null) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
+		}
+		
+		// user 가 이미 하나의 방에 접속한 경우
+		User alreadyUser = userRoomService.getUserByUserId(userId);
+		
+		if (!alreadyUser.getUserId().isEmpty()) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+		}
+		
+		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId());
+		
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	}
 	
+	@DeleteMapping("{roomId}/admission")
+	@ApiOperation(value="방 나가기", notes="유저가 방에서 나간다.")
+	@ApiResponses({
+		@ApiResponse(code=204, message="success"),
+		@ApiResponse(code=400, message="no Exist Room"),
+		@ApiResponse(code=400, message="no Room User"),
+		@ApiResponse(code=403, message="no entered User")
+	})
+	public ResponseEntity<?extends BaseResponseBody> leaveRoom (
+			@ApiIgnore Authentication authentication,
+			@PathVariable("roomId") String roomId) {
+		
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		
+		Room room = roomService.getRoomByRoomId(roomId);
+		
+		// 방 없을 때
+		if (room == null ) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
+		}
+		
+		User alreadyUser = userRoomService.getUserByUserId(userId);
+		
+		// 접속한 유저가 아니라면
+		if (alreadyUser.getUserId().isEmpty()) {
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no entered User")); 
+		}
+		
+		// 방에 속한 유저가 아니라면
+		// userRoom 에서 찾고, alreadyUser 를 가진 room id 를 비교한다.
+		
+		
+		
+		
+		
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	}
 }

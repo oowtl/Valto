@@ -16,9 +16,10 @@
 | `/users/myprofile`         | GET           | JSON     | 자기 프로필 확인                |
 | `/users/{userId}/profile/` | GET           | JSON     | 타인 프로필 확인                |
 | `/room`                    | POST          | JSON     | 방 생성                         |
-| `/rooms`                   | GET           | JSON     | 전체 방 목록 조회               |
-| `/rooms/{roomId}`          | GET           | JSON     | 방 상세 정보 조회               |
-| `/rooms/{roomId}`          | PATCH, DELETE | JSON     | 방 정보 수정, 삭제              |
+| `/room`                    | GET           | JSON     | 전체 방 목록 조회               |
+| `/room/{roomId}`           | GET           | JSON     | 방 상세 정보 조회               |
+| `/room/{roomId}`           | PATCH, DELETE | JSON     | 방 정보 수정, 삭제              |
+| `/room/{roomId}/admission` | POST, DELETE  | JSON     | 방 입장, 퇴장                   |
 
 
 
@@ -302,12 +303,13 @@
 
 ## 방 관리
 
-| 요청 URL          | 메서드        | 응답형식 | 설명              |
-| ----------------- | ------------- | -------- | ----------------- |
-| `/room`           | POST          | JSON     | 방 생성           |
-| `/rooms`          | GET           | JSON     | 전체 방 목록 조회 |
-| `/rooms/{roomId}` | GET           | JSON     | 방 상세 정보 조회 |
-| `/rooms/{roomId}` | PATCH, DELETE | JSON     | 방 정보수정, 삭제 |
+| 요청 URL                   | 메서드        | 응답형식 | 설명              |
+| -------------------------- | ------------- | -------- | ----------------- |
+| `/room`                    | POST          | JSON     | 방 생성           |
+| `/rooms`                   | GET           | JSON     | 전체 방 목록 조회 |
+| `/room/{roomId}`           | GET           | JSON     | 방 상세 정보 조회 |
+| `/room/{roomId}`           | PATCH, DELETE | JSON     | 방 정보수정, 삭제 |
+| `/room/{roomId}/admission` | POST, DELETE  | JSON     | 방 입장, 퇴장     |
 
 
 
@@ -399,6 +401,10 @@
                 "topicAgree" : "String",
                 "topicOpposite" : "String"
     		},
+            {
+                "roomId" : Integer
+                ...
+            }
         ],
     }
     ```
@@ -491,6 +497,26 @@
         "topicOpposite" : "String",
     }
     ```
+    
+  - 400
+
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "noExist roomId",
+    }
+    ```
+
+  - 403
+
+    ```json
+    {
+        "StatusCode" : 403,
+        "message" : "no Room Creater",
+    }
+    ```
+
+    - userId != ownerId
 
 - 권한
 
@@ -527,14 +553,108 @@
     }
     ```
 
-  - 403
+  - 400
 
     ```json
     {
-        "StatusCode" : 403,
-        "message" : "no owner"
+        "StatusCode" : 400,
+        "message" : "no Exist Room"
     }
     ```
 
+  - 403
+  
+    ```json
+    {
+        "StatusCode" : 403,
+        "message" : "no Room Creater"
+    }
+    ```
+  
     - ownerId != userId
+
+
+
+### [POST] `/room/{String : roomId}/admission` 
+
+- Request
+
+  - 없음
+
+- Response
+
+  - 200
+
+    ```json
+    {
+        "StatusCode" : 200,
+        "message" : "Success"
+    }
+    ```
+    
+  - 400
+
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "no Exist Room"
+    }
+    ```
+
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "already enter room user"
+    }
+    ```
+
+- 권한
+
+  - 로그인한 유저
+  - 방에 접속 하지 않은 유저
+  
+  
+
+### [DELETE] `/room/{String : roomId}/admission`  
+
+- 부가설명
+
+  - 방에서 퇴장하는 API
+
+- Request
+
+  - 없음
+
+- Reponse
+
+  - 204
+
+    ```json
+    {
+        "StatusCode" : 204,
+        "message" : "Success"
+    }
+    ```
+    
+  - 400
+
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "no Exist Room"
+    }
+    ```
+
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "already enter room user"
+    }
+    ```
+
+- 권한
+
+  - 로그인 한 유저
+  - 방에 들어가 있는 유저
+
 
