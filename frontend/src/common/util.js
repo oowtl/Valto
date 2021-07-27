@@ -6,7 +6,7 @@ import $axios from 'axios'
 
 export default {
   // 공용 axios
-  commonAxios ( payload) {
+  commonAxios (payload) {
     let token = localStorage.getItem('jwt')
     const config = {
       Authorization: `Bearer ${token}`
@@ -15,7 +15,8 @@ export default {
       headers: config,
       ...payload
     }
-    console.log(request)
+    console.log('printing payload')
+    console.log(payload)
     return $axios(request)
   },
 }

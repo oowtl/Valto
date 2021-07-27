@@ -63,7 +63,7 @@
   </el-row>
 </template>
 <script>
-import {  reactive, computed } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 

@@ -7,7 +7,7 @@ module.exports = {
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'http://localhost:8080/'
+        target: 'http://localhost:9090/'
       }
     },
     historyApiFallback: true,

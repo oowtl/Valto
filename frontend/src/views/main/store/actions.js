@@ -11,14 +11,14 @@ export function requestLogin ({ state }, payload) {
 }
 
 //페이지 진입
-export function onPageEnter ({ state }) {
+export function onPageEnter () {
   console.log('onPageEnter: actions.js')
   const url = '/users/me'
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
 //회원가입
@@ -76,6 +76,7 @@ export function axiosErrorHandler ({ commit }, payload) {
 // 로그아웃
 export function setLogout({ commit }) {
   localStorage.removeItem('jwt')
+  // 여기서 commit시 자동으로 root/가 붙어있음
   commit('setUserId', '')
   router.push({
     name: 'home'
@@ -92,23 +93,28 @@ export function requestCreateRoom({ state }, payload){
 }
 
 // 내 프로필 확인하기
-export function requestMyProfile({ state }) {
+export function requestMyProfile() {
   const url = '/users/myprofile'
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
 // 내 프로필 수정요청
-// state가 필요한가?
-export function requestUpdateProfile({ state }, payload) {
+export function requestUpdateProfile(payload) {
   const url = '/users/' +  payload.userId
   const request = {
     method: 'patch',
     url: url,
     data: payload
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
+}
+
+// 방 목록 요청 (비로그인 상태에서도 가능)
+export function requestRoomList() {
+  const url = '/room'
+  return $axios.get(url)
 }
