@@ -64,3 +64,38 @@
 - 상황
   - Optional이 뭔지 몰라서 찾아보다가 컬렉션을 반환하는 Spring Data JPA Repository 메서드는 null을 반환하지 않고 비어있는 컬렉션을 반환해준다는 것을 알았다.
     리턴받고 싶은 것이 컬렉션으로 쭉~ 나열되는 것이라면 Optional을 쓰지 않아도 된다는 것이다.
+
+
+
+## Like 에 대해서
+
+- 상황
+
+  - 우리가 검색을 하는데 있어서 아무것도 모르고 하면 항상 가득채워서? 검색을 하게 된다.
+    ex) 제목이 title 이면 title 을 끝까지 다 입력하는 것...
+    그런데 우리가 검색을 할 때는 이러지 않는다! 그러면 어떻게 하는데!!
+
+- 해결
+
+  - Query 에서는 Like 라는 친구가 이러한 고민을 해결해줄 수 있다.
+
+- 방법
+
+  - | 용도            | 사용                                          |
+    | --------------- | --------------------------------------------- |
+    | Like : 검색어   | `findByUsernameLike(String username)`         |
+    | Like : 검색어 % | `findByUsernameStartingWith(String username)` |
+    | Like : %검색어  | `findByUsernameEndingWith(String username)`   |
+    | Like : %검색어% | `findByUsernameContaining(String username)`   |
+
+  - `%` : 퍼센트 기호는 0, 1 또는 여러 문자를 나타낸다.
+  - `_` : 하나의 단일 문자을 나타낸다.
+
+- 예시
+
+  - ```java
+    List<Room> findByTopicAgreeContainingOrTopicOppositeContaining(String topicAgree, String topicOpposite);
+    ```
+
+    - `Or` 와 같은 연결시켜주는 것이라면 각각에 붙여줘야 한다.
+

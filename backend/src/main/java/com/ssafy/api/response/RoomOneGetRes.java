@@ -1,5 +1,6 @@
 package com.ssafy.api.response;
 
+import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
 
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel("RoomOneGetRes")
-public class RoomOneGetRes {
+public class RoomOneGetRes extends BaseResponseBody{
 	@ApiModelProperty(name="room id")
 	Integer roomId;
 	@ApiModelProperty(name="participants")

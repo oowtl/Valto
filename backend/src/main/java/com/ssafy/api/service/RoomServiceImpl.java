@@ -69,20 +69,22 @@ public class RoomServiceImpl implements RoomService {
 		// topic and title
 		if (!(roomListGetInfo.getTitle().equals("null")) && (!roomListGetInfo.getTopic().equals("null"))) {
 			
-			return roomRepository.findByTopicAgreeOrTopicOppositeOrTitle
+			return roomRepository.findByTopicAgreeContainingOrTopicOppositeContainingOrTitleContaining
 					(roomListGetInfo.getTopic(), roomListGetInfo.getTopic(), roomListGetInfo.getTitle());
 		}
 		
 		// only title
 		if (!roomListGetInfo.getTitle().equals("null")) {
+			
+			System.out.println(roomListGetInfo.getTitle().getClass());
 						
-			return roomRepository.findByTitle(roomListGetInfo.getTitle());
+			return roomRepository.findByTitleContaining(roomListGetInfo.getTitle());
 		}
 		
 		// only topic
 		if (!roomListGetInfo.getTopic().equals("null")) {		
 			
-			return roomRepository.findByTopicAgreeOrTopicOpposite(roomListGetInfo.getTopic(), roomListGetInfo.getTopic());
+			return roomRepository.findByTopicAgreeContainingOrTopicOppositeContaining(roomListGetInfo.getTopic(), roomListGetInfo.getTopic());
 		}
 		
 		return roomRepository.findAll();

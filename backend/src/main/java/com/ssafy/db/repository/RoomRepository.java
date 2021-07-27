@@ -11,9 +11,9 @@ import com.ssafy.db.entity.Room;
 
 public interface RoomRepository extends JpaRepository<Room, Long>{
 	
-	List<Room> findByTopicAgreeOrTopicOppositeOrTitle(String topicAgree, String topicOpposite, String title);
-	List<Room> findByTopicAgreeOrTopicOpposite(String topicAgree, String topicOpposite);
-	List<Room> findByTitle(String title);
+	List<Room> findByTopicAgreeContainingOrTopicOppositeContainingOrTitleContaining(String topicAgree, String topicOpposite, String title);
+	List<Room> findByTopicAgreeContainingOrTopicOppositeContaining(String topicAgree, String topicOpposite);
+	List<Room> findByTitleContaining(String title);
 	
 	Room findById(Integer roomId);
 	

@@ -22,7 +22,6 @@ import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
 import com.ssafy.api.request.RoomUpdatePatchReq;
 import com.ssafy.api.response.RoomListGetRes;
-import com.ssafy.api.response.RoomOneErrorRes;
 import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
@@ -94,13 +93,13 @@ public class RoomController {
 		@ApiResponse(code=200, message="Success"),
 		@ApiResponse(code=400, message="noExist roomId")
 	})
-	public ResponseEntity<RoomOneGetRes> checkOneRoom (
+	public ResponseEntity<? extends BaseResponseBody> checkOneRoom (
 			@PathVariable("roomId") String roomId) {
 			
 		Room room = roomService.getRoomByRoomId(roomId);
 		
 		if (room == null) {
-			return ResponseEntity.status(400).body(RoomOneErrorRes.of(400, "noExist roomId"));
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "noExist roomId"));
 		}
 		return ResponseEntity.status(200).body(RoomOneGetRes.of(room));
 	}
@@ -110,7 +109,7 @@ public class RoomController {
 	@ApiResponses({
 		@ApiResponse(code=200, message="Success")
 	})
-	public ResponseEntity<RoomOneGetRes> updateRoom(
+	public ResponseEntity<? extends BaseResponseBody> updateRoom(
 			@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value="방 수정 정보", required=true) RoomUpdatePatchReq roomUpdateInfo,
 			@PathVariable("roomId") String roomId) {
@@ -122,12 +121,12 @@ public class RoomController {
 		
 		// room 이 없을 경우
 		if (room == null) {
-			return ResponseEntity.status(400).body(RoomOneErrorRes.of(400, "no Exist Room"));
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
 		
 		// 방장과 유저 아이디가 다를 경우
 		if (!userId.equals(room.getUserId().getUserId())) {
-			return ResponseEntity.status(403).body(RoomOneErrorRes.of(403, "Bang Jang Na Wa"));
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "Bang Jang Na Wa"));
 		}
 		
 		// 검사를 마치면 수정을 해보자.
@@ -136,7 +135,7 @@ public class RoomController {
 	}
 	
 	
-	@DeleteMapping("/{userId}")
+	@DeleteMapping("/{roomId}")
 	@ApiOperation(value="방 삭제", notes="해당 방을 삭제한다.")
 	@ApiResponses({
 		@ApiResponse(code = 200, message ="success"),
