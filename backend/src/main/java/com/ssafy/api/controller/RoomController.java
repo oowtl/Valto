@@ -111,7 +111,10 @@ public class RoomController {
 		if (room == null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "noExist roomId"));
 		}
-		return ResponseEntity.status(200).body(RoomOneGetRes.of(room));
+		
+		List<User_Room> userRoomList = userRoomService.getUserRoomByRoomId(roomId);
+		
+		return ResponseEntity.status(200).body(RoomOneGetRes.of(room, userRoomList));
 	}
 	
 	@PatchMapping("/{roomId}")
@@ -143,7 +146,8 @@ public class RoomController {
 		
 		// 검사를 마치면 수정을 해보자.
 		Room resRoom = roomService.updateRoom(roomUpdateInfo, roomId);
-		return ResponseEntity.status(200).body(RoomOneGetRes.of(resRoom));
+		List<User_Room> userRoomList = userRoomService.getUserRoomByRoomId(roomId);
+		return ResponseEntity.status(200).body(RoomOneGetRes.of(resRoom, userRoomList));
 	}
 	
 	
@@ -174,9 +178,15 @@ public class RoomController {
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no owner"));
 		}
 		
-		String message = roomService.deleteRoom(roomId);
+		// userRoom 삭제
+		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
+		String userRoomMessage = userRoomService.deleteUserRoom(existUserRoom);
 		
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, message));
+		
+		//room 삭제
+		String roomMessage = roomService.deleteRoom(roomId);
+		
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 	
 	@PostMapping("/{roomId}/admission")
@@ -201,9 +211,11 @@ public class RoomController {
 		}
 		
 		// user 가 이미 하나의 방에 접속한 경우
-		User alreadyUser = userRoomService.getUserByUserId(userId);
+		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 		
-		if (!alreadyUser.getUserId().isEmpty()) {
+		System.out.println(existUserRoom.getUserId());
+		
+		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
 		
@@ -234,19 +246,21 @@ public class RoomController {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
 		
-		User alreadyUser = userRoomService.getUserByUserId(userId);
-		
 		// 접속한 유저가 아니라면
-		if (alreadyUser.getUserId().isEmpty()) {
-			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no entered User")); 
+		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
+		
+		if (existUserRoom.getUserId() == null) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
 		
 		// 방에 속한 유저가 아니라면
-		// userRoom 에서 찾고, alreadyUser 를 가진 room id 를 비교한다.
+		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.
+		if (!existUserRoom.getRoomId().equals(room)) {
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no entered User"));
+		}
 		
-		
-		
-		
+		// User_Room 삭제
+		String message = userRoomService.leaveRoom(existUserRoom);
 		
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}

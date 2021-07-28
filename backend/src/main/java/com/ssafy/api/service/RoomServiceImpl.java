@@ -46,9 +46,8 @@ public class RoomServiceImpl implements RoomService {
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
 		room.setTopicOpposite(roomPostRequestInfo.getTopicOpposite());
 		
-
 		// room password 가 null 인지 아닌지에 대한 검사
-		if (roomPostRequestInfo.getRoomPassword() == null) {
+		if (roomPostRequestInfo.getRoomPassword().isEmpty()) {
 			room.setRoomPassword("null");
 		} else {
 			room.setRoomPassword(passwordEncoder.encode(roomPostRequestInfo.getRoomPassword()));

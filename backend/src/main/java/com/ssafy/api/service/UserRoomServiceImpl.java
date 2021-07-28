@@ -1,13 +1,18 @@
 package com.ssafy.api.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.entity.User_Room;
 import com.ssafy.db.repository.RoomRepository;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRoomRepository;
 
+@Service("UserRoomService")
 public class UserRoomServiceImpl implements UserRoomService {
 	
 	@Autowired
@@ -25,32 +30,48 @@ public class UserRoomServiceImpl implements UserRoomService {
 		
 		userRoom.setRoomId(roomRepository.findById(RoomId));
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
-		userRoom.setUserId(userRepository.findById(Integer.parseInt(UserId)).get());
+		userRoom.setUserId(userRepository.findByUserId(UserId).get());
 		
 		return userRoomRepository.save(userRoom);
 	}
 	
 	@Override
-	public User getUserByUserId(String UserId) {
+	public User_Room getUserByUserId(String UserId) {
 		// TODO Auto-generated method stub
+		 
+		User user = userRepository.findByUserId(UserId).get();
 		
-//		User user = userRepository.findById(Integer.parseInt(UserId)).get();
-		
-		return userRoomRepository.findByUserId(UserId).orElse(new User());
+		return userRoomRepository.findByUserId(user).orElseGet(() -> new User_Room());
 	}
 	
-	
 	@Override
-	public String leaveRoom(String UserId, Integer RoomId) {
+	public List<User_Room> getUserRoomByRoomId(String RoomId) {
 		// TODO Auto-generated method stub
 		
+		Room room = roomRepository.findById(Integer.parseInt(RoomId));
 		
+		return userRoomRepository.findAllByRoomId(room);
+	}
+	
+	@Override
+	public String leaveRoom(User_Room userRoom) {
+		// TODO Auto-generated method stub
 		
+		userRoomRepository.delete(userRoom);
 		
-//		userRoomRepository.delete();
+		return	"Success";
+	}
+	
+	@Override
+	public String deleteUserRoom(User_Room userRoom) {
+		// TODO Auto-generated method stub
 		
+		List<User_Room> deleteUserRoom = userRoomRepository.findAllByRoomId(userRoom.getRoomId());
 		
-		return "deleteSucces";
+		for (User_Room user : deleteUserRoom) {
+			userRoomRepository.delete(user);
+		}
+		return "Success";
 	}
 	
 }

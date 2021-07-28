@@ -1,8 +1,13 @@
 package com.ssafy.api.response;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.User_Room;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,9 +33,9 @@ public class RoomOneGetRes extends BaseResponseBody{
 	@ApiModelProperty(name="topicOpposite")
 	String topicOpposite;
 	@ApiModelProperty(name="Users")
-	User users;
+	List<HashMap> users;
 	
-	public static RoomOneGetRes of(Room room) {
+	public static RoomOneGetRes of(Room room, List<User_Room> userRoomList) {
 		
 		RoomOneGetRes roomInfo = new RoomOneGetRes();
 		
@@ -44,6 +49,18 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		// users 를 어떻게 넣어야 할지 모르겠다...
 		
+		List<HashMap>userList = new ArrayList<HashMap>();
+		
+		for (User_Room userRoom: userRoomList) {
+			HashMap<String, String> user = new HashMap<>();
+			user.put("userId", userRoom.getUserId().getUserId());
+			user.put("name", userRoom.getUserId().getName());
+			user.put("nickName", userRoom.getUserId().getNickName());
+			
+			userList.add(user);
+		}
+			
+		roomInfo.setUsers(userList);
 		
 		return roomInfo;
 	}
