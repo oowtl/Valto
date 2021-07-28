@@ -213,8 +213,6 @@ public class RoomController {
 		// user 가 이미 하나의 방에 접속한 경우
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 		
-		System.out.println(existUserRoom.getUserId());
-		
 		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}

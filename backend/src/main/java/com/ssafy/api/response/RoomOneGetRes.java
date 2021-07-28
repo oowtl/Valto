@@ -19,7 +19,7 @@ import lombok.Setter;
 @ApiModel("RoomOneGetRes")
 public class RoomOneGetRes extends BaseResponseBody{
 	@ApiModelProperty(name="room id")
-	Integer roomId;
+	Long roomId;
 	@ApiModelProperty(name="participants")
 	Integer participants;
 	@ApiModelProperty(name="observers")

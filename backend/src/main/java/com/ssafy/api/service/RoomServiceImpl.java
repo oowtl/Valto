@@ -93,14 +93,20 @@ public class RoomServiceImpl implements RoomService {
 	public Room getRoomByRoomId(String roomId) {
 		// TODO Auto-generated method stub		
 		
-		return roomRepository.findById(Integer.parseInt(roomId));
+		Room room = roomRepository.findById(Long.valueOf(roomId)).orElseGet(() -> new Room());
+
+		if (room.getTitle().isEmpty()) {			
+			return null;
+		}
+		
+		return room;
 	}
 	
 	@Override
 	public Room updateRoom(RoomUpdatePatchReq roomUpdateInfo, String roomId) {
 		// TODO Auto-generated method stub
 		
-		Room room = roomRepository.findById(Integer.parseInt(roomId));
+		Room room = roomRepository.findById(Long.valueOf(roomId)).get();
 		
 		room.setParticipants(roomUpdateInfo.getParticipants());
 		room.setObservers(roomUpdateInfo.getObservers());
@@ -116,7 +122,7 @@ public class RoomServiceImpl implements RoomService {
 	public String deleteRoom(String roomId) {
 		// TODO Auto-generated method stub
 		
-		Room room = roomRepository.findById(Integer.parseInt(roomId));
+		Room room = roomRepository.findById(Long.valueOf(roomId)).get();
 		
 		// room 자체 삭제전 다른 행위, 필요하다면 할 것!
 		
