@@ -15,6 +15,6 @@ public interface RoomRepository extends JpaRepository<Room, Long>{
 	List<Room> findByTopicAgreeContainingOrTopicOppositeContaining(String topicAgree, String topicOpposite);
 	List<Room> findByTitleContaining(String title);
 	
-	Room findById(Integer roomId);
+	Optional<Room> findById(Long roomId);
 	
 }

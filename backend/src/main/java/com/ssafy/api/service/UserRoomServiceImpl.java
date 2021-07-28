@@ -23,12 +23,12 @@ public class UserRoomServiceImpl implements UserRoomService {
 	UserRoomRepository userRoomRepository;
 	
 	@Override
-	public User_Room enterUserRoom(String UserId, Integer RoomId) {
+	public User_Room enterUserRoom(String UserId, Long RoomId) {
 		// TODO Auto-generated method stub
 		
 		User_Room userRoom = new User_Room();
 		
-		userRoom.setRoomId(roomRepository.findById(RoomId));
+		userRoom.setRoomId(roomRepository.findById(RoomId).get());
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
 		
@@ -48,7 +48,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 	public List<User_Room> getUserRoomByRoomId(String RoomId) {
 		// TODO Auto-generated method stub
 		
-		Room room = roomRepository.findById(Integer.parseInt(RoomId));
+		Room room = roomRepository.findById(Long.valueOf(RoomId)).get();
 		
 		return userRoomRepository.findAllByRoomId(room);
 	}
