@@ -10,6 +10,7 @@ import com.ssafy.api.request.UserModifyPatchReq;
 import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.entity.UserRecord;
+import com.ssafy.db.repository.UserRecordRepository;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
 
@@ -25,18 +26,29 @@ public class UserServiceImpl implements UserService {
 	UserRepositorySupport userRepositorySupport;
 	
 	@Autowired
+	UserRecordRepository userRecordRepository;
+	
+	@Autowired
 	PasswordEncoder passwordEncoder;
 	
 	@Override
 	public User createUser(UserRegisterPostReq userRegisterInfo) {
+		
+		UserRecord userRecord = new UserRecord();
+		userRecord.setWin(0);
+		userRecord.setDraw(0);
+		userRecord.setLose(0);
+		
+		userRecordRepository.save(userRecord);
+		
 		User user = new User();
-
 		user.setUserId(userRegisterInfo.getUserId());
 		// 보안을 위해서 유저 패스워드 암호화 하여 디비에 저장.
 		user.setPassword(passwordEncoder.encode(userRegisterInfo.getPassword()));
 		user.setNickName(userRegisterInfo.getNickName());
 		user.setName(userRegisterInfo.getName());
 		user.setPoint(0);
+		user.setUserRecord(userRecord);
 		return userRepository.save(user);
 	}
 
@@ -81,6 +93,5 @@ public class UserServiceImpl implements UserService {
 		
 		return 1;
 	}
-
 	
 }

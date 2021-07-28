@@ -23,14 +23,16 @@ public class UserRes{
 	String nickName;
 	@ApiModelProperty(name="User Name")
 	String name;
+	@ApiModelProperty(name="User Password")
+	String password;
 	@ApiModelProperty(name="User Point")
 	int point;
 	@ApiModelProperty(name="User Record")
 	UserRecord userRecord;
 	
-	public static UserRes of(String userId) {
+	public static UserRes of(String userId) {	
 		UserRes res = new UserRes();
-		res.setUserId(userId);		
+		res.setUserId(userId);
 		return res;
 	}
 	
@@ -40,6 +42,15 @@ public class UserRes{
 		res.setNickName(user.getNickName());
 		res.setName(user.getName());
 		res.setPoint(user.getPoint());
+		res.setUserRecord(user.getUserRecord());
+		return res;
+	}
+	
+	public static UserRes opp(User user) {
+		UserRes res = new UserRes();
+		res.setNickName(user.getNickName());
+		res.setPoint(user.getPoint());
+		res.setUserRecord(user.getUserRecord());
 		return res;
 	}
 }

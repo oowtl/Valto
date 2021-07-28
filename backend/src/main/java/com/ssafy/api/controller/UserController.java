@@ -77,8 +77,8 @@ public class UserController {
 //		System.out.println(authentication.getDetails().toString());
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
 		String userId = userDetails.getUsername();
-		
-		return ResponseEntity.status(200).body(UserRes.of(userService.getUserByUserId(userId)));
+		User user = userService.getUserByUserId(userId);
+		return ResponseEntity.status(200).body(UserRes.of(user.getUserId()));
 	}
 	
 	@GetMapping("/{userId}/id")
@@ -158,21 +158,38 @@ public class UserController {
 		return ResponseEntity.status(403).body(BaseResponseBody.of(403, "권한 없음"));
 	}
 	
-//	@GetMapping("/myProfile")
-//	@ApiOperation(value = "회원 정보 확인", notes = "해당 회원 정보를 확인한다.") 
-//    @ApiResponses({
-//        @ApiResponse(code = 200, message = "성공"),
-//        @ApiResponse(code = 403, message = "권한 없음"),
-//        @ApiResponse(code = 500, message = "서버 오류")
-//    })
-//	public ResponseEntity<? extends BaseResponseBody> getUserInfo(@ApiIgnore Authentication authentication){
-//				
-//		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
-//		String userId = userDetails.getUsername();
-//		User user = userService.getUserByUserId(userId);
+	@GetMapping("/myprofile")
+	@ApiOperation(value = "회원 정보 확인", notes = "해당 회원 정보를 확인한다.") 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공"),
+        @ApiResponse(code = 403, message = "권한 없음"),
+        @ApiResponse(code = 500, message = "서버 오류")
+    })
+	public ResponseEntity<UserRes> getMyInfo(@ApiIgnore Authentication authentication){
+				
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String userId = userDetails.getUsername();
+		User user = userService.getUserByUserId(userId);
 //		UserRecord userRecord = userService.getUserByUserRecord(userId);
-//		
-//		return ResponseEntity.status(200).body(UserRes.of(user));
-//	}
+		
+		return ResponseEntity.status(200).body(UserRes.of(user));
+	}
+	
+	@GetMapping("/{userId}/profile")
+	@ApiOperation(value = "회원 정보 확인", notes = "해당 회원 정보를 확인한다.") 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공"),
+        @ApiResponse(code = 403, message = "권한 없음"),
+        @ApiResponse(code = 500, message = "서버 오류")
+    })
+	public ResponseEntity<UserRes> getUserInfo(@ApiIgnore Authentication authentication, @PathVariable("userId") String userId){
+				
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+//		String userId = userDetails.getUsername();
+		User user = userService.getUserByUserId(userId);
+//		UserRecord userRecord = userService.getUserByUserRecord(userId);
+		
+		return ResponseEntity.status(200).body(UserRes.opp(user));
+	}
 		
 }
