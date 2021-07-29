@@ -104,11 +104,6 @@ export default {
     onCloseProfileDialog () {
       this.profileDialogOpen = false
     },
-<<<<<<< HEAD
-    onClickRoom (roomId) {
-      this.roomId = roomId
-    }
-=======
     onOpenDetailDialog (roomId) {
       this.roomId = roomId
       console.log('id값은?', this.roomId)
@@ -117,7 +112,6 @@ export default {
     onCloseDetailDialog () {
       this.detailDialogOpen = false
     },
->>>>>>> origin/front/roomdetail
   }
 }
 

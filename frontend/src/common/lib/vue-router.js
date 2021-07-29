@@ -19,40 +19,6 @@ function makeRoutesFromMenu () {
     }
   })
 
-<<<<<<< HEAD
-
-
-  let routes =
-  [{
-    path: '/',
-    name: 'main',
-    component: Main,
-    children: mainChildren
-  },
-  {
-    path: '/room/:roomId',
-    name: 'room',
-    component: Check,
-    // props: true,
-  },
-  {
-    path: '/conferences/:conferenceId',
-    name: 'conference-detail',
-    component: ConferencesDetail
-  }
-  // {
-  //   path: '/room:roomId',
-  //   name: 'room',
-
-
-  // }
-  ]
-
-
-
-
-
-=======
   let routes = [
     {
       path: '/',
@@ -73,7 +39,6 @@ function makeRoutesFromMenu () {
     },
   ]
 
->>>>>>> front/roomList
   // 로그아웃 파싱한 부분 제거
   // routes = routes.filter(item => item)
   // menu 자체에는 나오지 않는 페이지 라우터에 추가(방 상세보기)
