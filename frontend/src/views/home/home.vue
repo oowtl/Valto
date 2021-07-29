@@ -71,74 +71,7 @@ export default {
     const route = useRoute()
     const state = reactive({
       query: computed(() => route.query),
-      rooms: [
-        {
-          roomId: 1,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't1',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-        {
-          roomId: 2,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't2',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-        {
-          roomId: 3,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't3',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-        {
-          roomId: 4,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't4',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-        {
-          roomId: 5,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't5',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-        {
-          roomId: 6,
-          userId: 'aasdasd',
-          participants: 2,
-          observers: 2,
-          times: 20,
-          title: 't6',
-          roomPassword: '',
-          topicAgree: 'asdasdasd',
-          topicOpposite: 'asdasdasda',
-        },
-    ],
+      rooms: [],
     })
 
     // watch(() => route.query, (newVal, oldVal) => {
@@ -166,8 +99,10 @@ export default {
 
     // 검색시 방 목록 업데이트
     watch (() => route.query, () => {
-      console.log('user searched')
-      getRoomList()
+      console.log('query updated')
+      if (Object.keys(route.query).length !== 0) {
+        getRoomList()
+      }
     })
 
 

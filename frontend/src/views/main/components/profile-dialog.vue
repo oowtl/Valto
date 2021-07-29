@@ -4,8 +4,8 @@
       <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
         <el-input v-model="state.form.userId" autocomplete="off" :disabled="true"></el-input>
       </el-form-item>
-      <el-form-item prop="nickname" label="닉네임" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.nickname" autocomplete="off" ></el-input>
+      <el-form-item prop="nickName" label="닉네임" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.nickName" autocomplete="off" ></el-input>
       </el-form-item>
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
@@ -45,7 +45,7 @@ export default {
     const store = useStore()
     const profileForm = ref(null)
     const flag = ref({
-      nickname: false,
+      nickName: false,
       name: false,
     })
 
@@ -56,27 +56,27 @@ export default {
     // 닉네임
     const checkNickname = function (rule, value, callback) {
       if (!value) {
-        flag.value.nickname = false
+        flag.value.nickName = false
         return callback(new Error('필수 입력 항목입니다.'))
       } else if (value.length < 2) {
-        flag.value.nickname = false
+        flag.value.nickName = false
         return callback(new Error('최소 2글자를 입력해야 합니다.'))
       } else if (value.length > 30) {
-        flag.value.nickname = false
+        flag.value.nickName = false
         return callback(new Error('최대 30글자까지 입력 가능합니다.'))
       } else {
-        store.dispatch('root/checkNickname', state.form.nickname)
+        store.dispatch('root/checkNickname', state.form.nickName)
         .then(function (result) {
           if (result.status === 200){
-            console.log('nickname is available')
-            flag.value.nickname = true
+            console.log('nickName is available')
+            flag.value.nickName = true
             return callback()
           }
         })
         .catch(function (err) {
           // if (err.response.data.status === 409) {
           console.log('닉네임중복')
-          flag.value.nickname = false
+          flag.value.nickName = false
           return callback(new Error('이미 존재하는 ID입니다.'))
         })
       }
@@ -106,7 +106,7 @@ export default {
       }),
       form: {
         userId: '',
-        nickname: '',
+        nickName: '',
         name: '',
         point: '',
         userRecord: null,
@@ -114,7 +114,7 @@ export default {
         oldPassword: '',
       },
       rules: {
-        nickname: [
+        nickName: [
           { validator: dummyValidation, trigger: 'change' },
           { validator: checkNickname, trigger: 'blur' },
           { required: true },
@@ -133,7 +133,7 @@ export default {
       if (!state.isInvalid) {
         store.dispatch('root/requestUpdateProfile', {
           name: state.form.name,
-          nickname: state.form.nickname,
+          nickName: state.form.nickName,
         })
           .then(function (result) {
             // status code 수정
@@ -153,7 +153,7 @@ export default {
     // 닫기
     const handleClose = function () {
       state.form.userId = ''
-      state.form.nickname = ''
+      state.form.nickName = ''
       state.form.name = ''
       state.form.point = ''
       emit('closeProfileDialog')
@@ -166,9 +166,10 @@ export default {
         store.dispatch('root/requestMyProfile')
         // 전적, 포인트, 닉네임
           .then(function (result) {
+            console.log(result.data)
             console.log('myprofile request successful')
             state.form.userId = result.data.userId
-            state.form.nickname = result.data.nickname
+            state.form.nickName = result.data.nickName
             state.form.name = result.data.username
             state.form.point = result.data.point
             state.form.userRecord = result.data.userRecord
