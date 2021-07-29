@@ -248,7 +248,7 @@ export default {
 <style>
 .join-dialog {
   width: 400px !important;
-  height: 650px;
+  height: 500px;
 }
 .join-dialog .el-dialog__headerbtn {
   float: right;

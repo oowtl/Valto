@@ -1,17 +1,25 @@
 <template>
   <li>
     <el-card :body-style="{ padding: '0px' }">
-      <div class="image-wrapper">
+      <!-- <div class="image-wrapper">
         <el-skeleton style="width: 100%">
           <template #template>
             <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
           </template>
         </el-skeleton>
-        </div>
-      <div style="text-align: left; padding: 14px;">
-        <span class="title">{{ room.roomId }}</span>
+        </div> -->
+      <div style="text-align: left; padding: 14px; ">
+        <span class="title" style="display: flex; justify-content: space-between;">
+            <span>{{ room.roomId }}</span>
+            <span>{{ room.title }}</span>
+        </span>
+        <hr>
         <div class="bottom">
-          <span>{{ room.title }}</span>
+          <span>
+            <span>{{ room.topicAgree }}</span>
+            <span style="color: #6b6b6b;"> vs. </span>
+            <span>{{ room.topicOpposite }}</span>
+          </span>
         </div>
       </div>
     </el-card>
@@ -27,14 +35,18 @@
   height: 190px;
 }
 .el-card .title {
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 .el-card .bottom {
-  margin-top: 5px;
+  font-weight: bold;
+  font-size: 20px;
+  /* border-bottom: 1px solid black; */
+  text-align: center;
+  margin-top: 45px;
   display:-webkit-box;
   word-wrap:break-word;
   -webkit-box-orient:vertical;
-  overflow:hidden;
+  /* overflow:hidden; */
   text-overflow:ellipsis;
 }
 /* 테블릿, 모바일의 경우 두 줄 말줄임표시 */
@@ -55,7 +67,7 @@
 </style>
 <script>
 export default {
-  name: 'Home',
+  name: 'Room',
 
   props: {
     room: {
