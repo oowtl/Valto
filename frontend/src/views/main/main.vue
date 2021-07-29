@@ -47,6 +47,7 @@ import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
+// import SockJS from 'sockjs'
 
 
 export default {
@@ -96,4 +97,8 @@ export default {
     },
   }
 }
+
+
+
+
 </script>

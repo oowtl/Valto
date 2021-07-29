@@ -2,13 +2,23 @@
 // Vue3 관련 설정 파일
 module.exports = {
   devServer: {
-    https: false,
+    https: true,
     port: 8083,
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'http://localhost:8080/'
-      }
+        target: 'https://localhost:8443/'
+      },
+      '/webjars': {
+        target: 'https://localhost:8443/'
+      },
+      '/group-call': {
+        target: 'https://localhost:8443/'
+      },
+      '/upload': {
+        target: 'https://localhost:8443/'
+      },
+
     },
     historyApiFallback: true,
     hot: true
@@ -19,6 +29,6 @@ module.exports = {
   transpileDependencies: [
     'element-plus'
   ],
-  lintOnSave: false,
+  lintOnSave: true,
   outputDir: '../backend/src/main/resources/dist'
 }
