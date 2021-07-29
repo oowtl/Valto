@@ -30,7 +30,7 @@ public class UserRepositorySupport {
     public Optional<User> findUserByNickName(String nickName) {
     	System.out.println(nickName);
         User user = jpaQueryFactory.select(qUser).from(qUser)
-                .where(qUser.nickname.eq(nickName)).fetchOne();
+                .where(qUser.nickName.eq(nickName)).fetchOne();
         if(user == null) {
         	return Optional.empty();
         }
