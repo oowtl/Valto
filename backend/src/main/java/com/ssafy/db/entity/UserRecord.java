@@ -1,8 +1,6 @@
 package com.ssafy.db.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRecord extends BaseEntity{
-	
+	String userId;
 	int win;
 	int draw;
 	int lose;

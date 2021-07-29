@@ -85,7 +85,7 @@ export function setLogout({ commit }) {
 
 // 방 생성
 export function requestCreateRoom({ state }, payload){
-  console.log(state)
+  console.log('1231', state)
   const url = '/room'
   let body = payload
   return $axios.post(url, body);
@@ -112,3 +112,33 @@ export function requestUpdateProfile({ state }, payload) {
   }
   return util.commonAxios(state, request)
 }
+
+
+// 방 상세 정보 요청
+export function requestDetail({ state }, payload) {
+  const url = '/room/' + payload
+  const request = {
+    method: 'get',
+    url: url,
+  }
+  return util.commonAxios(state, request)
+}
+
+
+// export function requestDetail({ commit }, payload){
+//   console.log('payload는', payload)
+//   const roomId = String(payload)
+//   // const url = `/room/${ roomId }`
+//   console.log('action 도착')
+//   const url = '/room/' + roomId
+//   $axios.get(url)
+//     console.log('axios 보내기')
+//     .then(function (result) {
+//       console.log('result는', result.data)
+//       commit('mutationDetail', result.data)
+//     })
+//     .catch(function (err) {
+//       console.log('에러발생')
+//       alert(err)
+//     })
+// }

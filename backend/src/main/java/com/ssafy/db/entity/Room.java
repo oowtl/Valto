@@ -25,7 +25,7 @@ public class Room extends BaseEntity{
 	// owner_id
 	@ManyToOne
 	@JoinColumn(name = "ownerId") // fk
-	private User userId;
+	private User ownerId;
 	
 	private Date localDateTime;
 	

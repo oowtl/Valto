@@ -13,7 +13,7 @@
       <el-form-item prop="participants" label="참가인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.participants" placeholder="참가자 인원수">
           <el-option
-            v-for="number in numbers"
+            v-for="number in part_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -24,7 +24,7 @@
       <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.observers" placeholder="관전자 인원수">
           <el-option
-            v-for="number in numbers"
+            v-for="number in obs_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -94,7 +94,7 @@ import { useRouter } from 'vue-router'
 export default {
   data() {
     return {
-        numbers: [{
+        part_numbers: [{
           value: 2,
           label: '2'
         }, {
@@ -109,6 +109,22 @@ export default {
         }, {
           value: 10,
           label: '10'
+        }],
+        obs_numbers: [{
+          value: 1,
+          label: '1'
+        }, {
+          value: 3,
+          label: '3'
+        }, {
+          value: 5,
+          label: '5'
+        }, {
+          value: 7,
+          label: '7'
+        }, {
+          value: 9,
+          label: '9'
         }],
         times: [{
           value: 20,

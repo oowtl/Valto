@@ -12,21 +12,53 @@
       </el-dropdown-menu>
   </el-dropdown> -->
 
+  <!-- 정렬하는 방법 -->
+  <button class="el-button el-button--primary" type="button">
 
-    <button class="el-button el-button--primary" type="button">
-      <!---->
-      <i class="el-icon-sort"></i>
-      <span>제목</span>
-    </button>
-
-
+    <i class="el-icon-sort"></i>
+    <span>제목</span>
+  </button>
 
   <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-    <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
+    <li v-for="i in state.count" @click="clickRoom(i)" class="infinite-list-item" :key="i" >
+    <!-- <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" > -->
       <conference />
     </li>
   </ul>
 </template>
+
+<script>
+import Conference from './components/conference'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
+export default {
+  name: 'Home',
+
+  components: {
+    Conference
+  },
+
+  setup (props, { emit }) {
+    const router = useRouter()
+
+    const state = reactive({
+      count: 12
+    })
+
+    const load = function () {
+      state.count += 4
+    }
+
+    const clickRoom = function (id) {
+      emit('openDetailDialog', id)
+    }
+
+    return { state, load, clickRoom }
+  }
+}
+</script>
+
 <style>
 .infinite-list {
   padding-left: 0;
@@ -59,39 +91,4 @@
     font-size: 12px;
   }
 </style>
-<script>
-import Conference from './components/conference'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
 
-export default {
-  name: 'Home',
-
-  components: {
-    Conference
-  },
-
-  setup () {
-    const router = useRouter()
-
-    const state = reactive({
-      count: 12
-    })
-
-    const load = function () {
-      state.count += 4
-    }
-
-    const clickConference = function (id) {
-      router.push({
-        name: 'conference-detail',
-        params: {
-          conferenceId: id
-        }
-      })
-    }
-
-    return { state, load, clickConference }
-  }
-}
-</script>

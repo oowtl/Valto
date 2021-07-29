@@ -1,4 +1,5 @@
 <template>
+  <!-- <el-card :body-style="{ padding: '0px' }"> -->
   <el-card :body-style="{ padding: '0px' }">
     <div class="image-wrapper">
       <el-skeleton style="width: 100%">
@@ -6,7 +7,7 @@
           <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
         </template>
       </el-skeleton>
-      </div>
+    </div>
     <div style="text-align: left; padding: 14px;">
       <span class="title">{{ title }}</span>
       <div class="bottom">
