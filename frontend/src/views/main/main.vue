@@ -13,7 +13,7 @@
           :width="`240px`"/>
       </el-aside>
       <el-main>
-        <router-view @clickRoom="onClickRoom"></router-view>
+        <router-view @openDetailDialog="onOpenDetailDialog"></router-view>
       </el-main>
     </el-container>
     <main-footer :height="`110px`"/>
@@ -32,6 +32,11 @@
     :roomId="roomId"
     @closeProfileDialog="onCloseProfileDialog"
   />
+  <detail-dialog
+    :open="detailDialogOpen"
+    :roomId="roomId"
+    @closeDetailDialog="onCloseDetailDialog"
+  />
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -48,7 +53,7 @@ import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
-// import SockJS from 'sockjs'
+import DetailDialog from './components/detail-dialog'
 
 
 export default {
@@ -60,7 +65,8 @@ export default {
     LoginDialog,
     JoinDialog,
     CreateroomDialog,
-    ProfileDialog
+    ProfileDialog,
+    DetailDialog
   },
   data () {
     return {
@@ -69,7 +75,8 @@ export default {
       localLoginFlag: false,
       profileDialogOpen: false,
       createRoomDialogOpen: false,
-      roomId: 0,
+      detailDialogOpen: false,
+      roomId: '',
     }
   },
   methods: {
@@ -97,9 +104,20 @@ export default {
     onCloseProfileDialog () {
       this.profileDialogOpen = false
     },
+<<<<<<< HEAD
     onClickRoom (roomId) {
       this.roomId = roomId
     }
+=======
+    onOpenDetailDialog (roomId) {
+      this.roomId = roomId
+      console.log('id값은?', this.roomId)
+      this.detailDialogOpen = true
+    },
+    onCloseDetailDialog () {
+      this.detailDialogOpen = false
+    },
+>>>>>>> origin/front/roomdetail
   }
 }
 

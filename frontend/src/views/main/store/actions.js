@@ -115,3 +115,33 @@ export function requestRoomList({ commit }, payload) {
   const body = { params: payload }
   return $axios.get(url, body)
 }
+
+
+// 방 상세 정보 요청
+export function requestDetail({ state }, payload) {
+  const url = '/room/' + payload
+  const request = {
+    method: 'get',
+    url: url,
+  }
+  return util.commonAxios(state, request)
+}
+
+
+// export function requestDetail({ commit }, payload){
+//   console.log('payload는', payload)
+//   const roomId = String(payload)
+//   // const url = `/room/${ roomId }`
+//   console.log('action 도착')
+//   const url = '/room/' + roomId
+//   $axios.get(url)
+//     console.log('axios 보내기')
+//     .then(function (result) {
+//       console.log('result는', result.data)
+//       commit('mutationDetail', result.data)
+//     })
+//     .catch(function (err) {
+//       console.log('에러발생')
+//       alert(err)
+//     })
+// }
