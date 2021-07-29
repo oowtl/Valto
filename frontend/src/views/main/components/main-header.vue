@@ -9,7 +9,7 @@
         <div class="search-field">
           <el-input
 
-            placeholder="화상 컨퍼런스 제목 검색"
+            placeholder="밸런스 토론 검색"
             prefix-icon="el-icon-search"
             v-model="state.searchValue"
             @keyup.enter="searchRoom">
@@ -63,7 +63,7 @@
   </el-row>
 </template>
 <script>
-import {  reactive, computed } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -154,7 +154,18 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom}
+    const searchRoom = () => {
+      console.log(`searched room, value: ${state.searchValue}`)
+      router.push({
+        name: 'home',
+        query: {
+          q: state.searchValue,
+          sort: 'default'
+        }
+      })
+    }
+
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom }
   }
 }
 </script>

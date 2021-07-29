@@ -1,51 +1,37 @@
 <template>
-    <!-- <el-dropdown trigger="click">
-      <span class="el-dropdown-link">
-        Dropdown List<i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>Action 1</el-dropdown-item>
-        <el-dropdown-item>Action 2</el-dropdown-item>
-        <el-dropdown-item>Action 3</el-dropdown-item>
-        <el-dropdown-item disabled>Action 4</el-dropdown-item>
-        <el-dropdown-item divided>Action 5</el-dropdown-item>
-      </el-dropdown-menu>
-  </el-dropdown> -->
-
-
+  <h1>{{ state.query }}</h1>
     <button class="el-button el-button--primary" type="button">
-      <!---->
       <i class="el-icon-sort"></i>
       <span>제목</span>
     </button>
-
-
-
-  <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-    <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
-      <conference />
+  <ul class="room-list">
+    <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
+      <room :room="room"/>
     </li>
   </ul>
+
+
 </template>
 <style>
-.infinite-list {
+.room-list {
   padding-left: 0;
   max-height: calc(100% - 35px);
+  list-style:none;
 }
 
 @media (min-width: 701px) and (max-width: 1269px) {
-  .infinite-list {
+  .room-list {
     min-width: 700px;
   }
 }
 
 @media (min-width: 1270px) {
-  .infinite-list {
+  .room-list {
     min-width: 1021px;
   }
 }
 
-.infinite-list .infinite-list-item {
+.room-list .room-list-item {
   min-width: 335px;
   max-width: 25%;
   display: inline-block;
@@ -60,38 +46,138 @@
   }
 </style>
 <script>
-import Conference from './components/conference'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+  // <ul>
+    // <room
+    //   v-for="room in state.rooms"
+    //   :key="room.roomId"
+    //   :room="room"
+    //   @click="clickRoom(room.roomId)"
+    // />
+  // </ul>
+import Room from './components/room'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { reactive, onMounted, computed, watch } from 'vue'
 
 export default {
   name: 'Home',
 
   components: {
-    Conference
+    Room
   },
 
-  setup () {
-    const router = useRouter()
-
+  setup (props, { emit }) {
+    const store = useStore()
+    const route = useRoute()
     const state = reactive({
-      count: 12
+      query: computed(() => route.query),
+      rooms: [
+        {
+          roomId: 1,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't1',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+        {
+          roomId: 2,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't2',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+        {
+          roomId: 3,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't3',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+        {
+          roomId: 4,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't4',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+        {
+          roomId: 5,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't5',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+        {
+          roomId: 6,
+          userId: 'aasdasd',
+          participants: 2,
+          observers: 2,
+          times: 20,
+          title: 't6',
+          roomPassword: '',
+          topicAgree: 'asdasdasd',
+          topicOpposite: 'asdasdasda',
+        },
+    ],
     })
 
-    const load = function () {
-      state.count += 4
+    // watch(() => route.query, (newVal, oldVal) => {
+    //   state.query = newVal
+    // })
+
+    // 방 상세보기 dialog 호출
+    const clickRoom = function (roomId) {
+      console.log(roomId)
+      emit('clickRoom', roomId)
     }
 
-    const clickConference = function (id) {
-      router.push({
-        name: 'conference-detail',
-        params: {
-          conferenceId: id
-        }
-      })
+    // 방 목록 받아오는 함수
+    const getRoomList = function () {
+      // pagination 미구현 상태
+      store.dispatch('root/requestRoomList', state.query)
+        .then((result) => {
+          state.rooms = result.data.content
+        })
+        .catch((err) => {
+          console.log('room list request failed')
+          console.log(err)
+        })
     }
 
-    return { state, load, clickConference }
+    // 검색시 방 목록 업데이트
+    watch (() => route.query, () => {
+      console.log('user searched')
+      getRoomList()
+    })
+
+
+    // 초기 데이터 로딩
+    onMounted (() => {
+      console.log('initial room list loading')
+      getRoomList()
+    })
+
+    return { state, getRoomList, clickRoom }
   }
 }
 </script>

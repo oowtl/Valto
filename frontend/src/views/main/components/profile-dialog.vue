@@ -10,6 +10,10 @@
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
+      <!-- 비밀번호 부분은 생각 필요 -->
+      <el-form-item prop="oldPassword" label="비밀번호" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.oldPassword" autocomplete="off" show-password></el-input>
+      </el-form-item>
       <!-- <el-form-item prop="point" label="포인트" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.point" autocomplete="off" ></el-input>
       </el-form-item> -->
@@ -34,7 +38,7 @@ export default {
     open: {
       type: Boolean,
       default: false
-    }
+    },
   },
 
   setup(props, { emit }) {
@@ -106,7 +110,8 @@ export default {
         name: '',
         point: '',
         userRecord: null,
-        align: 'left'
+        align: 'left',
+        oldPassword: '',
       },
       rules: {
         nickname: [

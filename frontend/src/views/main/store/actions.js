@@ -3,42 +3,38 @@ import $axios from 'axios'
 import util from '../../../common/util.js'
 import router from '@/common/lib/vue-router.js'
 
-export function requestLogin ({ state }, payload) {
-  console.log(state)
+export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
   let body = payload //id, password JSON객체
   return $axios.post(url, body)
 }
 
 //페이지 진입
-export function onPageEnter ({ state }) {
+export function onPageEnter () {
   console.log('onPageEnter: actions.js')
   const url = '/users/me'
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
 //회원가입
-export function requestJoin({ state }, payload) {
-  console.log(state)
+export function requestJoin({ commit }, payload) {
   const url = '/users'
   let body = payload
   return $axios.post(url, body);
 }
 
 //아이디 중복 체크
-export function checkId({ state }, payload) {
-  console.log(state)
+export function checkId({ commit }, payload) {
   const url = '/users/' +  payload + '/id'
   return $axios.get(url);
 }
 
 // 닉네임 중복 체크
-export function checkNickname({ state }, payload) {
-  console.log(state)
+export function checkNickname({ commit }, payload) {
   const url = '/users/' +  payload + '/nick'
   return $axios.get(url);
 }
@@ -76,6 +72,7 @@ export function axiosErrorHandler ({ commit }, payload) {
 // 로그아웃
 export function setLogout({ commit }) {
   localStorage.removeItem('jwt')
+  // 여기서 commit시 자동으로 root/가 붙어있음
   commit('setUserId', '')
   router.push({
     name: 'home'
@@ -84,31 +81,37 @@ export function setLogout({ commit }) {
 }
 
 // 방 생성
-export function requestCreateRoom({ state }, payload){
-  console.log(state)
+export function requestCreateRoom({ commit }, payload){
+  console.log(commit)
   const url = '/room'
   let body = payload
   return $axios.post(url, body);
 }
 
 // 내 프로필 확인하기
-export function requestMyProfile({ state }) {
+export function requestMyProfile() {
   const url = '/users/myprofile'
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
 // 내 프로필 수정요청
-// state가 필요한가?
-export function requestUpdateProfile({ state }, payload) {
+export function requestUpdateProfile(payload) {
   const url = '/users/' +  payload.userId
   const request = {
     method: 'patch',
     url: url,
     data: payload
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
+}
+
+// 방 목록 요청 (비로그인 상태에서도 가능)
+export function requestRoomList({ commit }, payload) {
+  const url = '/room'
+  const body = { params: payload }
+  return $axios.get(url, body)
 }
