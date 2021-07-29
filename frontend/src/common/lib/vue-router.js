@@ -11,7 +11,7 @@ const fullMenu = require('@/views/main/menu.json')
 function makeRoutesFromMenu () {
   let mainChildren = Object.keys(fullMenu).map((key) => {
     if (key === 'home') {
-      return { path: fullMenu[key].path, name: key, component: Home  }
+      return { path: fullMenu[key].path, name: key, component: Home }
     } else if (key === 'history') {
       return { path: fullMenu[key].path, name: key, component: History }
     } else { // menu.json 에 들어있는 로그아웃 메뉴

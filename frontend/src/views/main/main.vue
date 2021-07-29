@@ -13,7 +13,7 @@
           :width="`240px`"/>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <router-view @clickRoom="onClickRoom"></router-view>
       </el-main>
     </el-container>
     <main-footer :height="`110px`"/>
@@ -29,6 +29,7 @@
     @closeCreateRoomDialog="onCloseCreateRoomDialog"/>
   <profile-dialog
     :open="profileDialogOpen"
+    :roomId="roomId"
     @closeProfileDialog="onCloseProfileDialog"
   />
 </template>
@@ -67,6 +68,7 @@ export default {
       localLoginFlag: false,
       profileDialogOpen: false,
       createRoomDialogOpen: false,
+      roomId: 0,
     }
   },
   methods: {
@@ -94,6 +96,9 @@ export default {
     onCloseProfileDialog () {
       this.profileDialogOpen = false
     },
+    onClickRoom (roomId) {
+      this.roomId = roomId
+    }
   }
 }
 </script>

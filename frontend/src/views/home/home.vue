@@ -1,4 +1,5 @@
 <template>
+  <h1>{{ state.query }}</h1>
     <button class="el-button el-button--primary" type="button">
       <i class="el-icon-sort"></i>
       <span>제목</span>
@@ -54,8 +55,9 @@
     // />
   // </ul>
 import Room from './components/room'
-import { reactive, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { reactive, onMounted, computed, watch } from 'vue'
 
 export default {
   name: 'Home',
@@ -66,7 +68,9 @@ export default {
 
   setup (props, { emit }) {
     const store = useStore()
+    const route = useRoute()
     const state = reactive({
+      query: computed(() => route.query),
       rooms: [
         {
           roomId: 1,
@@ -137,18 +141,22 @@ export default {
     ],
     })
 
+    // watch(() => route.query, (newVal, oldVal) => {
+    //   state.query = newVal
+    // })
+
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
       console.log(roomId)
-      emit('onClickRoom', roomId)
+      emit('clickRoom', roomId)
     }
 
     // 방 목록 받아오는 함수
     const getRoomList = function () {
       // pagination 미구현 상태
-      store.dispatch('root/requestRoomList')
+      store.dispatch('root/requestRoomList', state.query)
         .then((result) => {
-          state.rooms = result.content
+          state.rooms = result.data.content
         })
         .catch((err) => {
           console.log('room list request failed')
@@ -156,8 +164,16 @@ export default {
         })
     }
 
+    // 검색시 방 목록 업데이트
+    watch (() => route.query, () => {
+      console.log('user searched')
+      getRoomList()
+    })
+
+
     // 초기 데이터 로딩
     onMounted (() => {
+      console.log('initial room list loading')
       getRoomList()
     })
 

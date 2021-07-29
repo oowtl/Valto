@@ -1,31 +1,34 @@
 <template>
+  <el-container>
+    <h1>asd</h1>
+    <h1>asd</h1>
+    <h1>asd</h1>
+    <h1>asd</h1>
+    <h1>asd</h1>
+    <el-container class="zxc">
+      <h1>zxc</h1>
+      <h1>zxc</h1>
+      <h1>zxc</h1>
+      <h1>zxc</h1>
+      <h1>zxc</h1>
+    </el-container>
+  </el-container>
 
-  <button @click="test">check</button>
-  <h1>this is check page</h1>
-  <h1>this is check page</h1>
-  <h1>this is check page</h1>
 </template>
-<script>
-// import { reactive } from '@vue/reactivity'
-import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
-// import state from ''
-export default{
-  props: {
-    roomId: {
-      type: String,
-      default: 'test'
 
-    }
-  },
+<script>
+import { ElLoading } from 'element-plus';
+
+export default {
+  name: 'check',
+
   setup() {
-    const route = useRoute()
-    const state = reactive({
-    })
-    const test = function(){
-      console.log('test' + route.params.roomId)
-    }
-  return { state, test }
+    var el = document.querySelector('el-container.zxc')
+    let loadingInstance1 = ElLoading.service({ target: el })
+
+    return { loadingInstance1 }
   }
 }
 </script>
+
+

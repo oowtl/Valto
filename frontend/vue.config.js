@@ -8,7 +8,16 @@ module.exports = {
     proxy: {
       '/api/v1': {
         target: 'http://localhost:9090/'
-      }
+      },
+      '/webjars': {
+        target: 'http://localhost:9090/'
+      },
+      '/group-call': {
+        target: 'http://localhost:9090/'
+      },
+      '/upload': {
+        target: 'http://localhost:9090/'
+      },
     },
     historyApiFallback: true,
     hot: true
