@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 @ApiModel("RoomPostResponse")
 public class RoomPostRes {
+	@ApiModelProperty(name = "roomId")
+	Long roomId;
 	@ApiModelProperty(name = "userId (ownerId)")
 	String userId;
 	@ApiModelProperty(name = "participants")
@@ -32,6 +34,7 @@ public class RoomPostRes {
 	
 	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
+		res.setRoomId(room.getId());
 		res.setUserId(room.getUserId().getUserId());
 		res.setParticipants(room.getParticipants());
 		res.setObservers(room.getObservers());
