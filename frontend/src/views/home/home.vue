@@ -148,7 +148,7 @@ export default {
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
       console.log(roomId)
-      emit('clickRoom', roomId)
+      emit('openDetailDialog', roomId)
     }
 
     // 방 목록 받아오는 함수
