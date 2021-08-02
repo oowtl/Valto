@@ -59,8 +59,8 @@ build
 !/backend/gradle/wrapper/gradle-wrapper.jar
 
 #application.properties
-backend/src/main/resource/*.properties
+application.properties
 
 #vue.config.js
-frontend/vue.config.js
+vue.config.js
 
