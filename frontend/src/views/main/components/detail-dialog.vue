@@ -9,10 +9,13 @@
       <h1>토론 시간: {{ state.form.times }}</h1>
       <h1>찬성 인원: 아직 안함</h1>
       <h1>반대 인원: 아직 안함</h1>
+      <el-form-item v-if="state.form.privateRoom" prop="roomPassword" label="방 비밀번호" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.roomPassword" autocomplete="off" show-password></el-input>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="clickConference(state.form.roomId)" v-model="state.dialogVisible">입장</el-button>
+        <el-button type="primary" @click="clickRoom(state.form.roomId)" v-model="state.dialogVisible">입장</el-button>
       </span>
     </template>
   </el-dialog>
@@ -51,8 +54,11 @@ export default {
         title: '',
         topicAgree: '',
         topicOpposite: '',
+        privateRoom: '',
+        roomPassword: '',
         users: [],
-        align: 'left'
+        align: 'left',
+        exstatus: ''
       },
 
       dialogVisible: computed(() => props.open),
@@ -69,10 +75,11 @@ export default {
       state.form.title = '',
       state.form.topicAgree = '',
       state.form.topicOpposite = '',
+      state.form.privateRoom = '',
+      state.form.roomPassword = '',
       emit('closeDetailDialog')
     }
 
-    // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
         state.form = {
@@ -80,11 +87,13 @@ export default {
           participants: '6',
           observers: '5',
           times: '30',
-          userId: '',
+          userId: '6',
           title: '아무나 들어오셈',
           topicAgree: '찬성 의견',
           topicOpposite: '반대 의견',
+          privateRoom: true,
           users: [],
+          exstatus: 200
         }
         // store.dispatch('root/requestDetail', props.roomId)
         //   .then(function (result) {
@@ -96,6 +105,7 @@ export default {
         //     state.form.title = result.data.title
         //     state.form.topicAgree = result.data.topicAgree
         //     state.form.topicOpposite = result.data.topicOpposite
+        //     state.form.privateRoom = result.data.privateRoom
         //   })
         //   .catch(function (err) {
         //     console.log(err)
@@ -105,16 +115,43 @@ export default {
       }
     })
 
-    const clickConference = function (id) {
-      router.push({
-        name: 'conference-detail',
-        params: {
-          conferenceId: id
-        }
-      })
+    const clickRoom = function (id) {
+      console.log('클릭했지롱', state)
+      if(state.form.exstatus === 200) {
+        console.log('200 맞지롱')
+        router.push({
+          name: 'room',
+          params: {
+            roomId: id
+          }
+        })
+      } else {
+        console.log('200 아님', state.form.exstatus)
+      }
     }
+    // const clickRoom = function (id) {
+    //   store.dispatch('root/requestEnterRoom', state.form.roomId, { 
+    //     privateRoom: state.form.privateRoom,
+    //     roomPassword: state.form.roomPassword,
+    //   })
+    //   .then(result => {
+    //     if(result.status === 200){
+    //       router.push({
+    //         name: 'room',
+    //         params: {
+    //           roomId: id
+    //         }
+    //       })
+    //       handleClose()
+    //     }
+    //   })
+    //   .catch(function (err) {
+    //     alert(err)
+    //   })
+    // }
 
-    return { state, handleClose, detailForm, clickConference }
+
+    return { state, handleClose, detailForm, clickRoom }
   }
 }
 </script>

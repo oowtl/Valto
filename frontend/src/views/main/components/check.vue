@@ -8,7 +8,7 @@
 <script>
 // import { reactive } from '@vue/reactivity'
 import { reactive} from 'vue'
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 // import state from ''
 export default{

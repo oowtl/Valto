@@ -81,11 +81,15 @@ export function setLogout({ commit }) {
 }
 
 // 방 생성
-export function requestCreateRoom({ commit }, payload){
+export function requestCreateRoom({ commit }, payload) {
   console.log(commit)
   const url = '/room'
-  let body = payload
-  return $axios.post(url, body);
+  const request = {
+    method: 'post',
+    url: url,
+    data: payload
+  }
+  return util.commonAxios(request)
 }
 
 // 내 프로필 확인하기
@@ -127,6 +131,16 @@ export function requestDetail({ state }, payload) {
   return util.commonAxios(state, request)
 }
 
+// 방 입장
+export function requestEnterRoom({ state }, roomId, payload) {
+  const url = '/users/' + roomId + '/admission'
+  const request = {
+    method: 'post',
+    url: url,
+    data: payload
+  }
+  return util.commonAxios(state, request)
+}
 
 // export function requestDetail({ commit }, payload){
 //   console.log('payload는', payload)

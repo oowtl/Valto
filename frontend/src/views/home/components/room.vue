@@ -55,7 +55,7 @@
 </style>
 <script>
 export default {
-  name: 'Home',
+  name: 'room',
 
   props: {
     room: {

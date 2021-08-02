@@ -9,7 +9,7 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 export default {
-  name: 'conference-detail',
+  name: 'room',
 
   setup () {
     const route = useRoute()
