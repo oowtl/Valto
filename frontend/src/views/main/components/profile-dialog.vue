@@ -47,14 +47,17 @@ export default {
     const currentNickName = ref('')
     const flag = ref({
       nickName: true,
-      name: false,
+      name: true,
     })
 
     const dummyValidation = function (rule, value, callback) {
       if (value === currentNickName.value) {
+        flag.value.nickName = true
         return callback()
+      } else {
+        flag.value.nickName = false
+        console.log('wating for blur')
       }
-      console.log('wating for blur')
     }
 
     // 닉네임
@@ -83,7 +86,7 @@ export default {
           // if (err.response.data.status === 409) {
           console.log('닉네임중복')
           flag.value.nickName = false
-          return callback(new Error('이미 존재하는 ID입니다.'))
+          return callback(new Error('이미 존재하는 닉네임입니다.'))
         })
       }
     }

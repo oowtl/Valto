@@ -32,11 +32,6 @@ function makeRoutesFromMenu () {
       component: Check,
       // props: true,
     },
-    {
-      path: '/conferences/:conferenceId',
-      name: 'conference-detail',
-      component: ConferencesDetail
-    },
   ]
 
   // 로그아웃 파싱한 부분 제거
