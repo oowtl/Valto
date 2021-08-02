@@ -25,7 +25,7 @@ public class QUser_Room extends EntityPathBase<User_Room> {
     public final QBaseEntity _super = new QBaseEntity(this);
 
     //inherited
-    public final NumberPath<Integer> id = _super.id;
+    public final NumberPath<Long> id = _super.id;
 
     public final QRoom roomId;
 
@@ -50,7 +50,7 @@ public class QUser_Room extends EntityPathBase<User_Room> {
     public QUser_Room(Class<? extends User_Room> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.roomId = inits.isInitialized("roomId") ? new QRoom(forProperty("roomId"), inits.get("roomId")) : null;
-        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId")) : null;
+        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId"), inits.get("userId")) : null;
     }
 
 }
