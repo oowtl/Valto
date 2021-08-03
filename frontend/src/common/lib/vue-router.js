@@ -4,6 +4,7 @@ import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
 import Main from '@/views/main/main'
 import Check from '@/views/main/components/check'
+import Meetingroom from '@/views/main/components/meetingroom'
 
 
 // eslint-disable-next-line no-undef
@@ -31,6 +32,12 @@ function makeRoutesFromMenu () {
       name: 'room',
       component: Check,
       // props: true,
+    },
+    {
+      path: '/meetingroom',
+      name: 'meeting-detail-page',
+      component: Meetingroom,
+
     },
   ]
 
