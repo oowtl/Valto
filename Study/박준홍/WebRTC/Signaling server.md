@@ -21,3 +21,17 @@ https://developer.mozilla.org/ko/docs/Web/API/WebRTC_API/Signaling_and_video_cal
     - 몰라도 큰 문제가 되지 않는다.
   - 메세지의 내용들은 그저 시그널링 서버를 통해서 상대편으로 가기만 하면된다.
 
+
+
+
+
+
+
+
+
+
+
+https://lovejaco.github.io/posts/webrtc-connectivity-and-nat-traversal/
+
+https://webrtclab.herokuapp.com/intro
+
