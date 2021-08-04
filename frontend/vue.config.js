@@ -21,7 +21,8 @@ module.exports = {
 
     },
     historyApiFallback: true,
-    hot: true
+    hot: true,
+    host: 'localhost',
   },
   css: {
     requireModuleExtension: false // import 시에 경로에 .module 포함 안해도 됨.

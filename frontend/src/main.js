@@ -247,3 +247,4 @@ app.mount('#app')
 //   next()
 // })
 
+// var ws = new WebSocket('wss://' + location.host + '/groupcall')
