@@ -6,8 +6,11 @@
         <el-input v-model="state.form.title" autocomplete="off"></el-input>
       </el-form-item>
       <!-- 주제 설정하기 -->
-      <el-form-item prop="topic" label="주제" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.topic" autocomplete="off"></el-input>
+      <el-form-item prop="topicAgree" label="주제1(찬성)" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.topicAgree" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item prop="topicOpposite" label="주제2(반대)" :label-width="state.formLabelWidth">
+        <el-input v-model="state.form.topicOpposite" autocomplete="off"></el-input>
       </el-form-item>
       <!-- 참가자 인원수 설정하기 -->
       <el-form-item prop="participants" label="참가인원수" :label-width="state.formLabelWidth">
@@ -88,7 +91,7 @@
 }
 </style>
 <script>
-import { reactive, computed, ref, onMounted } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 export default {
@@ -154,19 +157,19 @@ export default {
     }
   },
 
-
-
   setup(props, { emit }) {
     const store = useStore()
-
     const createRoomForm = ref(null)
-
     const router = useRouter()
-
     const state = reactive({
+      userId: computed(() => {
+        return store.getters['root/getUserId']
+      }),
       form: {
+        // userId: this.userId,
         title: '',
-        topic: '',
+        topicAgree: '',
+        topicOpposite: '',
         participants: '',
         observers: '',
         times: '',
@@ -179,7 +182,10 @@ export default {
           { required: true, message: '필수 입력 항목입니다.' },
           { required: true, message: '최대 30자까지 입력 가능합니다.', max:30 }
         ],
-        topic: [
+        topicAgree: [
+          { required: true, message: '선택 항목입니다.'},
+        ],
+        topicOpposite: [
           { required: true, message: '선택 항목입니다.'},
         ],
         participants: [
@@ -202,16 +208,14 @@ export default {
       formLabelWidth: '120px',
     })
 
-    // onMounted(() => {
-    //   console.log(joinForm.value)
-    // })
-
     const clickCreateRoom = function () {
       createRoomForm.value.validate((valid) => {
         if (valid) {
           store.dispatch('root/requestCreateRoom', {
+            userId: state.userId,              // string
             title: state.form.title,                // string
-            topic: state.form.topic,                // string
+            topicAgree: state.form.topicAgree,      // string
+            topicOpposite: state.form.topicOpposite,// string
             participants: state.form.participants,  // integer
             observers: state.form.observers,        // integer
             times: state.form.times,                // integer
@@ -220,10 +224,18 @@ export default {
           })
         // api 응답 결과로 받은 conference_id 값으로 '방 상세보기' 페이지에 진입해야함
           .then(function (result) {
+            console.log('axios 성공성공');
             emit('closeCreateRoomDialog')
+            router.push({
+            name: 'room',
+            params: {
+              roomId: result.data.roomId
+            }
+            })
           })
           .catch(function (err) {
-             alert(err)
+            alert(err)
+            console.log('axios 에러에러');
           })
         } else {
           alert('Validate error!')
@@ -239,7 +251,7 @@ export default {
       state.privateRoom = !state.privateRoom
     }
 
-    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck}
+    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck }
   }
 }
 </script>

@@ -37,6 +37,7 @@
     :roomId="roomId"
     @closeDetailDialog="onCloseDetailDialog"
   />
+
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -56,6 +57,7 @@ import ProfileDialog from './components/profile-dialog'
 import DetailDialog from './components/detail-dialog'
 
 
+
 export default {
   name: 'Main',
   components: {
@@ -66,9 +68,11 @@ export default {
     JoinDialog,
     CreateroomDialog,
     ProfileDialog,
-    DetailDialog
+    DetailDialog,
   },
+
   data () {
+
     return {
       loginDialogOpen: false,
       joinDialogOpen: false,

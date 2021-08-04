@@ -8,11 +8,12 @@
     "needLogin" : false
   },
   "history" : {
-    "name" : "지난 회의 이력",
+    "name" : "지난 토론 이력",
     "hidden" : false,
     "path" : "/history",
     "icon" : "el-icon-s-order",
     "children" : [],
     "needLogin" : true
   }
+
 }
