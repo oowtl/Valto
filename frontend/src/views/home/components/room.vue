@@ -7,9 +7,19 @@
             <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
           </template>
         </el-skeleton>
+<<<<<<< Updated upstream
         </div>
       <div style="text-align: left; padding: 14px;">
         <span class="title">{{ room.roomId }}</span>
+=======
+        </div> -->
+      <div class="cardBody">
+        <span class="title" style="display: flex; justify-content: space-between;">
+            <span>{{ room.roomId }}</span>
+            <span>{{ room.title }}</span>
+        </span>
+        <hr>
+>>>>>>> Stashed changes
         <div class="bottom">
           <span>{{ room.title }}</span>
         </div>
@@ -17,7 +27,7 @@
     </el-card>
   </li>
 </template>
-<style>
+<style scoped>
 .el-card {
   margin: 0 8px;
   margin-bottom: 40px;
@@ -36,6 +46,11 @@
   -webkit-box-orient:vertical;
   overflow:hidden;
   text-overflow:ellipsis;
+}
+div .cardBody {
+  text-align: left;
+  padding: 14px;
+  background-color: #fafafa;
 }
 /* 테블릿, 모바일의 경우 두 줄 말줄임표시 */
 @media (max-width: 1269px) {

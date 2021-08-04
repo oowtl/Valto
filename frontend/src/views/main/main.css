@@ -8,6 +8,8 @@
 #app, .main-wrapper {
   height: 100%;
   display: block !important;
+  background-color: #ECECEC;
+
 }
 
 .el-row.main-header {

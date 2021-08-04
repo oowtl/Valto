@@ -47,20 +47,22 @@ export function axiosErrorHandler ({ commit }, payload) {
   if (err.response) {
     // alert('요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.')
     console.log(err.response)
+
+    // 401
     if (err.response.data.status === 401) {
       console.log('here')
       if (err.response.data.error === 'SignatureVerificationException') {
         alert('세션이 유효하지 않습니다')
-        setLogout({ commit })
       } else if (err.response.data.error === 'JWTDecodeException') {
         alert('세션이 만료되었습니다')
-        setLogout({ commit })
       }
+      setLogout({ commit })
+
+    // 403
     } else if (err.response.data.status === 403) {
       if (err.response.data.error === 'Forbidden') {
         alert('접근 권한이 없습니다.')
-        setLogout({ commit })
-    }
+      }
     }
   }
   else if (err.request) {
