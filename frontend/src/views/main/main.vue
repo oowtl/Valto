@@ -37,7 +37,7 @@
     :roomId="roomId"
     @closeDetailDialog="onCloseDetailDialog"
   />
-  <test>test</test>
+
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -55,7 +55,7 @@ import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
 import DetailDialog from './components/detail-dialog'
-import Test from './components/test'
+
 
 
 export default {
@@ -69,7 +69,7 @@ export default {
     CreateroomDialog,
     ProfileDialog,
     DetailDialog,
-    Test,
+
   },
   data () {
     return {
