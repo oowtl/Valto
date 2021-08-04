@@ -3,12 +3,7 @@ import Home from '@/views/home/home'
 import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
 import Main from '@/views/main/main'
-<<<<<<< HEAD
 import Check from '@/views/room/check'
-=======
-import Check from '@/views/main/components/check'
-import Meetingroom from '@/views/main/components/meetingroom'
->>>>>>> front/sub3_test
 
 
 // eslint-disable-next-line no-undef
@@ -37,12 +32,7 @@ function makeRoutesFromMenu () {
       component: Check,
       // props: true,
     },
-    {
-      path: '/meetingroom',
-      name: 'meeting-detail-page',
-      component: Meetingroom,
 
-    },
   ]
 
   // 로그아웃 파싱한 부분 제거

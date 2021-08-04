@@ -37,10 +37,6 @@
     :roomId="roomId"
     @closeDetailDialog="onCloseDetailDialog"
   />
-<<<<<<< HEAD
-=======
-  <meetingroom />
->>>>>>> front/sub3_test
 
 </template>
 <style>
@@ -59,11 +55,6 @@ import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
 import DetailDialog from './components/detail-dialog'
-<<<<<<< HEAD
-=======
-import Meetingroom from './components/meetingroom'
-
->>>>>>> front/sub3_test
 
 
 
@@ -78,11 +69,6 @@ export default {
     CreateroomDialog,
     ProfileDialog,
     DetailDialog,
-<<<<<<< HEAD
-
-=======
-    Meetingroom
->>>>>>> front/sub3_test
   },
 
   data () {

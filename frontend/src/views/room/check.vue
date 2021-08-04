@@ -1,14 +1,12 @@
 <template>
-  <h1>Room Id: {{ state.roomId }}</h1>
-  <h2>this is test page</h2>
-  <h2>this is test page</h2>
-  <h2>this is test page</h2>
+ <div class="container">
   <div id="room">
     <h2 id="room-header"></h2>
     <div id="participants"></div>
     <input type="button" id="button-leave" @click="leaveRoom"
       value="Leave room">
 	</div>
+ </div>
 </template>
 <script>
 import { useStore } from 'vuex'
@@ -22,10 +20,13 @@ export default{
     const store = useStore()
     const state = reactive({
       // 로딩 시간에 따라 name이 전달되지 않는 경우가 있음!
-      room: route.params.roomId,
-      name: computed(() => store.getters['root/getUserId']),
+      room: 1,
+      name: 'test',
       participants:{},
     })
+
+
+
 
     // 자바 백엔드와 연결되는 웹소켓
     // maven 소켓 연결
@@ -58,6 +59,10 @@ export default{
       default:
         console.error('Unrecognized message', parsedMessage)
       }
+    }
+
+    const register = function(){
+
     }
 
     onBeforeMount(()=> {
@@ -168,8 +173,11 @@ export default{
     const sendMessage = function(message) {
       var jsonMessage = JSON.stringify(message)
       console.log('Sending message: ' + jsonMessage)
+
       waitForConnection(function(){
         ws.send(jsonMessage)
+
+        console.log(ws);
         if (typeof callback !== 'undefined') {
           callback();
         }

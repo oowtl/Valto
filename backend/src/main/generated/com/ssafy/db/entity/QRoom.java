@@ -25,13 +25,11 @@ public class QRoom extends EntityPathBase<Room> {
     public final QBaseEntity _super = new QBaseEntity(this);
 
     //inherited
-    public final NumberPath<Integer> id = _super.id;
+    public final NumberPath<Long> id = _super.id;
 
     public final DateTimePath<java.util.Date> localDateTime = createDateTime("localDateTime", java.util.Date.class);
 
     public final NumberPath<Integer> observers = createNumber("observers", Integer.class);
-
-    public final QUser ownerId;
 
     public final NumberPath<Integer> participants = createNumber("participants", Integer.class);
 
@@ -44,6 +42,8 @@ public class QRoom extends EntityPathBase<Room> {
     public final StringPath topicAgree = createString("topicAgree");
 
     public final StringPath topicOpposite = createString("topicOpposite");
+
+    public final QUser userId;
 
     public QRoom(String variable) {
         this(Room.class, forVariable(variable), INITS);
@@ -63,7 +63,7 @@ public class QRoom extends EntityPathBase<Room> {
 
     public QRoom(Class<? extends Room> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.ownerId = inits.isInitialized("ownerId") ? new QUser(forProperty("ownerId")) : null;
+        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId"), inits.get("userId")) : null;
     }
 
 }
