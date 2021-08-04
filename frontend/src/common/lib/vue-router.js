@@ -3,7 +3,8 @@ import Home from '@/views/home/home'
 import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
 import Main from '@/views/main/main'
-import Check from '@/views/room/check'
+// import Check from '@/views/room/check'
+import Test from '@/views/room/test'
 
 
 // eslint-disable-next-line no-undef
@@ -29,7 +30,7 @@ function makeRoutesFromMenu () {
     {
       path: '/room/:roomId',
       name: 'room',
-      component: Check,
+      component: Test,
       // props: true,
     },
     {
