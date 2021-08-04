@@ -101,7 +101,7 @@
 
 > Signalling
 
-- P2P 정차로서 STUN 서버, Candidate, ICE 등을 거치는 것을 시그널링이라고 한다.
+- P2P 절차로서 STUN 서버, Candidate, ICE 등을 거치는 것을 시그널링이라고 한다.
 - **RTCPeerConnection 통신에 사용할 프로토콜, 채널, 미디어 코덱 및 형식, 데이터 전송 방법, 라우팅 정보, NAT 통과 방법을 포함한 통신 규격을 교환하기 위해서 두 장치의 제어 정보를 교환하는 과정**
 - WebRTC 자체에서 지원하는 기능이 아니라서 최적의 방법을 찾아서 사용한다.
 - 적용기술
@@ -151,6 +151,22 @@
 
 
 
+
+## EndPoint
+
+> endpoint is simply one end of a communication channel.
+
+- 서비스를 사용가능하도록 하는 서비스에서 제공하는 커뮤니케이션 채널의 한쪽 끝
+- 요청을 받아 응답을 제공하는 서비스를 사용할 수 있는 지점
+- 웹 서비스는 유효한 형태로 엔드포인트에 요청이 전달되었을 경우 사용자가 알 필요가 없는 서비스 내부 로직을 실행하고 응답을 반환한다.
+
+
+
+
+
+
+
+https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket-server-allowed-origins
 
 
 

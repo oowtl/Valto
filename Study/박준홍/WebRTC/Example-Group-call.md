@@ -42,6 +42,8 @@
 
 ## GroupCallApp
 
+
+
 ```java
 @SpringBootApplication
 @EnableWebSocket
@@ -94,5 +96,154 @@ public class GroupCallApp implements WebSocketConfigurer {
   ```
 
   - 애플리케이션에 미디어 기능을 추가하는 데 사용되는 Kurento 미디어 파이프라인을 만드는데 사용된다.
+    - 미디어 파이프라인이라는 것을 정확하게는 알 수 없지만, 여기에서 webrtc endpoint 가 작동하며, 미러필터나 녹화 등이 움직인다.
   - 이 인스턴스화에서 Kurento Media Server 의 위치를 클라이언트 라이브러리에 지정해야한다.
 
+- ```java
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    registry.addHandler(groupCallHandler(), "/groupcall");
+  }
+  ```
+
+  - `groupCallHandler()` 핸들러는 `"/groupcall"` endpoint 로 handshake 를 완료한 후에 맺어진 connection 을 관리한다.
+
+
+
+## CallHandler
+
+```java
+public class CallHandler extends TextWebSocketHandler {
+
+  private static final Logger log = LoggerFactory.getLogger(CallHandler.class);
+
+  private static final Gson gson = new GsonBuilder().create();
+
+  @Autowired
+  private RoomManager roomManager;
+
+  @Autowired
+  private UserRegistry registry;
+
+  @Override
+  public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    final JsonObject jsonMessage = gson.fromJson(message.getPayload(), JsonObject.class);
+
+    final UserSession user = registry.getBySession(session);
+
+    if (user != null) {
+      log.debug("Incoming message from user '{}': {}", user.getName(), jsonMessage);
+    } else {
+      log.debug("Incoming message from new user: {}", jsonMessage);
+    }
+
+    switch (jsonMessage.get("id").getAsString()) {
+      case "joinRoom":
+        joinRoom(jsonMessage, session);
+        break;
+      case "receiveVideoFrom":
+        final String senderName = jsonMessage.get("sender").getAsString();
+        final UserSession sender = registry.getByName(senderName);
+        final String sdpOffer = jsonMessage.get("sdpOffer").getAsString();
+        user.receiveVideoFrom(sender, sdpOffer);
+        break;
+      case "leaveRoom":
+        leaveRoom(user);
+        break;
+      case "onIceCandidate":
+        JsonObject candidate = jsonMessage.get("candidate").getAsJsonObject();
+
+        if (user != null) {
+          IceCandidate cand = new IceCandidate(candidate.get("candidate").getAsString(),
+              candidate.get("sdpMid").getAsString(), candidate.get("sdpMLineIndex").getAsInt());
+          user.addCandidate(cand, jsonMessage.get("name").getAsString());
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    UserSession user = registry.removeBySession(session);
+    roomManager.getRoom(user.getRoomName()).leave(user);
+  }
+
+  private void joinRoom(JsonObject params, WebSocketSession session) throws IOException {
+    final String roomName = params.get("room").getAsString();
+    final String name = params.get("name").getAsString();
+    log.info("PARTICIPANT {}: trying to join room {}", name, roomName);
+
+    Room room = roomManager.getRoom(roomName);
+    final UserSession user = room.join(name, session);
+    registry.register(user);
+  }
+
+  private void leaveRoom(UserSession user) throws IOException {
+    final Room room = roomManager.getRoom(user.getRoomName());
+    room.leave(user);
+    if (room.getParticipants().isEmpty()) {
+      roomManager.removeRoom(room);
+    }
+  }
+}
+
+```
+
+- ```java
+  public class CallHandler extends TextWebSocketHandler
+  ```
+
+  - `extends TextWebSocketHandler`
+    - 텍스트 WebSocket 요청을 처리하기 위해서 구현한다.
+
+- `handleTextMessage` method
+
+  - 요청에 대한 작업을 구현하고 WebSocket 을 통해서 응답을 반환한다.
+    시그널링 프로콜의 서버 부분을 구현한다.
+  - 메시지의 종류는 `joinRoom`, `receiveVideoFrom`, `leaveRoom`, `onIceCandidate` 이며, switch 절에서 처리가 된다.
+
+- ```java
+  @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+      UserSession user = registry.removeBySession(session);
+      roomManager.getRoom(user.getRoomName()).leave(user);
+    }
+  ```
+
+  - registry 에 있는 userSession 을 제거하고 사용자를 방에서 내보낸다.
+
+- ```java
+  private void joinRoom(JsonObject params, WebSocketSession session) throws IOException {
+      final String roomName = params.get("room").getAsString();
+      final String name = params.get("name").getAsString();
+      log.info("PARTICIPANT {}: trying to join room {}", name, roomName);
+  
+      Room room = roomManager.getRoom(roomName);
+      final UserSession user = room.join(name, session);
+      registry.register(user);
+    }
+  ```
+
+  - 서버는 지정된 이름으로 등록된 방이 있는지 확인하고 이 방에 사용자를 추가하고 사용자를 등록한다.
+
+- ```java
+  private void leaveRoom(UserSession user) throws IOException {
+    final Room room = roomManager.getRoom(user.getRoomName());
+    room.leave(user);
+    if (room.getParticipants().isEmpty()) {
+      roomManager.removeRoom(room);
+    }
+  }
+  ```
+
+  - 사용자의 화상 통화를 종료한다.
+
+
+
+
+
+https://doc-kurento.readthedocs.io/en/latest/tutorials/java/tutorial-groupcall.html
+
+https://supawer0728.github.io/2018/03/30/spring-websocket/
