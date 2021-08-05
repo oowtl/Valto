@@ -28,6 +28,9 @@ plugins {
     id 'java'
     id 'idea'
     id 'org.springframework.boot' version "${springBootVer}"
+    //추가
+    id 'maven-publish'
+    
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -44,12 +47,18 @@ repositories {
     maven { url "https://repo.spring.io/libs-release" }
     maven { url "https://repo.maven.apache.org/maven2" }
     maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
+    mavenLocal()
+    maven { url 'https://maven.openvidu.io/repository/snapshots/' }
 }
 
 group 'com.ssafy'
-version '1.0-SNAPSHOT'
+//version '1.0-SNAPSHOT'
+version = '6.16.0'
 sourceCompatibility = '1.8'
 
+java {
+    withSourcesJar()
+}
 node {
     download = true
     version = '14.17.0'
@@ -146,10 +155,15 @@ dependencies {
     //STOMP 웹소캣 서버 사이드 테스트를 위한 의존성 추가
     implementation("org.springframework.boot:spring-boot-starter-mustache")
     //STOMP 관련 프론트 라이브러리
-    implementation('org.webjars.bower:jquery:3.3.1')
+    implementation('org.webjars.bower:jquery:3.5.1') //버전 변경
     implementation('org.webjars:sockjs-client:1.1.2')
+    implementation 'org.webjars.bower:bootstrap:4.5.3'
     implementation('org.webjars:stomp-websocket:2.3.3-1')
-    implementation('org.webjars:webjars-locator:0.30')
+    implementation('org.webjars:webjars-locator:0.40') //
+    //추가
+    implementation 'org.webjars.bower:demo-console:1.5.1'
+    implementation 'org.webjars.bower:ekko-lightbox:5.2.0'
+    
     //WebRTC 클라이언트 의존성 추가
     implementation('org.webjars.bower:webrtc-adapter:7.4.0')
     //Kurento (미디어서버) 관련 의존성 추가
@@ -184,6 +198,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    
 }
 
 test {

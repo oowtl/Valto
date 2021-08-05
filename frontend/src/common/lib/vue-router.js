@@ -3,7 +3,7 @@ import Home from '@/views/home/home'
 import ConferencesDetail from '@/views/conferences/conference-detail'
 import History from '@/views/history/history'
 import Main from '@/views/main/main'
-import Check from '@/views/main/components/check'
+import Check from '@/views/room/check'
 
 
 // eslint-disable-next-line no-undef
@@ -32,11 +32,7 @@ function makeRoutesFromMenu () {
       component: Check,
       // props: true,
     },
-    {
-      path: '/conferences/:conferenceId',
-      name: 'conference-detail',
-      component: ConferencesDetail
-    },
+
   ]
 
   // 로그아웃 파싱한 부분 제거

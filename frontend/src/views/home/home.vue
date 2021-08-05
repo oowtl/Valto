@@ -2,8 +2,15 @@
   <h1>{{ state.query }}</h1>
     <button class="el-button el-button--primary" type="button">
       <i class="el-icon-sort"></i>
-      <span>제목</span>
+      <span>개발중</span>
     </button>
+  <div class="carousel">  
+    <el-carousel :interval="4000" type="card" height="300px">
+      <el-carousel-item v-for="item in 5" :key="item">
+        <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
+      </el-carousel-item>
+    </el-carousel>
+  </div>
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
       <room :room="room"/>
@@ -13,10 +20,27 @@
 
 </template>
 <style>
+.carousel {
+  width: 100%;
+  margin-top: 30px;
+}
+.carousel .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 300px;
+}
+.carousel .el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+.carousel .el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
+}
 .room-list {
   padding-left: 0;
   max-height: calc(100% - 35px);
   list-style:none;
+  margin-top: 20px;
 }
 
 @media (min-width: 701px) and (max-width: 1269px) {
@@ -101,6 +125,7 @@ export default {
     watch (() => route.query, () => {
       console.log('query updated')
       if (Object.keys(route.query).length !== 0) {
+        // sort 키가 없으면 query를 수정해서 넘기기: default 값은 participantsAsc
         getRoomList()
       }
     })

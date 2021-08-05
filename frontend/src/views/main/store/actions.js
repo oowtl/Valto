@@ -6,6 +6,7 @@ import router from '@/common/lib/vue-router.js'
 export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
   let body = payload //id, password JSON객체
+  console.log(body)
   return $axios.post(url, body)
 }
 
@@ -47,20 +48,22 @@ export function axiosErrorHandler ({ commit }, payload) {
   if (err.response) {
     // alert('요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.')
     console.log(err.response)
+
+    // 401
     if (err.response.data.status === 401) {
       console.log('here')
       if (err.response.data.error === 'SignatureVerificationException') {
         alert('세션이 유효하지 않습니다')
-        setLogout({ commit })
       } else if (err.response.data.error === 'JWTDecodeException') {
         alert('세션이 만료되었습니다')
-        setLogout({ commit })
       }
+      setLogout({ commit })
+
+    // 403
     } else if (err.response.data.status === 403) {
       if (err.response.data.error === 'Forbidden') {
         alert('접근 권한이 없습니다.')
-        setLogout({ commit })
-    }
+      }
     }
   }
   else if (err.request) {
@@ -81,15 +84,14 @@ export function setLogout({ commit }) {
 }
 
 // 방 생성
-export function requestCreateRoom({ commit }, payload) {
-  console.log(commit)
+export function requestCreateRoom({ commit }, payload){
   const url = '/room'
   const request = {
     method: 'post',
     url: url,
     data: payload
   }
-  return util.commonAxios(request)
+  return util.commonAxios(request);
 }
 
 // 내 프로필 확인하기
@@ -103,8 +105,9 @@ export function requestMyProfile() {
 }
 
 // 내 프로필 수정요청
-export function requestUpdateProfile(payload) {
+export function requestUpdateProfile({ commit }, payload) {
   const url = '/users/' +  payload.userId
+  console.log(payload)
   const request = {
     method: 'patch',
     url: url,
@@ -124,23 +127,14 @@ export function requestRoomList({ commit }, payload) {
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
   const url = '/room/' + payload
+  console.log(url)
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
-// 방 입장
-export function requestEnterRoom({ state }, roomId, payload) {
-  const url = '/users/' + roomId + '/admission'
-  const request = {
-    method: 'post',
-    url: url,
-    data: payload
-  }
-  return util.commonAxios(state, request)
-}
 
 // export function requestDetail({ commit }, payload){
 //   console.log('payload는', payload)

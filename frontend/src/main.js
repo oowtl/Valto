@@ -211,23 +211,39 @@ plugins.forEach(plugin => {
 
 app.mount('#app')
 
-// pageEnter함수 호출을 위한 라우터 전역 가드
-router.beforeEach(function (to, from, next) {
-  let token = localStorage.getItem('jwt')
-  if (!token) {
-    store.commit('root/setUserId', '')
-    console.log('no token detected, main.js')
-  } else {
-    store.dispatch('root/onPageEnter')
-      .then(function (result) {
-        console.log('logged in, page entered. main.js')
-        store.commit('root/setUserId', result.data.userId)
-        // do sth
-      })
-      .catch(function (err) {
-        store.dispatch('root/axiosErrorHandler', err)
-      })
-    }
-  next()
-})
+// // pageEnter함수 호출을 위한 라우터 전역 가드
+// // 로그인이 필요한 router name을 배열에 포함
+// const requireLogin = ['history', 'room']
+
+// router.beforeEach(function (to, from, next) {
+//   console.log('beforeEach')
+//   console.log(to.name)
+//   let token = localStorage.getItem('jwt')
+//   if (!token) {
+//     store.commit('root/setUserId', '')
+//     console.log('no token detected, main.js')
+//     if (requireLogin.some((path) => path === to.name)) {
+//       router.push({
+//         name: 'home'
+//       })
+//     }
+//   } else {
+//     store.dispatch('root/onPageEnter')
+//     .then(function (result) {
+//       console.log('logged in, page entered. main.js')
+//       store.commit('root/setUserId', result.data.userId)
+//       // do sth
+//     })
+//     .catch(function (err) {
+//       // 로그인 풀거나 권한없음 표시
+//       store.dispatch('root/axiosErrorHandler', err)
+//       if (requireLogin.some((path) => path === to.name)) {
+//         router.push({
+//           name: 'home'
+//         })
+//       }
+//     })
+//   }
+//   next()
+// })
 

@@ -4,11 +4,17 @@
     :gutter="10"
     :style="{ 'height': height }">
     <div class="hide-on-small">
-      <div class="logo-wrapper" @click="clickLogo"><div class="ic ic-logo"/></div>
-      <div class="tool-wrapper">
+      <div class="left-wrapper">
+        <div class="logo-wrapper" @click="clickLogo">
+          <div class="ic ic-logo"/>
+        </div>
+        <div class="side-wrapper">
+          <el-button @click="clickHistory">기록</el-button>
+        </div>
+      </div>
+      <div class="tool-wrapper"> 
         <div class="search-field">
           <el-input
-
             placeholder="밸런스 토론 검색"
             prefix-icon="el-icon-search"
             v-model="state.searchValue"
@@ -21,7 +27,7 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
-          <el-button @click="clickCreateRoom" icon="el-icon-user-solid">방생성 </el-button>
+          <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</el-button>
           <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
@@ -43,6 +49,7 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
+            <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성 </el-button>
             <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
             <el-button class="login-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
@@ -125,6 +132,24 @@ export default {
       })
     }
 
+    const clickHistory = () => {
+      store.commit('root/setMenuActive', 1)
+      const MenuItems = store.getters['root/getMenus']
+      let keys = Object.keys(MenuItems)
+      router.push({
+        name: keys[1]
+      })
+    }
+
+    // const clickLogo = () => {
+    //   store.commit('root/setMenuActive', 0)
+    //   const MenuItems = store.getters['root/getMenus']
+    //   let keys = Object.keys(MenuItems)
+    //   router.push({
+    //     name: keys[0]
+    //   })
+    // }
+
     // 로그인 클릭시
     const clickLogin = () => {
       emit('openLoginDialog')
@@ -165,7 +190,7 @@ export default {
       })
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom }
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory }
   }
 }
 </script>
@@ -253,19 +278,37 @@ export default {
   }
 
   /*Desktop - Need to add Class if Need*/
-  .main-header .hide-on-small .logo-wrapper {
-    cursor: pointer;
-    display: inline-block;
+  .main-header .hide-on-small {
+    margin: auto 10%;
   }
-  .main-header .hide-on-small .logo-wrapper .ic.ic-logo {
-    width: 70px;
+  .main-header .hide-on-small .left-wrapper {
+    width: 15%;
+    float: left;
+  }
+  .main-header .hide-on-small .left-wrapper .logo-wrapper {
+    width: 50%;
+    float: left;
+    cursor: pointer;
+  }
+  .main-header .hide-on-small .left-wrapper .logo-wrapper .ic.ic-logo {
+    width: 50px;
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url('../../../assets/images/ssafy-logo.png');
   }
+  .main-header .hide-on-small .left-wrapper .side-wrapper {
+    width: 50%;
+    float: right;
+  }
+  .main-header .hide-on-small .left-wrapper .side-wrapper .el-button {
+    width: 100%;
+    height: 50px;
+    cursor: pointer;
+    margin-right: 1%;
+  }
   .main-header .hide-on-small .tool-wrapper {
-    width: 80%;
+    width: 70%;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
@@ -276,13 +319,12 @@ export default {
     width: 30%;
     height: 50px;
     cursor: pointer;
-    margin-right: 1%;
+    margin: 0 1%;
   }
   .main-header .hide-on-small .tool-wrapper .search-field {
-    width: 50%;
+    width: 45%;
     height: 50px;
     max-width: 400px;
-    margin-right: 2%;
     display: inline-block;
     background-color: white;
   }
@@ -293,10 +335,151 @@ export default {
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__inner {
     width: 88%;
     height: 50px;
-    margin-right: 1%;
+    margin: 0 1%;
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__prefix {
     top: 5px;
   }
 
 </style>
+
+<!--
+<template>
+  <el-row
+    class="main-sidebar"
+    :gutter="10"
+    :style="{ 'width': width }">
+    <div class="hide-on-small">
+      <loading
+          :show="show"
+          :label="label">
+      </loading>
+      <el-menu
+        :default-active="String(state.activeIndex)"
+        active-text-color="#ffd04b"
+        class="el-menu-vertical-demo"
+        @select="menuSelect">
+        <el-menu-item v-for="(item, index) in state.menuItems" :key="index" :index="index.toString()">
+          <i v-if="item.icon" :class="['ic', item.icon]"/>
+          <el-button @click.prevent="doAjax">{{ item.title }}</el-button>
+        </el-menu-item>
+      </el-menu>
+    </div>
+  </el-row>
+</template>
+<style>
+.main-sidebar .el-menu {
+  margin-top: 0;
+  padding-left: 0;
+}
+.main-sidebar .hide-on-small {
+  height: 100%;
+}
+.main-sidebar .hide-on-small .el-menu {
+  height: 100%;
+}
+.main-sidebar .el-menu .el-menu-item {
+  cursor: pointer;
+  border-right: none;
+}
+.main-sidebar .el-menu .el-menu-item .ic {
+  margin-right: 5px;
+}
+</style>
+<script>
+import { reactive, computed, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+// Import component
+import Loading from 'vue-full-loading';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+
+export default {
+  name: 'main-header',
+
+  props: {
+    width: {
+      type: String,
+      default: '240px'
+    }
+  },
+  setup() {
+
+    // const isLoading = ref(false);
+    // const fullPage = ref(true);
+
+    const show = ref(false);
+
+    const doAjax = () => {
+      show.value = true;
+
+      setTimeout(() => {
+        show.value = false
+      }, 1000)
+      // // console.log('fullPage'+fullPage.value)
+      // isLoading.value = true;
+      // // fullPage.value = true;
+
+      // setTimeout(() => {
+      //   isLoading.value = false
+      // }, 2000)
+      // show.value = true;
+    }
+
+    // const onCancel= ()=> {
+    //     console.log('User cancelled the loader.');
+    //     //because the props is single flow direction, you need to set isLoading status normally.
+    //     isLoading.value = false;
+    // }
+
+    const store = useStore()
+    const router = useRouter()
+
+    const state = reactive({
+      searchValue: null,
+      loginFlag: computed(() => store.getters['root/getIsLoggedIn']),
+      menuItems: computed(() => {
+        const MenuItems = store.getters['root/getMenus']
+        // Object.keys() 메소드는 주어진 객체의 속성 이름들을
+        // 일반적인 반복문과 동일한 순서로 순회되는 열거할 수 있는 배열로 반환합니다.
+        // >>> key값만 배열화하여 반환: home, history
+        // let keys = Object.keys(MenuItems)
+        let menuArray = []
+        for (let menu in MenuItems) {
+          if (MenuItems[`${menu}`].needLogin === true && state.loginFlag === false) {
+            // 추가하지 않음
+          } else {
+            let menuObject = {}
+            menuObject.icon = MenuItems[`${menu}`].icon
+            menuObject.title =  MenuItems[`${menu}`].name
+            menuArray.push(menuObject)
+          }
+        }
+        return menuArray
+      }),
+      activeIndex: computed(() => store.getters['root/getActiveMenuIndex'])
+    })
+
+    if (state.activeIndex === -1) {
+      state.activeIndex = 0
+      store.commit('root/setMenuActive', 0)
+    }
+
+    const menuSelect = function (param) {
+      store.commit('root/setMenuActive', param)
+      const MenuItems = store.getters['root/getMenus']
+      let keys = Object.keys(MenuItems)
+      router.push({
+        name: keys[param]
+      })
+    }
+
+    return { state, menuSelect , doAjax, show}
+  },
+  components:{
+    Loading
+  }
+}
+</script>
+-->

@@ -1,6 +1,6 @@
 <template>
-  <el-dialog custom-class="profile-dialog" title="프로필" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" status-icon :rules="state.rules" ref="profileForm" :label-position="state.form.align">
+  <el-dialog v-if="state.form" custom-class="profile-dialog" title="프로필" v-model="state.dialogVisible" @close="handleClose">
+    <el-form :model="state.form" status-icon :rules="state.rules" ref="profileForm" :label-position="state.align">
       <el-form-item prop="userId" label="아이디" :label-width="state.formLabelWidth" >
         <el-input v-model="state.form.userId" autocomplete="off" :disabled="true"></el-input>
       </el-form-item>
@@ -11,14 +11,14 @@
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
       <!-- 비밀번호 부분은 생각 필요 -->
-      <el-form-item prop="oldPassword" label="비밀번호" :label-width="state.formLabelWidth">
+      <el-form-item prop="oldPassword" label="비밀번호-개발중" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.oldPassword" autocomplete="off" show-password></el-input>
       </el-form-item>
       <!-- <el-form-item prop="point" label="포인트" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.point" autocomplete="off" ></el-input>
       </el-form-item> -->
-      <p>{{ state.form.point }}</p>
-      <p>{{ state.form.userRecord }}</p>
+      <p>보유 포인트: {{ state.form.point }}</p>
+      <p v-if="state.form.userRecord">전적:{{ state.form.userRecord.win }}승 {{ state.form.userRecord.lose }}패 {{ state.form.userRecord.draw }}무</p>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -44,13 +44,20 @@ export default {
   setup(props, { emit }) {
     const store = useStore()
     const profileForm = ref(null)
+    const currentNickName = ref('')
     const flag = ref({
-      nickName: false,
-      name: false,
+      nickName: true,
+      name: true,
     })
 
     const dummyValidation = function (rule, value, callback) {
-      console.log('wating for blur')
+      if (value === currentNickName.value) {
+        flag.value.nickName = true
+        return callback()
+      } else {
+        flag.value.nickName = false
+        console.log('wating for blur')
+      }
     }
 
     // 닉네임
@@ -64,6 +71,8 @@ export default {
       } else if (value.length > 30) {
         flag.value.nickName = false
         return callback(new Error('최대 30글자까지 입력 가능합니다.'))
+      } else if (value === currentNickName.value) {
+        return callback()
       } else {
         store.dispatch('root/checkNickname', state.form.nickName)
         .then(function (result) {
@@ -77,7 +86,7 @@ export default {
           // if (err.response.data.status === 409) {
           console.log('닉네임중복')
           flag.value.nickName = false
-          return callback(new Error('이미 존재하는 ID입니다.'))
+          return callback(new Error('이미 존재하는 닉네임입니다.'))
         })
       }
     }
@@ -104,15 +113,7 @@ export default {
       isInvalid: computed(() => {
         return Object.values(flag.value).some(bool => bool === false)
       }),
-      form: {
-        userId: '',
-        nickName: '',
-        name: '',
-        point: '',
-        userRecord: null,
-        align: 'left',
-        oldPassword: '',
-      },
+      form: null,
       rules: {
         nickName: [
           { validator: dummyValidation, trigger: 'change' },
@@ -126,14 +127,16 @@ export default {
       },
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
+      align: 'left'
     })
 
     const clickUpdateProfile = function () {
       // 수정 클릭 시 validate 체크 후 그 결과 값에 따라, 로그인 API 호출 또는 경고창 표시
       if (!state.isInvalid) {
         store.dispatch('root/requestUpdateProfile', {
-          name: state.form.name,
+          userId: state.form.userId,
           nickName: state.form.nickName,
+          name: state.form.name
         })
           .then(function (result) {
             // status code 수정
@@ -152,10 +155,7 @@ export default {
 
     // 닫기
     const handleClose = function () {
-      state.form.userId = ''
-      state.form.nickName = ''
-      state.form.name = ''
-      state.form.point = ''
+      state.form = null
       emit('closeProfileDialog')
     }
 
@@ -168,28 +168,26 @@ export default {
           .then(function (result) {
             console.log(result.data)
             console.log('myprofile request successful')
-            state.form.userId = result.data.userId
-            state.form.nickName = result.data.nickName
-            state.form.name = result.data.username
-            state.form.point = result.data.point
-            state.form.userRecord = result.data.userRecord
+            state.form = result.data
+            currentNickName.value = result.data.nickName
           })
           .catch(function (err) {
-            store.dispatch('root/axiosErrorHandler', err)
+            alert('프로필 정보를 받아오는 데 실패했습니다.')
+            handleClose()
           })
       } else if (newVal === false) {
         console.log('profile dialog closed')
       }
     })
 
-    return { state, handleClose, profileForm, clickUpdateProfile, dummyValidation, flag }
+    return { state, handleClose, profileForm, clickUpdateProfile, dummyValidation, currentNickName, flag }
   }
 }
 </script>
 <style>
 .profile-dialog {
   width: 400px !important;
-  height: 450px;
+  height: 500px;
 }
 .profile-dialog .el-dialog__headerbtn {
   float: right;

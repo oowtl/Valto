@@ -8,10 +8,6 @@
       @openProfileDialog="onOpenProfileDialog"
       />
     <el-container class="main-container">
-      <el-aside class="hide-on-small" width="240px">
-        <main-sidebar
-          :width="`240px`"/>
-      </el-aside>
       <el-main>
         <router-view @openDetailDialog="onOpenDetailDialog"></router-view>
       </el-main>
@@ -37,6 +33,7 @@
     :roomId="roomId"
     @closeDetailDialog="onCloseDetailDialog"
   />
+
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";
@@ -48,7 +45,6 @@
 <script>
 import LoginDialog from './components/login-dialog'
 import MainHeader from './components/main-header'
-import MainSidebar from './components/main-sidebar'
 import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
@@ -56,19 +52,21 @@ import ProfileDialog from './components/profile-dialog'
 import DetailDialog from './components/detail-dialog'
 
 
+
 export default {
   name: 'Main',
   components: {
     MainHeader,
-    MainSidebar,
     MainFooter,
     LoginDialog,
     JoinDialog,
     CreateroomDialog,
     ProfileDialog,
-    DetailDialog
+    DetailDialog,
   },
+
   data () {
+
     return {
       loginDialogOpen: false,
       joinDialogOpen: false,

@@ -1,24 +1,23 @@
 <template>
-  <el-dialog custom-class="detail-dialog" title="상세보기" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" ref="detailForm" :label-position="state.form.align">
-      <h1>방 번호: {{ state.form.roomId }}</h1>
-      <h1>방 제목: {{ state.form.title }}</h1>
-      <br>
-      <h1>주제: {{ state.form.topicAgree }} VS {{ state.form.topicOpposite }}</h1>
-      <br>
-      <h1>토론 시간: {{ state.form.times }}</h1>
-      <h1>찬성 인원: 아직 안함</h1>
-      <h1>반대 인원: 아직 안함</h1>
-      <el-form-item v-if="state.form.privateRoom" prop="roomPassword" label="방 비밀번호" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.roomPassword" autocomplete="off" show-password></el-input>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button type="primary" @click="clickRoom(state.form.roomId)" v-model="state.dialogVisible">입장</el-button>
-      </span>
-    </template>
-  </el-dialog>
+  <div style="padding: 14px;">
+    <el-dialog v-if="state.form" custom-class="detail-dialog" :title="state.form.title" v-model="state.dialogVisible" @close="handleClose">
+      <el-form :label-position="state.align">
+        <span class="topics">
+          <span>{{ state.form.topicAgree }}</span>
+          <span style="color: #6b6b6b;"> vs </span>
+          <span>{{ state.form.topicOpposite }}</span>
+        </span>
+        <h3>토론 시간: {{ state.form.times }}분</h3>
+        <h3>좌파 인원: in development</h3>
+        <h3>우파 인원: in development</h3>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="clickEnter(state.form.roomId)" v-model="state.dialogVisible">입장</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
 
 </template>
 <script>
@@ -43,122 +42,59 @@ export default {
     const router = useRouter()
     const store = useStore()
     const detailForm = ref(null)
-
     const state = reactive({
-      form: {
-        roomId: '',
-        participants: '',
-        observers: '',
-        times: '',
-        userId: '',
-        title: '',
-        topicAgree: '',
-        topicOpposite: '',
-        privateRoom: '',
-        roomPassword: '',
-        users: [],
-        align: 'left',
-        exstatus: ''
-      },
-
+      form: null,
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
+      align: 'left',
     })
 
     // 닫기
     const handleClose = function () {
-      state.form.roomId = '',
-      state.form.participants = '',
-      state.form.observers = '',
-      state.form.times = '',
-      state.form.userId = '',
-      state.form.title = '',
-      state.form.topicAgree = '',
-      state.form.topicOpposite = '',
-      state.form.privateRoom = '',
-      state.form.roomPassword = '',
+      state.form = null
       emit('closeDetailDialog')
     }
 
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
-        state.form = {
-          roomId: props.roomId,
-          participants: '6',
-          observers: '5',
-          times: '30',
-          userId: '6',
-          title: '아무나 들어오셈',
-          topicAgree: '찬성 의견',
-          topicOpposite: '반대 의견',
-          privateRoom: true,
-          users: [],
-          exstatus: 200
-        }
-        // store.dispatch('root/requestDetail', props.roomId)
-        //   .then(function (result) {
-        //     state.form.roomId = result.data.roomId
-        //     state.form.participants = result.data.participants
-        //     state.form.observers = result.data.observers
-        //     state.form.times = result.data.times
-        //     state.form.userId = result.data.userId
-        //     state.form.title = result.data.title
-        //     state.form.topicAgree = result.data.topicAgree
-        //     state.form.topicOpposite = result.data.topicOpposite
-        //     state.form.privateRoom = result.data.privateRoom
-        //   })
-        //   .catch(function (err) {
-        //     console.log(err)
-        //   })
-      } else if (newVal === false) {
+        store.dispatch('root/requestDetail', props.roomId)
+          .then(function (result) {
+            console.log(result)
+            state.form = result.data
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
+        } else if (newVal === false) {
         console.log('detail dialog closed')
       }
     })
 
-    const clickRoom = function (id) {
-      console.log('클릭했지롱', state)
-      if(state.form.exstatus === 200) {
-        console.log('200 맞지롱')
-        router.push({
-          name: 'room',
-          params: {
-            roomId: id
-          }
-        })
-      } else {
-        console.log('200 아님', state.form.exstatus)
-      }
+    const clickEnter = function (roomId) {
+      router.push({
+        name: 'room',
+        params: {
+          roomId: roomId
+        }
+      })
     }
-    // const clickRoom = function (id) {
-    //   store.dispatch('root/requestEnterRoom', state.form.roomId, { 
-    //     privateRoom: state.form.privateRoom,
-    //     roomPassword: state.form.roomPassword,
-    //   })
-    //   .then(result => {
-    //     if(result.status === 200){
-    //       router.push({
-    //         name: 'room',
-    //         params: {
-    //           roomId: id
-    //         }
-    //       })
-    //       handleClose()
-    //     }
-    //   })
-    //   .catch(function (err) {
-    //     alert(err)
-    //   })
-    // }
-
-
-    return { state, handleClose, detailForm, clickRoom }
+    return { state, handleClose, detailForm, clickEnter }
   }
 }
 </script>
 <style>
 .detail-dialog {
-  width: 800px !important;
-  height: 600px;
+  width: 600px !important;
+  height: 450px;
+}
+.topics {
+  text-align: center;
+  font-weight: bold;
+  font-size: 32px;
+  color: black;
+  display:block;
+  margin-top: 20px;
+  margin-bottom: 80px;
 }
 /* .detail-dialog .el-dialog__headerbtn {
   float: right;

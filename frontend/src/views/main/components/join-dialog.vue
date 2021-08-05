@@ -141,7 +141,7 @@ export default {
           // if (err.response.data.status === 409) {
           console.log('닉네임중복')
           flag.value.nickname = false
-          return callback(new Error('이미 존재하는 ID입니다.'))
+          return callback(new Error('이미 존재하는 닉네임입니다.'))
         })
       }
     }
@@ -248,7 +248,7 @@ export default {
 <style>
 .join-dialog {
   width: 400px !important;
-  height: 650px;
+  height: 500px;
 }
 .join-dialog .el-dialog__headerbtn {
   float: right;
