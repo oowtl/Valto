@@ -66,7 +66,7 @@ export default {
     JoinDialog,
     CreateroomDialog,
     ProfileDialog,
-    DetailDialog
+    DetailDialog,
   },
   data () {
     return {
@@ -106,7 +106,6 @@ export default {
     },
     onOpenDetailDialog (roomId) {
       this.roomId = roomId
-      console.log('id값은?', this.roomId)
       this.detailDialogOpen = true
     },
     onCloseDetailDialog () {

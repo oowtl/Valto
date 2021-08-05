@@ -2,7 +2,7 @@
   <h1>{{ state.query }}</h1>
     <button class="el-button el-button--primary" type="button">
       <i class="el-icon-sort"></i>
-      <span>제목</span>
+      <span>개발중</span>
     </button>
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
@@ -101,6 +101,7 @@ export default {
     watch (() => route.query, () => {
       console.log('query updated')
       if (Object.keys(route.query).length !== 0) {
+        // sort 키가 없으면 query를 수정해서 넘기기: default 값은 participantsAsc
         getRoomList()
       }
     })
