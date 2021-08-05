@@ -213,11 +213,7 @@ app.mount('#app')
 
 // pageEnter함수 호출을 위한 라우터 전역 가드
 // 로그인이 필요한 router name을 배열에 포함
-<<<<<<< Updated upstream
 const requireLogin = ['history', 'room']
-=======
-// const requireLogin = ['history', 'room']
->>>>>>> Stashed changes
 
 router.beforeEach(function (to, from, next) {
   console.log('beforeEach')

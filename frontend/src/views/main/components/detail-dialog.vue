@@ -105,7 +105,7 @@ export default {
       }
     })
 
-    const clickConference = function (id) {
+    const clickConference = function (roomId) {
       router.push({
         name: 'conference-detail',
         params: {

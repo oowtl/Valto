@@ -7,19 +7,9 @@
             <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
           </template>
         </el-skeleton>
-<<<<<<< Updated upstream
         </div>
       <div style="text-align: left; padding: 14px;">
         <span class="title">{{ room.roomId }}</span>
-=======
-        </div> -->
-      <div class="cardBody">
-        <span class="title" style="display: flex; justify-content: space-between;">
-            <span>{{ room.roomId }}</span>
-            <span>{{ room.title }}</span>
-        </span>
-        <hr>
->>>>>>> Stashed changes
         <div class="bottom">
           <span>{{ room.title }}</span>
         </div>
