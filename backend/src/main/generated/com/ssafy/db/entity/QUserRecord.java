@@ -24,11 +24,9 @@ public class QUserRecord extends EntityPathBase<UserRecord> {
     public final NumberPath<Integer> draw = createNumber("draw", Integer.class);
 
     //inherited
-    public final NumberPath<Integer> id = _super.id;
+    public final NumberPath<Long> id = _super.id;
 
     public final NumberPath<Integer> lose = createNumber("lose", Integer.class);
-
-    public final StringPath userId = createString("userId");
 
     public final NumberPath<Integer> win = createNumber("win", Integer.class);
 

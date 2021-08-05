@@ -27,7 +27,7 @@ public class QRoom_History extends EntityPathBase<Room_History> {
     public final NumberPath<Short> action = createNumber("action", Short.class);
 
     //inherited
-    public final NumberPath<Integer> id = _super.id;
+    public final NumberPath<Long> id = _super.id;
 
     public final DateTimePath<java.util.Date> insertedTime = createDateTime("insertedTime", java.util.Date.class);
 
@@ -54,7 +54,7 @@ public class QRoom_History extends EntityPathBase<Room_History> {
     public QRoom_History(Class<? extends Room_History> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.roomId = inits.isInitialized("roomId") ? new QRoom(forProperty("roomId"), inits.get("roomId")) : null;
-        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId")) : null;
+        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId"), inits.get("userId")) : null;
     }
 
 }
