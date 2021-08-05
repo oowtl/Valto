@@ -199,6 +199,11 @@ dependencies {
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     
+    //Openvidu
+   compile "io.openvidu:openvidu-java-client:2.19.0"
+   
+   compile "com.googlecode.json-simple:json-simple:1.1.1"
+    
 }
 
 test {

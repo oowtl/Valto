@@ -30,7 +30,7 @@ export default{
 
     // 자바 백엔드와 연결되는 웹소켓
     // maven 소켓 연결
-    const ws = new WebSocket('wss://localhost:8443/groupcall')
+    const ws = new WebSocket('wss://52.78.54.210:8888/groupcall')
     ws.onmessage = function(message) {
       var parsedMessage = JSON.parse(message.data)
       console.info('Received message: ' + message.data)
