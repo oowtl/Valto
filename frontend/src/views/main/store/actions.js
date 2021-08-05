@@ -122,19 +122,27 @@ export function requestRoomList({ commit }, payload) {
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
   const url = '/room/' + payload
+  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@')
+
+  console.log(payload)
   const request = {
     method: 'get',
     url: url,
   }
-  return util.commonAxios(state, request)
+  return util.commonAxios(request)
 }
 
 
 export function requestRoomToken({ state }, payload) {
   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = 'api/sessions/get-token'
-  const body = { sessionName: payload }
-  return $axios.post(url, body)
+  const url = 'https://localhost:8443/api/sessions/get-token'
+  const body = { sessionName: `${payload}` }
+  const request = {
+    method: 'post',
+    url: url,
+    data: body
+  }
+  return util.commonAxios(request)
 }
 
 // export function requestDetail({ commit }, payload){

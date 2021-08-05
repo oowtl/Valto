@@ -24,7 +24,7 @@
 import { reactive, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { OpenVidu } from 'openvidu-browser'
+
 
 export default {
   name: 'detail-dialog',
@@ -77,7 +77,7 @@ export default {
       store.dispatch('root/requestRoomToken', roomId)
         .then((result) => {
           // 임시로 로컬스토리지에 저장
-          localStorage.setItem('st', result[0])
+          localStorage.setItem('st', result.data[0])
           console.log(`TOKEN: ${localStorage.getItem('st')})`)
           router.push({
             name: 'room',
@@ -85,6 +85,9 @@ export default {
               roomId: roomId
             }
           })
+        })
+        .catch((err) => {
+          console.log(err)
         })
     }
     return { state, handleClose, detailForm, clickEnter }
