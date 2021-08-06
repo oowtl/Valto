@@ -8,7 +8,8 @@
 #app, .main-wrapper {
   height: 100%;
   display: block !important;
-  background-color: #ECECEC;
+  /* background-color: #ECECEC; */
+  background-color: #ffffff;
 
 }
 
@@ -18,7 +19,7 @@
   max-width: 100%;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  border-bottom: 1px solid #dcdfe6;
+  /* border-bottom: 1px solid #dcdfe6; */
 }
 
 .el-row.main-sidebar {
@@ -34,5 +35,5 @@
   z-index: -1;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  border-top: 1px solid #dcdfe6;
+  /* border-top: 1px solid #dcdfe6; */
 }

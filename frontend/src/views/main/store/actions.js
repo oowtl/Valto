@@ -6,6 +6,7 @@ import router from '@/common/lib/vue-router.js'
 export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
   let body = payload //id, password JSON객체
+  console.log(body)
   return $axios.post(url, body)
 }
 
@@ -84,10 +85,13 @@ export function setLogout({ commit }) {
 
 // 방 생성
 export function requestCreateRoom({ commit }, payload){
-  console.log(commit)
   const url = '/room'
-  let body = payload
-  return $axios.post(url, body);
+  const request = {
+    method: 'post',
+    url: url,
+    data: payload
+  }
+  return util.commonAxios(request);
 }
 
 // 내 프로필 확인하기
@@ -101,8 +105,9 @@ export function requestMyProfile() {
 }
 
 // 내 프로필 수정요청
-export function requestUpdateProfile(payload) {
+export function requestUpdateProfile({ commit }, payload) {
   const url = '/users/' +  payload.userId
+  console.log(payload)
   const request = {
     method: 'patch',
     url: url,
@@ -122,9 +127,6 @@ export function requestRoomList({ commit }, payload) {
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
   const url = '/room/' + payload
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@')
-
-  console.log(payload)
   const request = {
     method: 'get',
     url: url,
