@@ -1,5 +1,3 @@
-
-
 // 공용 함수
 import $axios from 'axios'
 // import { useStore } from 'vuex'
