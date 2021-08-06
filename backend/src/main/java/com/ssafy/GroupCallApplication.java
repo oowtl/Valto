@@ -11,31 +11,15 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-
-import com.ssafy.groupcall.CallHandler;
-import com.ssafy.groupcall.RoomManager;
-import com.ssafy.groupcall.UserRegistry;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import java.nio.charset.Charset;
 
-@SpringBootApplication
-@EnableWebSocket
-public class GroupCallApplication implements WebSocketConfigurer {
 
-	@Bean
-	public UserRegistry registry() {
-		return new UserRegistry();
-	}
+public class GroupCallApplication  {
 
-	@Bean
-	public RoomManager roomManager() {
-		return new RoomManager();
-	}
-
-	@Bean
-	public KurentoClient kurentoClient() {
-		return KurentoClient.create();
-	}
+	
 
 	@Bean
 	public HttpMessageConverter<String> responseBodyConverter() {
@@ -54,12 +38,5 @@ public class GroupCallApplication implements WebSocketConfigurer {
 		SpringApplication.run(GroupCallApplication.class, args);
 	}
 	
-	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(groupCallHandler(), "/groupcall").setAllowedOriginPatterns("*").withSockJS();
-	}
-
-	private CallHandler groupCallHandler() {
-		return new CallHandler();
-	}
+	
 }

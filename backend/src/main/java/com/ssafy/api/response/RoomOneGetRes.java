@@ -32,8 +32,14 @@ public class RoomOneGetRes extends BaseResponseBody{
 	String topicAgree;
 	@ApiModelProperty(name="topicOpposite")
 	String topicOpposite;
-	@ApiModelProperty(name="Users")
-	List<HashMap> users;
+	@ApiModelProperty(name="privateRoom")
+	Boolean privateRoom;
+	
+	
+	@ApiModelProperty(name="AgreeeUsers")
+	List<HashMap> agrreUsers;
+	@ApiModelProperty(name="OppositeUsers")
+	List<HashMap> oppositeUsers;
 	
 	public static RoomOneGetRes of(Room room, List<User_Room> userRoomList) {
 		
@@ -46,21 +52,30 @@ public class RoomOneGetRes extends BaseResponseBody{
 		roomInfo.setTitle(room.getTitle());
 		roomInfo.setTopicAgree(room.getTopicAgree());
 		roomInfo.setTopicOpposite(room.getTopicOpposite());
+		roomInfo.setPrivateRoom(room.getPrivateRoom());
 		
 		// users 를 어떻게 넣어야 할지 모르겠다...
 		
-		List<HashMap>userList = new ArrayList<HashMap>();
+		List<HashMap>agreeUserList = new ArrayList<HashMap>();
+		List<HashMap>oppositeUserList = new ArrayList<HashMap>();
 		
 		for (User_Room userRoom: userRoomList) {
 			HashMap<String, String> user = new HashMap<>();
 			user.put("userId", userRoom.getUserId().getUserId());
 			user.put("name", userRoom.getUserId().getName());
 			user.put("nickName", userRoom.getUserId().getNickName());
+
+			if (userRoom.getUserSide()) {
+				agreeUserList.add(user);
+			} else {
+				oppositeUserList.add(user);
+			}
 			
-			userList.add(user);
+			
 		}
 			
-		roomInfo.setUsers(userList);
+		roomInfo.setAgrreUsers(agreeUserList);
+		roomInfo.setOppositeUsers(oppositeUserList);
 		
 		return roomInfo;
 	}

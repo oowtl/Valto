@@ -25,9 +25,14 @@ public class User_Room extends BaseEntity {
 	@NotNull
 	private Room roomId;
 	
-	// user id
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	@NotNull
 	private User userId;
+	
+	// user 의 팀
+	// True = Agree
+	// False = Opposite
+	@NotNull
+	Boolean userSide;
 }

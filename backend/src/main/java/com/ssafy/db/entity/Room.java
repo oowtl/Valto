@@ -42,6 +42,8 @@ public class Room extends BaseEntity{
 	@NotNull
 	private String topicOpposite; // 주제 2
 	
+	@NotNull
+	private Boolean privateRoom; // 비밀번호 방 True 이면 비밀번호검사
 	@JsonIgnore
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String roomPassword; // 방 비밀번호 (null 이면 없음)
