@@ -6,7 +6,6 @@ import router from '@/common/lib/vue-router.js'
 export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
   let body = payload //id, password JSON객체
-  console.log(body)
   return $axios.post(url, body)
 }
 
@@ -85,13 +84,10 @@ export function setLogout({ commit }) {
 
 // 방 생성
 export function requestCreateRoom({ commit }, payload){
+  console.log(commit)
   const url = '/room'
-  const request = {
-    method: 'post',
-    url: url,
-    data: payload
-  }
-  return util.commonAxios(request);
+  let body = payload
+  return $axios.post(url, body);
 }
 
 // 내 프로필 확인하기
@@ -105,9 +101,8 @@ export function requestMyProfile() {
 }
 
 // 내 프로필 수정요청
-export function requestUpdateProfile({ commit }, payload) {
+export function requestUpdateProfile(payload) {
   const url = '/users/' +  payload.userId
-  console.log(payload)
   const request = {
     method: 'patch',
     url: url,
@@ -127,7 +122,9 @@ export function requestRoomList({ commit }, payload) {
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
   const url = '/room/' + payload
-  console.log(url)
+  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@')
+
+  console.log(payload)
   const request = {
     method: 'get',
     url: url,
@@ -135,6 +132,18 @@ export function requestDetail({ state }, payload) {
   return util.commonAxios(request)
 }
 
+
+export function requestRoomToken({ state }, payload) {
+  // 추후 'api/v1/room/{roomId}/admission' 으로 변경
+  const url = 'https://localhost:8443/api/sessions/get-token'
+  const body = { sessionName: `${payload}` }
+  const request = {
+    method: 'post',
+    url: url,
+    data: body
+  }
+  return util.commonAxios(request)
+}
 
 // export function requestDetail({ commit }, payload){
 //   console.log('payload는', payload)
@@ -153,3 +162,6 @@ export function requestDetail({ state }, payload) {
 //       alert(err)
 //     })
 // }
+
+
+

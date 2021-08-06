@@ -25,6 +25,7 @@ import { reactive, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
+
 export default {
   name: 'detail-dialog',
 
@@ -47,6 +48,7 @@ export default {
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
       align: 'left',
+      token: null,
     })
 
     // 닫기
@@ -72,12 +74,21 @@ export default {
     })
 
     const clickEnter = function (roomId) {
-      router.push({
-        name: 'room',
-        params: {
-          roomId: roomId
-        }
-      })
+      store.dispatch('root/requestRoomToken', roomId)
+        .then((result) => {
+          // 임시로 로컬스토리지에 저장
+          localStorage.setItem('st', result.data[0])
+          console.log(`TOKEN: ${localStorage.getItem('st')})`)
+          router.push({
+            name: 'room',
+            params: {
+              roomId: roomId
+            }
+          })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
     return { state, handleClose, detailForm, clickEnter }
   }
@@ -125,3 +136,4 @@ export default {
   width: 120px;
 } */
 </style>
+p

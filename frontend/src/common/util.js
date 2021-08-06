@@ -1,3 +1,5 @@
+
+
 // 공용 함수
 import $axios from 'axios'
 // import { useStore } from 'vuex'
@@ -13,7 +15,6 @@ export default {
       headers: config,
       ...payload
     }
-    console.log('printing payload')
     console.log(payload)
     return $axios(request)
   },

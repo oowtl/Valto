@@ -8,6 +8,7 @@
       <div class="tool-wrapper">
         <div class="search-field">
           <el-input
+
             placeholder="밸런스 토론 검색"
             prefix-icon="el-icon-search"
             v-model="state.searchValue"
@@ -20,7 +21,7 @@
           <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
         </div>
         <div class="button-wrapper" v-if="state.loginFlag">
-          <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성 </el-button>
+          <el-button @click="clickCreateRoom" icon="el-icon-user-solid">방생성 </el-button>
           <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
           <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
         </div>
@@ -42,7 +43,6 @@
           </div>
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성 </el-button>
             <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
             <el-button class="login-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
