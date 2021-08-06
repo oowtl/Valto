@@ -1,5 +1,7 @@
 package com.ssafy.api.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 	UserRoomRepository userRoomRepository;
 	
 	@Override
-	public User_Room enterUserRoom(String UserId, Long RoomId) {
+	public User_Room enterUserRoom(String UserId, Long RoomId, Boolean userSide) {
 		// TODO Auto-generated method stub
 		
 		User_Room userRoom = new User_Room();
@@ -31,6 +33,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 		userRoom.setRoomId(roomRepository.findById(RoomId).get());
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
+		userRoom.setUserSide(userSide);
 		
 		return userRoomRepository.save(userRoom);
 	}
@@ -72,6 +75,27 @@ public class UserRoomServiceImpl implements UserRoomService {
 			userRoomRepository.delete(user);
 		}
 		return "Success";
+	}
+	
+	@Override
+	public ArrayList<HashMap> getUserRoomTotalCount(List<Room> getRoomsList) {
+		// TODO Auto-generated method stub
+		ArrayList<HashMap> roomListArray = new ArrayList<HashMap>();
+		
+		for (Room room : getRoomsList) {
+			HashMap<String, Object> mapRoom = new HashMap<>();
+			mapRoom.put("room", room);
+			
+			List<User_Room> checkUserRoomUser = userRoomRepository.findAllByRoomId(room);			
+			mapRoom.put("userCount", checkUserRoomUser.size());
+			mapRoom.put("userAgreeCount", userRoomRepository.findByRoomIdAndUserSide(room, true).size());
+			mapRoom.put("userOppositeTotalCount", userRoomRepository.findByRoomIdAndUserSide(room, false).size());
+			
+			roomListArray.add(mapRoom);
+		}
+		
+		
+		return roomListArray;
 	}
 	
 }
