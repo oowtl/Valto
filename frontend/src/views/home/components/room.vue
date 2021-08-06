@@ -8,11 +8,7 @@
           </template>
         </el-skeleton>
         </div> -->
-<<<<<<< HEAD
-      <div style="text-align: left; padding: 14px; ">
-=======
       <div class="cardBody">
->>>>>>> origin/week4
         <span class="title" style="display: flex; justify-content: space-between;">
             <span>{{ room.roomId }}</span>
             <span>{{ room.title }}</span>
