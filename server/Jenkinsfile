@@ -3,6 +3,17 @@ pipeline {
 	options { skipDefaultCheckout(true) }
 
 	stages {
+		stage('Build and Test') {
+			agent {
+				docker {
+					image '8-jdk-alpine'
+				}
+				options { skipDefaultCheckout(false) }
+				steps {
+					sh 'gradlew clean build'
+				}
+			}
+		}
 
 		stage('Docker build') {
 		  agent any
