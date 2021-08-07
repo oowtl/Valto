@@ -59,12 +59,13 @@ sourceCompatibility = '1.8'
 java {
     withSourcesJar()
 }
+/*
 node {
     download = true
     version = '14.17.0'
     // Set the work directory where node_modules should be located
     nodeModulesDir = file("${project.projectDir}/../frontend")
-}
+}*/
 
 configurations {
     providedRuntime
@@ -200,9 +201,9 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     
     //Openvidu
-   compile "io.openvidu:openvidu-java-client:2.19.0"
+   	compile "io.openvidu:openvidu-java-client:2.19.0"
    
-   compile "com.googlecode.json-simple:json-simple:1.1.1"
+   	compile "com.googlecode.json-simple:json-simple:1.1.1"
     
 }
 
