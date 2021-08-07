@@ -5,7 +5,7 @@ COPY build.gradle .
 COPY settings.gradle . 
 COPY src src
 RUN chmod +x ./gradlew
-RUN ./gradlew clean build
+RUN gradlew clean build
 
 FROM openjdk:8-jdk-alpine
 ARG JAR_FILE=build/libs/*.jar
