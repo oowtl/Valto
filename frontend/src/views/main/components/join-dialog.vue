@@ -28,8 +28,10 @@
   </el-dialog>
 </template>
 <script>
-import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import { ElLoading } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { reactive, computed, ref } from 'vue'
 export default {
   name: 'join-dialog',
 
@@ -209,6 +211,7 @@ export default {
     // 회원가입 실행
     const clickJoin = function () {
       if (!state.isInvalid) {
+        let loadingInstance = ElLoading.service({ fullscreen: true });
         store.dispatch('root/requestJoin', {
           userId: state.form.userId,
           password: state.form.password,
@@ -219,12 +222,14 @@ export default {
             console.log('result.id' + result.userId)
             // status code 수정
             if(result.status === 201){
-              alert('회원가입 성공')
+              ElMessage({ message: '회원가입에 성공했습니다.', type: 'success', duration: 2000 })
+              loadingInstance.close()
               handleClose()
             }
           })
           .catch(function (err) {
-            alert(err)
+            ElMessage({ message: '회원가입에 실패했습니다.', type: 'error', duration: 2000 })
+            loadingInstance.close()
           })
         } else {
           alert('Validate error!')
