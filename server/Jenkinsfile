@@ -1,6 +1,6 @@
 pipeline {
 	agent none
-	options { skipDefaultCheckout(true) }
+	options { skipDefaultCheckout(false) }
 
 	stages {
 
@@ -8,7 +8,7 @@ pipeline {
       agent any
 			steps {
 				sh 'docker build -t frontend:latest /var/jenkins_home/workspace/BalTo/frontend'
-				sh 'docker build -t backend:latest /var/jenkins_home/workspace/BalTo/'
+				sh 'docker build -t backend:latest /var/jenkins_home/workspace/BalTo/backend'
 			}
 		}
 	}

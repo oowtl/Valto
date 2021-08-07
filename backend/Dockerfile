@@ -1,9 +1,10 @@
 FROM openjdk:8-jdk-alpine as builder
-COPY backend/gradlew .
-COPY backend/gradle gradle
-COPY backend/build.gradle .
-COPY backend/settings.gradle . 
-COPY backend/src src
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle . 
+COPY src src
+COPY dummy dummy
 RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 
