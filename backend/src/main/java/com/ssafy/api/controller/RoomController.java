@@ -1,6 +1,7 @@
 package com.ssafy.api.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.ssafy.api.request.RoomDeleteReq;
 import com.ssafy.api.request.RoomListGetReq;
 import com.ssafy.api.request.RoomPostReq;
 import com.ssafy.api.request.RoomUpdatePatchReq;
+import com.ssafy.api.request.UserRoomPostReq;
 import com.ssafy.api.response.RoomListGetRes;
 import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
@@ -55,9 +57,10 @@ public class RoomController {
 	@PostMapping()
 	@ApiOperation(value = " 방 생성 ", notes =" request 에서 받은 정보를 통해서 방을 생성한다. ")
 	@ApiResponses({
-		@ApiResponse(code = 201, message = " 방 생성 성공 ")
+		@ApiResponse(code = 201, message = " 방 생성 성공 "),
+		@ApiResponse(code = 400, message = " no password private room"),
 	})
-	public ResponseEntity<RoomPostRes> createRoom(
+	public ResponseEntity<? extends BaseResponseBody> createRoom(
 			@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo) {
 		
@@ -68,11 +71,16 @@ public class RoomController {
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
 		
+		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
+		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
+		}
+		
 		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		
 		// User_Room 생성하기
-		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId());
+		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
 		
 		return ResponseEntity.status(201).body(RoomPostRes.of(room));
 	}
@@ -80,9 +88,10 @@ public class RoomController {
 	@GetMapping()
 	@ApiOperation(value = "전체 방목록 조회", notes = "방 전체 목록을 조회한다.")
 	@ApiResponses({
-		@ApiResponse(code = 200, message ="Success")
+		@ApiResponse(code = 200, message ="Success"),
+		@ApiResponse(code = 204, message ="no Room")
 	})
-	public ResponseEntity<RoomListGetRes> checkRoomList (
+	public ResponseEntity<? extends BaseResponseBody> checkRoomList (
 			// 파라미터를 string 으로 받아서 판단
 			@RequestParam(value ="title", defaultValue ="null", required =false) @ApiParam( value = "제목으로 조회") String IN_title ,
 			@RequestParam(value ="topic", defaultValue ="null", required =false) @ApiParam( value = "주제로 조회") String IN_topic) {
@@ -93,7 +102,15 @@ public class RoomController {
 		
 		List<Room> getRoomsList = roomService.checkRoomList(roomListGetInfo);
 		
-		return ResponseEntity.status(200).body(RoomListGetRes.of(getRoomsList));
+		// room 이 없을 때
+		if (getRoomsList.isEmpty()) {
+			return ResponseEntity.status(204).body(BaseResponseBody.of(204, "no Room"));
+		}
+		
+		// room list 에 각 방에 몇명이 있는지 추가해줌
+		ArrayList<HashMap> getRoomListAddCount = userRoomService.getUserRoomTotalCount(getRoomsList);
+		
+		return ResponseEntity.status(200).body(RoomListGetRes.of(getRoomListAddCount));
 		
 	}
 	
@@ -198,6 +215,7 @@ public class RoomController {
 	})
 	public ResponseEntity<? extends BaseResponseBody> enterRoom(
 			@ApiIgnore Authentication authentication,
+			@RequestBody @ApiParam(value = "방 입장 정보", required= true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId){
 		
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
@@ -217,7 +235,9 @@ public class RoomController {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
 		
-		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId());
+		// 만약에 비밀번호 방이라면??
+
+		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
 		
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
@@ -247,9 +267,9 @@ public class RoomController {
 		// 접속한 유저가 아니라면
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 		
-		if (existUserRoom.getUserId() == null) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
-		}
+//		if (existUserRoom.getUserId() == null) {
+//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+//		}
 		
 		// 방에 속한 유저가 아니라면
 		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.

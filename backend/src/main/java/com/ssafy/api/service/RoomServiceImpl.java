@@ -45,11 +45,10 @@ public class RoomServiceImpl implements RoomService {
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
 		room.setTopicOpposite(roomPostRequestInfo.getTopicOpposite());
+		room.setPrivateRoom(roomPostRequestInfo.getPrivateRoom());
 		
-		// room password 가 null 인지 아닌지에 대한 검사
-		if (roomPostRequestInfo.getRoomPassword().isEmpty()) {
-			room.setRoomPassword("null");
-		} else {
+		// 비밀번호 방을 설정하면 password 설정
+		if (roomPostRequestInfo.getPrivateRoom()) {
 			room.setRoomPassword(passwordEncoder.encode(roomPostRequestInfo.getRoomPassword()));
 		}
 		
@@ -75,7 +74,7 @@ public class RoomServiceImpl implements RoomService {
 		// only title
 		if (!roomListGetInfo.getTitle().equals("null")) {
 			
-			System.out.println(roomListGetInfo.getTitle().getClass());
+//			System.out.println(roomListGetInfo.getTitle().getClass());
 						
 			return roomRepository.findByTitleContaining(roomListGetInfo.getTitle());
 		}

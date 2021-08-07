@@ -20,6 +20,9 @@ public class RoomPostReq {
 	@ApiModelProperty(name = "토론주제 2", example = "딱복숭아")
 	String topicOpposite;
 	
+	
+	@ApiModelProperty(name = "토론방 비밀번호방 여부", example = "True")
+	Boolean privateRoom;
 	@ApiModelProperty(name = "토론방 비밀번호", example = "123zxc")
 	String roomPassword;
 
@@ -30,4 +33,7 @@ public class RoomPostReq {
 	@ApiModelProperty(name = "토론 발언 시간 제한", example = "15")
 	Integer times;
 	
+	@ApiModelProperty(name = "방장의 토론 팀", example = "True")
+	Boolean userSide;
+		
 }	

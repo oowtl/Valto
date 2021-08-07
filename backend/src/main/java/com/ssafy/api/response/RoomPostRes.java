@@ -1,5 +1,6 @@
 package com.ssafy.api.response;
 
+import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
 
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel("RoomPostResponse")
-public class RoomPostRes {
+public class RoomPostRes extends BaseResponseBody{
 	@ApiModelProperty(name = "roomId")
 	Long roomId;
 	@ApiModelProperty(name = "userId (ownerId)")
@@ -32,6 +33,9 @@ public class RoomPostRes {
 	@ApiModelProperty(name = "topicOpposite")
 	String topicOpposite;
 	
+	@ApiModelProperty(name = "privateRoom")
+	Boolean privateRoom;
+	
 	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
 		res.setRoomId(room.getId());
@@ -42,6 +46,7 @@ public class RoomPostRes {
 		res.setTitle(room.getTitle());
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
+		res.setPrivateRoom(room.getPrivateRoom());
 		return res;
 	}
 	
