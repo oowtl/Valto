@@ -69,10 +69,10 @@ node {
 configurations {
     providedRuntime
 }
-/*
-task npmInstall(type: NpmTask, overwrite: true) {
-    args = ['install']
-}*/
+
+/*task npmInstall(type: NpmTask, overwrite: true) {
+    args = ['install']*/
+
 
 task webpack(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run','build']
