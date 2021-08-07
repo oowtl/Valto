@@ -4,6 +4,7 @@
 ### 패키지 설치를 위해 package.json을 작업 디렉토리로 옮긴 후 설치
 ### 나머지 프론트 소스코드와 리소스를 복사하여 빌드 진행
 FROM node:lts-alpine as build-stage
+WORKDIR /hompage
 COPY package*.json ./
 RUN npm install
 COPY . .
