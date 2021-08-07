@@ -3,6 +3,8 @@ pipeline {
 	options { skipDefaultCheckout(true) }
 
 	stages {
+		agent any
+		
 		stage('Docker build') {
 			steps {
 				sh 'docker build -t frontend:latest /home/ubuntu/S05P13D103/frontend'
