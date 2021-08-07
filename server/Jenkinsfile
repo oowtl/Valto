@@ -18,7 +18,7 @@ pipeline {
       agent any
       steps {
         sh 'docker build -t frontend:latest /var/jenkins_home/workspace/BalTo/S05P13D103/frontend'
-        sh 'docker build -t backend:latest /var/jenkins_home/workspace/BalTo/S05P13D103/backend'
+        sh 'docker build -t backend:latest /var/jenkins_home/workspace/BalTo/S05P13D103'
       }
     }
   }
