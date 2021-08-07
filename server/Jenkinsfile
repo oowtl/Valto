@@ -5,7 +5,7 @@ pipeline {
 		stage('Build and Test') {
 			agent {
 				docker {
-					image '8-jdk-alpine'
+					image 'openjdk:8-jdk-alpine'
 				}
 			}
 			options { skipDefaultCheckout(false) }
