@@ -8,6 +8,6 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 
 FROM openjdk:8-jdk-alpine
-COPY --fron=builder build/libs/*.jar app.jar
+COPY --from=builder build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
