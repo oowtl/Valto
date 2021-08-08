@@ -16,11 +16,11 @@ pipeline {
 			steps {
 				sh 'docker ps -f name=frontend -q | xargs --no-run-if-empty docker container stop'
 				sh 'docker ps -f name=backend -q | xargs --no-run-if-empty docker container stop'
-				
+
 				sh 'docker container ls -a -f name=frontend -q | xargs -r docker container rm'
 				sh 'docker container ls -a -f name=backend -q | xargs -r docker container rm'
 
-				sh 'docker images -f "dangling=true" -q | xargs -r doker rmi'
+				sh 'docker images prune'
 
 				sh 'docker run -d --name frontend -p 80:80 frontend:latest'
 				sh 'docker run -d --name backend -p 8080:8080 backend:latest'
