@@ -5,6 +5,8 @@ Java 8+
 Gradle 6.7+
 Eclipse or IntelliJ
 
+TEST
+
 [Front-end]
 Node 14+
 VS Studio
