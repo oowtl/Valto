@@ -71,6 +71,7 @@ public class RoomController {
 		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
 		
+		
 		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
 		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
@@ -79,10 +80,10 @@ public class RoomController {
 		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		
-		// User_Room 생성하기
+		// 방에 접속한 유저 정보 / User_Room 생성하기
 		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
 		
-		return ResponseEntity.status(201).body(RoomPostRes.of(room));
+		return ResponseEntity.status(201).body(RoomPostRes.of(room, userRoom));
 	}
 	
 	@GetMapping()
@@ -233,6 +234,11 @@ public class RoomController {
 		
 		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+		}
+		
+		// userSide 유효성 검사
+		if (userRoomPostReq.getUserSide().equals("agree") || userRoomPostReq.getUserSide().equals("opposite") || userRoomPostReq.getUserSide().equals("observer")) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect userSide"));
 		}
 		
 		// 만약에 비밀번호 방이라면??

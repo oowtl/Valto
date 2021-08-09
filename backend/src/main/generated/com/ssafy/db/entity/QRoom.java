@@ -33,6 +33,8 @@ public class QRoom extends EntityPathBase<Room> {
 
     public final NumberPath<Integer> participants = createNumber("participants", Integer.class);
 
+    public final BooleanPath privateRoom = createBoolean("privateRoom");
+
     public final StringPath roomPassword = createString("roomPassword");
 
     public final NumberPath<Integer> times = createNumber("times", Integer.class);

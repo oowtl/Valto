@@ -45,15 +45,16 @@ public class RoomServiceImpl implements RoomService {
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
 		room.setTopicOpposite(roomPostRequestInfo.getTopicOpposite());
-		room.setPrivateRoom(roomPostRequestInfo.getPrivateRoom());
 		
-		// 비밀번호 방을 설정하면 password 설정
+		// private room 검사
 		if (roomPostRequestInfo.getPrivateRoom()) {
+			room.setPrivateRoom(true);
 			room.setRoomPassword(passwordEncoder.encode(roomPostRequestInfo.getRoomPassword()));
+		} else {
+			room.setPrivateRoom(false);
 		}
 		
-		return roomRepository.save(room);
-		
+		return roomRepository.save(room);	
 	}
 	
 	@Override

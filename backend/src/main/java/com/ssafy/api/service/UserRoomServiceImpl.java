@@ -25,7 +25,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 	UserRoomRepository userRoomRepository;
 	
 	@Override
-	public User_Room enterUserRoom(String UserId, Long RoomId, Boolean userSide) {
+	public User_Room enterUserRoom(String UserId, Long RoomId, String userSide) {
 		// TODO Auto-generated method stub
 		
 		User_Room userRoom = new User_Room();
@@ -86,10 +86,15 @@ public class UserRoomServiceImpl implements UserRoomService {
 			HashMap<String, Object> mapRoom = new HashMap<>();
 			mapRoom.put("room", room);
 			
-			List<User_Room> checkUserRoomUser = userRoomRepository.findAllByRoomId(room);			
+			List<User_Room> checkUserRoomUser = userRoomRepository.findAllByRoomId(room);	
+			// 총 유저 수
 			mapRoom.put("userCount", checkUserRoomUser.size());
-			mapRoom.put("userAgreeCount", userRoomRepository.findByRoomIdAndUserSide(room, true).size());
-			mapRoom.put("userOppositeTotalCount", userRoomRepository.findByRoomIdAndUserSide(room, false).size());
+			// 찬성 측 유저 수
+			mapRoom.put("userAgreeCount", userRoomRepository.findByRoomIdAndUserSide(room, "agree").size());
+			// 반대 측 유저 수
+			mapRoom.put("userOppositeCount", userRoomRepository.findByRoomIdAndUserSide(room, "opposite").size());
+			// 관전 측 유저 수
+			mapRoom.put("userObserverCount", userRoomRepository.findByRoomIdAndUserSide(room, "observer").size());
 			
 			roomListArray.add(mapRoom);
 		}
