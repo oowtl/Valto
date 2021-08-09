@@ -48,6 +48,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("api/v1/room")
 public class RoomController {
 	
+	// 안녕하세요~~~~~
+	
 	@Autowired
 	RoomService roomService;
 	
