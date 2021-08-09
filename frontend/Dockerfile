@@ -16,7 +16,7 @@ RUN npm run build
 ### 80번 포트 개방과 "nginx -g daemon off;" 명령을 실행
 FROM nginx:stable-alpine as production-stage
 RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx/homepage.conf /etc/nginx/conf.d/homepage.conf
+COPY ./nginx/hompage.conf /etc/nginx/conf.d/hompage.conf
 COPY --from=build-stage ./homepage/dist /usr/share/nginx/html/homepage
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
