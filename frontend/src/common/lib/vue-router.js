@@ -4,6 +4,7 @@ import History from '@/views/history/history'
 import Main from '@/views/main/main'
 // import Check from '@/views/room/check'
 import Room from '@/views/room/room'
+import Layout from '@/views/layout'
 
 
 // eslint-disable-next-line no-undef
@@ -22,10 +23,17 @@ function makeRoutesFromMenu () {
   let routes = [
     {
       path: '/',
-      name: 'main',
-      component: Main,
+      name: 'layout',
+      // component: Main,
+      component: Layout,
       children: mainChildren
     },
+    // {
+    //   path: '/1',
+    //   name: 'main',
+    //   component: Main,
+    //   children: mainChildren
+    // },
     {
       path: '/room/:roomId',
       name: 'room',

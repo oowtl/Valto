@@ -1,6 +1,5 @@
 <template>
   <div id="main-container" class="container">
-    <h1>test</h1>
     <div id="session" v-if="state.session">
 			<div id="session-header">
 				<h1 id="session-title">{{ state.nickname }}</h1>
