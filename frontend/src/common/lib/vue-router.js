@@ -4,7 +4,7 @@ import History from '@/views/history/history'
 import Main from '@/views/main/main'
 // import Check from '@/views/room/check'
 import Room from '@/views/room/room'
-
+import Chat from '@/views/room/components/chat'
 
 // eslint-disable-next-line no-undef
 const fullMenu = require('@/views/main/menu.json')
@@ -23,9 +23,14 @@ function makeRoutesFromMenu () {
     {
       path: '/',
       name: 'main',
-      component: Main,
-      children: mainChildren
+      component: Chat,
     },
+    // {
+    //   path: '/',
+    //   name: 'main',
+    //   component: Main,
+    //   children: mainChildren
+    // },
     {
       path: '/room/:roomId',
       name: 'room',
