@@ -20,17 +20,17 @@ function makeRoutesFromMenu () {
   })
 
   let routes = [
-    {
-      path: '/',
-      name: 'main',
-      component: Chat,
-    },
     // {
     //   path: '/',
     //   name: 'main',
-    //   component: Main,
-    //   children: mainChildren
+    //   component: Chat,
     // },
+    {
+      path: '/',
+      name: 'main',
+      component: Main,
+      children: mainChildren
+    },
     {
       path: '/room/:roomId',
       name: 'room',

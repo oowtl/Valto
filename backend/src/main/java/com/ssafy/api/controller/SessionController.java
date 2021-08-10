@@ -52,6 +52,8 @@ public class SessionController {
 			this.SECRET = secret;
 			this.OPENVIDU_URL = openviduUrl;
 			this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
+//			System.out.println(secret + " " + openviduUrl);
+//			System.out.println(this.openVidu.toString());
 		}
 		
 		@PostMapping("/get-token")

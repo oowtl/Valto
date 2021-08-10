@@ -3,8 +3,15 @@ package com.ssafy.api.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +41,13 @@ import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.entity.User_Room;
 
+import io.openvidu.java.client.ConnectionProperties;
+import io.openvidu.java.client.ConnectionType;
+import io.openvidu.java.client.OpenVidu;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.OpenViduRole;
+import io.openvidu.java.client.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -54,35 +68,97 @@ public class RoomController {
 	@Autowired
 	UserRoomService userRoomService;
 	
+	private OpenVidu openVidu;
+	private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
+	private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
+	private String OPENVIDU_URL;
+	private String SECRET;
+	
+	public RoomController(@Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl) {
+		this.SECRET = secret;
+		this.OPENVIDU_URL = openviduUrl;
+		this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
+	}
+	
 	@PostMapping()
 	@ApiOperation(value = " 방 생성 ", notes =" request 에서 받은 정보를 통해서 방을 생성한다. ")
 	@ApiResponses({
 		@ApiResponse(code = 201, message = " 방 생성 성공 "),
 		@ApiResponse(code = 400, message = " no password private room"),
 	})
-	public ResponseEntity<? extends BaseResponseBody> createRoom(
+	public ResponseEntity<?> createRoom(
 			@ApiIgnore Authentication authentication,
-			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo) {
+			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo,
+			@RequestBody String sessionNameParam) {
 		
 		/**
 		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
 		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
 		 */
-		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
-		String validatedUserId = userDetails.getUsername();
-		
-		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
-		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
-		}
-		
-		// 방 생성하기
-		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
-		
-		// User_Room 생성하기
-		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
-		
-		return ResponseEntity.status(201).body(RoomPostRes.of(room));
+//		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+//		String validatedUserId = userDetails.getUsername();
+//		
+//		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
+//		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
+//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
+//		}
+//		
+//		
+//		
+//		
+//		
+//		
+////		JSONObject sessionJSON = null;
+////		try {
+////			sessionJSON = (JSONObject) new JSONParser().parse(Long.toString(room.getId()));
+////		} catch (ParseException e) {
+////			// TODO Auto-generated catch block
+////			e.printStackTrace();
+////		}
+////		String sessionName = ;
+////		// New session
+////		System.out.println("New session " + sessionName);
+//		
+//		OpenViduRole role = OpenViduRole.PUBLISHER;
+//
+//		// Optional data to be passed to other users when this user connects to the
+//		// video-call. In this case, a JSON with the value we stored in the HttpSession
+//		// object on login
+//		String serverData = "{\"serverData\": \"" + validatedUserId + "\"}";
+//
+//		// Build connectionProperties object with the serverData and the role
+//		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+//
+//		JSONObject responseJson = new JSONObject();
+//		
+//		try {
+//
+//			// Create a new OpenVidu Session
+//			Session session = this.openVidu.createSession();
+//			// Generate a new Connection with the recently created connectionProperties
+//			String token = session.createConnection(connectionProperties).getToken();
+//
+//			// Store the session and the token in our collections
+//			this.mapSessions.put(sessionName, session);
+//			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
+//			this.mapSessionNamesTokens.get(sessionName).put(token, role);
+//			
+//			// 방 생성하기
+//			Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
+//			
+//			// User_Room 생성하기
+//			User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
+//			// Prepare the response with the token
+//			responseJson.put(0, token);
+//
+//			// Return the response to the client
+//			return new ResponseEntity<>(responseJson, HttpStatus.OK);
+//
+//		} catch (Exception e) {
+//			// If error generate an error message and return it to client
+//			return getErrorResponse(e);
+//		}
+		return ResponseEntity.status(204).body(BaseResponseBody.of(204, "no Room"));
 	}
 	
 	@GetMapping()
@@ -213,7 +289,7 @@ public class RoomController {
 		@ApiResponse(code=400, message="no Exist Room"),
 		@ApiResponse(code=400, message="already enter room user")
 	})
-	public ResponseEntity<? extends BaseResponseBody> enterRoom(
+	public ResponseEntity<?> enterRoom(
 			@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "방 입장 정보", required= true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId){
@@ -238,6 +314,50 @@ public class RoomController {
 		// 만약에 비밀번호 방이라면??
 
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
+		
+		JSONObject sessionJSON = null;
+		try {
+			sessionJSON = (JSONObject) new JSONParser().parse(Long.toString(room.getId()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String sessionName = (String) sessionJSON.get("sessionName");
+		System.out.println("Existing session " + sessionName);
+		
+		OpenViduRole role = OpenViduRole.PUBLISHER;
+		
+		String serverData = "{\"serverData\": \"" + userId + "\"}";
+
+		// Build connectionProperties object with the serverData and the role
+		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+
+		JSONObject responseJson = new JSONObject();
+		
+		try {
+
+			// Generate a new Connection with the recently created connectionProperties
+			String token = this.mapSessions.get(sessionName).createConnection(connectionProperties).getToken();
+
+			// Update our collection storing the new token
+			this.mapSessionNamesTokens.get(sessionName).put(token, role);
+
+			// Prepare the response with the token
+			responseJson.put(0, token);
+
+			// Return the response to the client
+			return new ResponseEntity<>(responseJson, HttpStatus.OK);
+		} catch (OpenViduJavaClientException e1) {
+			// If internal error generate an error message and return it to client
+			return getErrorResponse(e1);
+		} catch (OpenViduHttpException e2) {
+			if (404 == e2.getStatus()) {
+				// Invalid sessionId (user left unexpectedly). Session object is not valid
+				// anymore. Clean collections and continue as new session
+				this.mapSessions.remove(sessionName);
+				this.mapSessionNamesTokens.remove(sessionName);
+			}
+		}
 		
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
@@ -281,5 +401,13 @@ public class RoomController {
 		String message = userRoomService.leaveRoom(existUserRoom);
 		
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	}
+	
+	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {
+		JSONObject json = new JSONObject();
+		json.put("cause", e.getCause());
+		json.put("error", e.getMessage());
+		json.put("exception", e.getClass());
+		return new ResponseEntity<>(json, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -1,18 +1,18 @@
 <template>
-<div class="container">
+ <div class="container">
   <div id="room">
     <h2 id="room-header"></h2>
     <div id="participants"></div>
     <input type="button" id="button-leave" @click="leaveRoom"
       value="Leave room">
 	</div>
-</div>
+ </div>
 </template>
 <script>
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { reactive, onBeforeMount, onBeforeUnmount, onMounted, computed } from 'vue'
-// import Participant from '@/views/room/js/participants'
+import Participant from '@/views/room/js/participants'
 
 export default{
   setup() {
@@ -30,7 +30,7 @@ export default{
 
     // 자바 백엔드와 연결되는 웹소켓
     // maven 소켓 연결
-    const ws = new WebSocket('wss://52.78.54.210:8888/groupcall')
+    const ws = new WebSocket('wss://localhost:8443/groupcall')
     ws.onmessage = function(message) {
       var parsedMessage = JSON.parse(message.data)
       console.info('Received message: ' + message.data)
