@@ -148,7 +148,7 @@ public class RoomServiceImpl implements RoomService {
 				Integer userCount1 = (Integer) o1.get("userCount");
 				Integer userCount2 = (Integer) o2.get("userCount");
 				// 내림차순
-				if (roomListGetInfo.getSorting().equals("userCountDesc")) {
+				if (roomListGetInfo.getSorting().equals("participantsDesc")) {
 					return userCount2.compareTo(userCount1);
 				}
 				// 오름차순 정렬 : default 라서 그냥 이걸로 감

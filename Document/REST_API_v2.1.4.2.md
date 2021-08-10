@@ -408,13 +408,20 @@
   - Query Parameter
     - title = String
       - title 으로 검색하는 기능
+        필요하지 않다면 미입력
     - topic = String
       - topic 으로 검색하는 기능
-    - sort
-      - `sort=participantsAsc` (Default)
-      - `sort=participantsDsc`
-      - `sort=timeAsc`
-      - `sort=timeDsc`
+        필요하지 않다면 미입력
+    - sorting={String}
+      - `sorting=participantsAsc` (Default)
+        - 비고 : sorting을 입력하지 않거나 다른 query를 입력할 경우 해당 정렬을 실행함.
+      - `sorting=participantsDesc`
+      - `sorting=createdAtAsc`
+      - `sorting=createdAtDesc`
+    - page={Integer}
+      - 페이징 처리
+    - size={Integer}
+      - 몇 개의 데이터를 들고 올지 정하는 것
 
 - Response
 
