@@ -22,8 +22,8 @@ pipeline {
 
 				sh 'docker images prune'
 
-				sh 'docker run -d --name backend -p 8443:8443 --network ssafy_net backend:latest'
-				sh 'docker run -d --name frontend -p 8080:8080 --network ssafy_net frontend:latest'
+				sh 'docker run -d --name frontend -p 80:80 -p 443:443 --network ssafy_net frontend:latest'
+				sh 'docker run -d --name backend --network ssafy_net backend:latest'
 			}
 		}
 	}
