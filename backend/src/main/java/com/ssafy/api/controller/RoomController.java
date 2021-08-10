@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,8 +50,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("api/v1/room")
 public class RoomController {
 	
-	// 안녕하세요~~~~~
-	
 	@Autowired
 	RoomService roomService;
 	
@@ -82,6 +82,13 @@ public class RoomController {
 		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		
+		System.out.println(roomCreateInfo.getUserSide().equals("opposite"));
+		
+		// userSide 유효성 검사
+		if (roomCreateInfo.getUserSide()==null || !(roomCreateInfo.getUserSide().equals("agree") || roomCreateInfo.getUserSide().equals("opposite") || roomCreateInfo.getUserSide().equals("observer"))) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect userSide"));
+		}
+		
 		// 방에 접속한 유저 정보 / User_Room 생성하기
 		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
 		
@@ -96,14 +103,24 @@ public class RoomController {
 	})
 	public ResponseEntity<? extends BaseResponseBody> checkRoomList (
 			// 파라미터를 string 으로 받아서 판단
+			@PageableDefault(size = 20, page = 1) Pageable pageable,
 			@RequestParam(value ="title", defaultValue ="null", required =false) @ApiParam( value = "제목으로 조회") String IN_title ,
-			@RequestParam(value ="topic", defaultValue ="null", required =false) @ApiParam( value = "주제로 조회") String IN_topic) {
+			@RequestParam(value ="topic", defaultValue ="null", required =false) @ApiParam( value = "주제로 조회") String IN_topic,
+			@RequestParam(value="sorting", defaultValue="participant", required=false) @ApiParam( value = "정렬 파라미터") String IN_sort
+			) {
+		
+		System.out.println(IN_title);
+		System.out.println(IN_topic);
+		System.out.println(pageable.getPageSize());
+		System.out.println(pageable.getPageNumber());
+		System.out.println(pageable.getSort());
 		
 		RoomListGetReq roomListGetInfo = new RoomListGetReq();
 		roomListGetInfo.setTitle(IN_title);
 		roomListGetInfo.setTopic(IN_topic);
+		roomListGetInfo.setSorting(IN_sort);
 		
-		List<Room> getRoomsList = roomService.checkRoomList(roomListGetInfo);
+		List<Room> getRoomsList = roomService.checkRoomList(roomListGetInfo, pageable);
 		
 		// room 이 없을 때
 		if (getRoomsList.isEmpty()) {
@@ -239,7 +256,7 @@ public class RoomController {
 		}
 		
 		// userSide 유효성 검사
-		if (userRoomPostReq.getUserSide().equals("agree") || userRoomPostReq.getUserSide().equals("opposite") || userRoomPostReq.getUserSide().equals("observer")) {
+		if (userRoomPostReq.getUserSide()==null || !(userRoomPostReq.getUserSide().equals("agree") || userRoomPostReq.getUserSide().equals("opposite") || userRoomPostReq.getUserSide().equals("observer"))) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect userSide"));
 		}
 		

@@ -33,8 +33,12 @@ public class UserRoomServiceImpl implements UserRoomService {
 		userRoom.setRoomId(roomRepository.findById(RoomId).get());
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
-		userRoom.setUserSide(userSide);
 		
+		if (userSide.equals(null)) {
+			userRoom.setUserSide("observer");
+		} else {			
+			userRoom.setUserSide(userSide);
+		}
 		return userRoomRepository.save(userRoom);
 	}
 	

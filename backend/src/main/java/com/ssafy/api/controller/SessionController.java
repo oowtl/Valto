@@ -35,12 +35,14 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/api/sessions")
 public class SessionController {
 
-	// OpenVidu object as entrypoint of the SDK
+		// OpenVidu object as entrypoint of the SDK
 		private OpenVidu openVidu;
 
 		// Collection to pair session names and OpenVidu Session objects
+		// 세션 이름과 OpenVidu 세션 개체를 페어링하기 위한 컬렉션
 		private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
 		// Collection to pair session names and tokens (the inner Map pairs tokens and role associated)
+		// 세션 이름과 토큰을 페어링하는 컬렉션(내부 맵은 연결된 역할과 토큰을 짝지음)
 		private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
 
 		// URL where our OpenVidu server is listening
@@ -48,14 +50,18 @@ public class SessionController {
 		// Secret shared with our OpenVidu server
 		private String SECRET;
 		
-		public SessionController(@Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl) {
+		public SessionController(
+				@Value("${openvidu.secret}") String secret,
+				@Value("${openvidu.url}") String openviduUrl) {
 			this.SECRET = secret;
 			this.OPENVIDU_URL = openviduUrl;
 			this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
 		}
 		
 		@PostMapping("/get-token")
-		public ResponseEntity<JSONObject> getToken(@RequestBody String sessionNameParam, @ApiIgnore Authentication authentication)
+		public ResponseEntity<JSONObject> getToken(
+				@RequestBody String sessionNameParam,
+				@ApiIgnore Authentication authentication)
 				throws ParseException {
 
 			String userId = "";
