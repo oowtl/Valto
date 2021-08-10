@@ -22,7 +22,7 @@ pipeline {
 
 				sh 'docker images prune'
 
-				sh 'docker run -d --name backend -p 8443:443 backend:latest'
+				sh 'docker run -d --name backend -p 8443:8443 backend:latest'
 				sh 'docker run -d --name frontend -p 8080:8080 frontend:latest'
 			}
 		}
