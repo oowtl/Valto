@@ -31,5 +31,5 @@ module.exports = {
     'element-plus'
   ],
   lintOnSave: true,
-  outputDir: './homepage/dist'
+  outputDir: './dist'
 }
