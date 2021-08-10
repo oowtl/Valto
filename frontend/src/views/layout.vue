@@ -39,7 +39,9 @@
       </div>
       <div class="footer-child communication">
         <chat-dot-round style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
+        <chat-dot-round style="width: 2em; height: 2em; color: grey; margin-right: 16px;" />
         <user style="width: 2em; height: 2em; color: white; margin-right: 8px;" />
+        <user style="width: 2em; height: 2em; color: grey; margin-right: 8px;" />
       </div>
     </div>
   </div>
