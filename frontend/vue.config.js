@@ -7,16 +7,16 @@ module.exports = {
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'https://i5d103.p.ssafy.io:8080/'
+        target: 'https://backend:443/'
       },
       '/webjars': {
-        target: 'https://i5d103.p.ssafy.io:8080/'
+        target: 'https://backend:443/'
       },
       '/group-call': {
-        target: 'https://i5d103.p.ssafy.io:8080/'
+        target: 'https://backend:443/'
       },
       '/upload': {
-        target: 'https://i5d103.p.ssafy.io:8080/'
+        target: 'https://backend:443/'
       },
 
     },
