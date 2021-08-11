@@ -112,6 +112,7 @@ public class SessionController {
 				try {
 
 					// Generate a new Connection with the recently created connectionProperties
+					
 					String token = this.mapSessions.get(sessionName).createConnection(connectionProperties).getToken();
 
 					// Update our collection storing the new token

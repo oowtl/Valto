@@ -88,77 +88,65 @@ public class RoomController {
 	})
 	public ResponseEntity<?> createRoom(
 			@ApiIgnore Authentication authentication,
-			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo,
-			@RequestBody String sessionNameParam) {
+			@RequestBody @ApiParam(value = "방 생성 정보", required = true) RoomPostReq roomCreateInfo) {
 		
 		/**
 		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
 		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
 		 */
-//		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
-//		String validatedUserId = userDetails.getUsername();
-//		
-//		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
-//		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
-//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
-//		}
-//		
-//		
-//		
-//		
-//		
-//		
-////		JSONObject sessionJSON = null;
-////		try {
-////			sessionJSON = (JSONObject) new JSONParser().parse(Long.toString(room.getId()));
-////		} catch (ParseException e) {
-////			// TODO Auto-generated catch block
-////			e.printStackTrace();
-////		}
-////		String sessionName = ;
-////		// New session
-////		System.out.println("New session " + sessionName);
-//		
-//		OpenViduRole role = OpenViduRole.PUBLISHER;
-//
-//		// Optional data to be passed to other users when this user connects to the
-//		// video-call. In this case, a JSON with the value we stored in the HttpSession
-//		// object on login
-//		String serverData = "{\"serverData\": \"" + validatedUserId + "\"}";
-//
-//		// Build connectionProperties object with the serverData and the role
-//		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
-//
-//		JSONObject responseJson = new JSONObject();
-//		
-//		try {
-//
-//			// Create a new OpenVidu Session
-//			Session session = this.openVidu.createSession();
-//			// Generate a new Connection with the recently created connectionProperties
-//			String token = session.createConnection(connectionProperties).getToken();
-//
-//			// Store the session and the token in our collections
-//			this.mapSessions.put(sessionName, session);
-//			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
-//			this.mapSessionNamesTokens.get(sessionName).put(token, role);
-//			
-//			// 방 생성하기
-//			Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
-//			
-//			// User_Room 생성하기
-//			User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
-//			// Prepare the response with the token
-//			responseJson.put(0, token);
-//
-//			// Return the response to the client
-//			return new ResponseEntity<>(responseJson, HttpStatus.OK);
-//
-//		} catch (Exception e) {
-//			// If error generate an error message and return it to client
-//			return getErrorResponse(e);
-//		}
-		return ResponseEntity.status(204).body(BaseResponseBody.of(204, "no Room"));
+		SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
+		String validatedUserId = userDetails.getUsername();
+		
+		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
+		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
+		}
+		// 방 생성하기
+		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
+		System.out.println(room.getId());
+		// User_Room 생성하기
+		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
+		String sessionName = Long.toString(room.getId());
+		
+		//JSONObject sessionJSON = (JSONObject) new JSONParser().parse(sessionName);
+		
+//		// New session
+		System.out.println("New session " + sessionName);
+		
+		OpenViduRole role = OpenViduRole.PUBLISHER;
+
+		// Optional data to be passed to other users when this user connects to the
+		// video-call. In this case, a JSON with the value we stored in the HttpSession
+		// object on login
+		String serverData = "{\"serverData\": \"" + validatedUserId + "\"}";
+
+		// Build connectionProperties object with the serverData and the role
+		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+
+		//JSONObject responseJson = new JSONObject();
+		
+		try {
+
+			// Create a new OpenVidu Session
+			Session session = this.openVidu.createSession();
+			// Generate a new Connection with the recently created connectionProperties
+			String token = session.createConnection(connectionProperties).getToken();
+
+			// Store the session and the token in our collections
+			this.mapSessions.put(sessionName, session);
+			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
+			//this.mapSessionNamesTokens.get(sessionName).put(token, role);
+			
+			// Prepare the response with the token
+			//responseJson.put(0, token);
+
+			// Return the response to the client
+			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+
+		} catch (Exception e) {
+			// If error generate an error message and return it to client
+			return getErrorResponse(e);
+		}
 	}
 	
 	@GetMapping()

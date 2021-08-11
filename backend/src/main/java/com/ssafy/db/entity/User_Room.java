@@ -35,4 +35,7 @@ public class User_Room extends BaseEntity {
 	// False = Opposite
 	@NotNull
 	Boolean userSide;
+	
+	// OpenVidu connect Token
+	String token;
 }
