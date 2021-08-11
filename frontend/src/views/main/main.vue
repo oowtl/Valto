@@ -12,7 +12,6 @@
         <router-view @openDetailDialog="onOpenDetailDialog"></router-view>
       </el-main>
     </el-container>
-    <main-footer :height="`110px`"/>
   </el-container>
   <login-dialog
     :open="loginDialogOpen"
@@ -45,7 +44,6 @@
 <script>
 import LoginDialog from './components/login-dialog'
 import MainHeader from './components/main-header'
-import MainFooter from './components/main-footer'
 import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
@@ -57,7 +55,6 @@ export default {
   name: 'Main',
   components: {
     MainHeader,
-    MainFooter,
     LoginDialog,
     JoinDialog,
     CreateroomDialog,

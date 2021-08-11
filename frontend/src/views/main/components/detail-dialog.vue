@@ -88,6 +88,7 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          handleClose()
         })
     }
     return { state, handleClose, detailForm, clickEnter }

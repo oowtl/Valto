@@ -1,0 +1,55 @@
+.room-wrapper {
+  height: 100%;
+  display: block !important;
+  /* background-color: #ECECEC; */
+  background-color: #202124;
+  color: #ffffff;
+}
+
+.session {
+  min-height: calc(100% - 60px);
+  max-height: calc(100% - 60px);
+}
+
+.divider {
+  display: flex;
+  min-height: 600px;
+}
+
+.partition {
+  /* min-height: 400px; */
+  flex: 5;
+}
+
+.panel {
+  flex: 1 200px;
+  background-color: #ffffff;
+  height: ;
+}
+
+.container {
+}
+
+.footer {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-child {
+  display: flex;
+  flex: 1;
+  margin: 0px 0px 0px 0px;
+}
+
+.controller {
+  justify-content: center;
+  align-items: center;
+}
+
+.communication {
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 22px;
+}

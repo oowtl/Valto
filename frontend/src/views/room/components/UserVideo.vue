@@ -1,13 +1,14 @@
 <template>
-<div v-if="streamManager">
+<div v-if="this.streamManager">
 	<h1>test</h1>
-	<ov-video :stream-manager="streamManager"/>
-	<div><p>{{ clientData }}</p></div>
+	<ov-video :stream-manager="this.streamManager"/>
+	<div><p>{{ state.clientData }}</p></div>
 </div>
 </template>
 
 <script>
-import OvVideo from './OvVideo';
+import OvVideo from './OvVideo'
+import { reactive, computed } from 'vue'
 
 export default {
 	name: 'UserVideo',
@@ -16,29 +17,26 @@ export default {
 		OvVideo,
 	},
 
-	props: {
-		streamManager: Object,
-	},
-
-	computed: {
-		clientData () {
-			const { clientData } = this.getConnectionData()
-			return clientData;
-		},
-	},
-
-  mounted: function () {
-    console.log('%$$$$$$$$$$$$$$$$$$')
-    console.log(this.streamManager)
+  props: {
+    streamManager: {
+      type: Object,
+    },
   },
 
-	methods: {
-		getConnectionData () {
-			console.log(this.streamManager.stream+ '###')
-			const { connection } = this.streamManager.stream;
-      console.log(connection.data)
-			return connection.data;
-		},
-	},
-};
+  setup (props) {
+    const getConnectionData = function () {
+      const { connection } = props.streamManager.stream
+      console.log('!UserVideo connection data : ' + connection.data) // << 이거는 출력됨?
+      console.log('!UserVideo setup streamManager : ' + props.streamManager)
+			return connection.data
+    }
+
+    const state = reactive({
+      // 이부분 확인 >>> unserialized된 json === object니까 괜찮을듯
+      clientData: computed(() => getConnectionData().clientData)
+    })
+
+    return { state, getConnectionData }
+  }
+}
 </script>
