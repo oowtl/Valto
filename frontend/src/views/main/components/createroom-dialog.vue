@@ -78,6 +78,11 @@
   font-size: 12px;
   color: red;
 }
+.createroom-dialog .el-form-item .el-select {
+  display: inline-block;
+}
+
+
 .createroom-dialog .el-input__suffix {
   display: none;
 }
