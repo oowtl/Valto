@@ -18,7 +18,7 @@
     "roboto-fontface": "*",
     "sass-loader": "^10.2.0",
     "stylus-loader": "^3.0.2",
-    "vue": "^3.0.0",
+    "vue": "^3.1.1",
     "vue-axios": "^3.2.4",
     "vue-full-loading": "^1.2.1",
     "vue-i18n": "^9.1.6",
