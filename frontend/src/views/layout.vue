@@ -20,12 +20,13 @@
           </div>
         </div>
         <div class="panel" v-if="true">
-          채팅창,멤버
+          <div class="panelChat">
+            <p>채팅창, 멤버</p>
+          </div>
         </div>
       </div>
-
-
 		</div>
+
     <div class="footer">
       <div class="footer-child session-title">
         <p> 세션 타이틀!! </p>
