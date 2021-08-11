@@ -21,4 +21,3 @@ COPY --from=build-stage ./homepage/dist /usr/share/nginx/html/homepage
 COPY ./ssl ./ssl
 EXPOSE 443
 CMD ["nginx", "-g", "daemon off;"]
-
