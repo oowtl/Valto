@@ -9,5 +9,6 @@ RUN ./gradlew clean build
 
 FROM openjdk:8-jdk-alpine
 COPY --from=builder build/libs/ssafy-fifth-web-common-project-6.16.0.jar app.jar
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
