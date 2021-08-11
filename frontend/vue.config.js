@@ -3,20 +3,20 @@
 module.exports = {
   devServer: {
     https: true,
-    port: 443,
+    port: 8083,
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'http://backend:8080/'
+        target: 'https://i5d103.p.ssafy.io:8080/'
       },
       '/webjars': {
-        target: 'http://backend:8080/'
+        target: 'https://i5d103.p.ssafy.io:8080/'
       },
       '/group-call': {
-        target: 'http://backend:8080/'
+        target: 'https://i5d103.p.ssafy.io:8080/'
       },
       '/upload': {
-        target: 'http://backend:8080/'
+        target: 'https://i5d103.p.ssafy.io:8080/'
       },
 
     },
