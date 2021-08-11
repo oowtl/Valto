@@ -19,6 +19,9 @@
           <div class="container">
           </div>
         </div>
+        <div class="panel" v-if="true">
+          채팅창,멤버
+        </div>
       </div>
 
 
@@ -38,6 +41,9 @@
 
       </div>
       <div class="footer-child communication">
+        <bell-filled style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
+        <opportunity style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
+        <mic style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
         <chat-dot-round style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
         <chat-dot-round style="width: 2em; height: 2em; color: grey; margin-right: 16px;" />
         <user style="width: 2em; height: 2em; color: white; margin-right: 8px;" />
@@ -48,22 +54,28 @@
 </template>
 
 <script>
+import { Mic } from '@element-plus/icons'
 import { Mute } from '@element-plus/icons'
 import { User } from '@element-plus/icons'
+import { BellFilled } from '@element-plus/icons'
 import { CloseBold } from '@element-plus/icons'
 import { Microphone } from '@element-plus/icons'
 import { VideoCamera } from '@element-plus/icons'
 import { PhoneFilled } from '@element-plus/icons'
 import { ChatDotRound } from '@element-plus/icons'
+import { Opportunity } from '@element-plus/icons'
 export default {
   components: {
+    Mic,
     Mute,
     User,
+    BellFilled,
     CloseBold,
     Microphone,
     PhoneFilled,
     VideoCamera,
     ChatDotRound,
+    Opportunity,
   },
   setup() {
   },

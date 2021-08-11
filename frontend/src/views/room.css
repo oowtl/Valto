@@ -13,12 +13,18 @@
 
 .divider {
   display: flex;
-  height: max-content;
+  min-height: 600px;
 }
 
 .partition {
   /* min-height: 400px; */
-  flex: 1;
+  flex: 5;
+}
+
+.panel {
+  flex: 1 200px;
+  background-color: #ffffff;
+  height: ;
 }
 
 .container {
