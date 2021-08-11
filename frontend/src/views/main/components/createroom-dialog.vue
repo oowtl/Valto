@@ -37,12 +37,18 @@
       <!-- 룰(시간 설정하기) -->
       <el-form-item prop="times" label="토론시간" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.times" placeholder="토론시간">
-          <el-option
+          <el-option>
+            test
+          </el-option>
+          <el-option>
+            test2
+          </el-option>
+          <!-- <el-option
             v-for="time in state.times"
             :key="time.value"
             :label="time.label"
             :value="time.value">
-          </el-option>
+          </el-option> -->
         </el-select>
       </el-form-item>
       <!-- 비공개 여부 -->
@@ -78,11 +84,6 @@
   font-size: 12px;
   color: red;
 }
-.createroom-dialog .el-form-item .el-select {
-  display: inline-block;
-}
-
-
 .createroom-dialog .el-input__suffix {
   display: none;
 }
