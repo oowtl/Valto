@@ -7,16 +7,16 @@ module.exports = {
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'http://test/'
+        target: 'https://localhost:8443/'
       },
       '/webjars': {
-        target: 'http://test/'
+        target: 'https://localhost:8443/'
       },
       '/group-call': {
-        target: 'http://backend:8080/'
+        target: 'https://localhost:8443/'
       },
       '/upload': {
-        target: 'http://backend:8080/'
+        target: 'https://localhost:8443/'
       },
 
     },

@@ -16,7 +16,7 @@
       <el-form-item prop="participants" label="참가인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.participants" placeholder="참가자 인원수">
           <el-option
-            v-for="number in part_numbers"
+            v-for="number in state.part_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -27,7 +27,7 @@
       <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.observers" placeholder="관전자 인원수">
           <el-option
-            v-for="number in obs_numbers"
+            v-for="number in state.obs_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -38,7 +38,7 @@
       <el-form-item prop="times" label="토론시간" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.times" placeholder="토론시간">
           <el-option
-            v-for="time in times"
+            v-for="time in state.times"
             :key="time.value"
             :label="time.label"
             :value="time.value">
@@ -95,59 +95,59 @@ import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 export default {
-  data() {
-    return {
-        part_numbers: [{
-          value: 2,
-          label: '2'
-        }, {
-          value: 4,
-          label: '4'
-        }, {
-          value: 6,
-          label: '6'
-        }, {
-          value: 8,
-          label: '8'
-        }, {
-          value: 10,
-          label: '10'
-        }],
-        obs_numbers: [{
-          value: 1,
-          label: '1'
-        }, {
-          value: 3,
-          label: '3'
-        }, {
-          value: 5,
-          label: '5'
-        }, {
-          value: 7,
-          label: '7'
-        }, {
-          value: 9,
-          label: '9'
-        }],
-        times: [{
-          value: 20,
-          label: '20'
-        }, {
-          value: 30,
-          label: '30'
-        }, {
-          value: 40,
-          label: '40'
-        }, {
-          value: 50,
-          label: '50'
-        }, {
-          value: 60,
-          label: '60'
-        }],
-        value: ''
-      }
-  },
+  // data() {
+  //   return {
+      //   part_numbers: [{
+      //     value: 2,
+      //     label: '2'
+      //   }, {
+      //     value: 4,
+      //     label: '4'
+      //   }, {
+      //     value: 6,
+      //     label: '6'
+      //   }, {
+      //     value: 8,
+      //     label: '8'
+      //   }, {
+      //     value: 10,
+      //     label: '10'
+      //   }],
+      //   obs_numbers: [{
+      //     value: 1,
+      //     label: '1'
+      //   }, {
+      //     value: 3,
+      //     label: '3'
+      //   }, {
+      //     value: 5,
+      //     label: '5'
+      //   }, {
+      //     value: 7,
+      //     label: '7'
+      //   }, {
+      //     value: 9,
+      //     label: '9'
+      //   }],
+      //   times: [{
+      //     value: 20,
+      //     label: '20'
+      //   }, {
+      //     value: 30,
+      //     label: '30'
+      //   }, {
+      //     value: 40,
+      //     label: '40'
+      //   }, {
+      //     value: 50,
+      //     label: '50'
+      //   }, {
+      //     value: 60,
+      //     label: '60'
+      //   }],
+      //   value: ''
+      // }
+  // },
   name: 'createroom-dialog',
 
   props: {
@@ -206,6 +206,55 @@ export default {
       },
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
+      part_numbers: [{
+          value: 2,
+          label: '2'
+        }, {
+          value: 4,
+          label: '4'
+        }, {
+          value: 6,
+          label: '6'
+        }, {
+          value: 8,
+          label: '8'
+        }, {
+          value: 10,
+          label: '10'
+      }],
+      obs_numbers: [{
+          value: 1,
+          label: '1'
+        }, {
+          value: 3,
+          label: '3'
+        }, {
+          value: 5,
+          label: '5'
+        }, {
+          value: 7,
+          label: '7'
+        }, {
+          value: 9,
+          label: '9'
+      }],
+      times: [{
+          value: 20,
+          label: '20'
+        }, {
+          value: 30,
+          label: '30'
+        }, {
+          value: 40,
+          label: '40'
+        }, {
+          value: 50,
+          label: '50'
+        }, {
+          value: 60,
+          label: '60'
+      }],
+      value: ''
     })
 
     const clickCreateRoom = function () {
