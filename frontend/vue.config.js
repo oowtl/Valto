@@ -3,20 +3,20 @@
 module.exports = {
   devServer: {
     https: true,
-    port: 8083,
+    port: 443,
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'https://backend:443/'
+        target: 'http://backend:8080/'
       },
       '/webjars': {
-        target: 'https://backend:443/'
+        target: 'http://backend:8080/'
       },
       '/group-call': {
-        target: 'https://backend:443/'
+        target: 'http://backend:8080/'
       },
       '/upload': {
-        target: 'https://backend:443/'
+        target: 'http://backend:8080/'
       },
 
     },
