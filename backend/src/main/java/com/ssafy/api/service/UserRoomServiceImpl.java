@@ -34,7 +34,9 @@ public class UserRoomServiceImpl implements UserRoomService {
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
 		
-		if (userSide.equals(null)) {
+		System.out.println("userside : " + userSide );
+		
+		if (userSide == null) {
 			userRoom.setUserSide("observer");
 		} else {			
 			userRoom.setUserSide(userSide);

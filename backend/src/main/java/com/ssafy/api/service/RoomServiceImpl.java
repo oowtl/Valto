@@ -161,16 +161,22 @@ public class RoomServiceImpl implements RoomService {
 		Integer resultEndIndex = (pageable.getPageSize() * (pageable.getPageNumber() + 1));
 		Integer resultMaxPageNumber = connectedUserRoomList.size() / pageable.getPageSize();		
 
+		// 공통 조건 : page=0 에서 size 가 검색결과 보다 큰 경우를 대비
 		// 시작할 곳이 전체 결과보다 더 큰 경우
-		if (resultStartIndex >= connectedUserRoomList.size()) {
+		if ((resultMaxPageNumber != 0) && (resultStartIndex >= connectedUserRoomList.size())) {
 			return new ArrayList<Room>();
 		}
+		
 		// page 끝
 		if (resultMaxPageNumber == pageable.getPageNumber()) {
-			resultEndIndex = connectedUserRoomList.size()-1;
+			if (resultMaxPageNumber >= 1) {				
+				resultEndIndex = connectedUserRoomList.size()-1;
+			} else {
+				resultEndIndex = connectedUserRoomList.size();
+			}
 		}
 		// page 가 더 갈 수 없다.
-		if (resultMaxPageNumber < pageable.getPageNumber()) {
+		if ((resultMaxPageNumber != 0) &&(resultMaxPageNumber < pageable.getPageNumber())) {
 			return new ArrayList<Room>();
 		}
 		

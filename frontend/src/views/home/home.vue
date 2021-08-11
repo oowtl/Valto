@@ -4,7 +4,7 @@
       <i class="el-icon-sort"></i>
       <span>개발중</span>
     </button>
-  <div class="carousel">  
+  <div class="carousel">
     <el-carousel :interval="4000" type="card" height="300px">
       <el-carousel-item v-for="item in 5" :key="item">
         <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
