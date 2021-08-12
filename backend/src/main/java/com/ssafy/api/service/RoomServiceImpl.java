@@ -117,6 +117,8 @@ public class RoomServiceImpl implements RoomService {
 		
 		List<HashMap<String, Object>> connectedUserRoomList = new ArrayList<HashMap<String, Object>>();
 		
+		
+		
 		// topic and title
 		if (!(roomListGetInfo.getTitle().equals("null")) && (!roomListGetInfo.getTopic().equals("null"))) {
 			roomRepository.findByTopicAgreeContainingOrTopicOppositeContainingOrTitleContaining
@@ -136,7 +138,7 @@ public class RoomServiceImpl implements RoomService {
 		}
 		
 		// 아무런 조건이 없을 때 해줘야 하는 것
-		if (connectedUserRoomList.size() == 0) {
+		if ((roomListGetInfo.getTitle().equals("null")) && (roomListGetInfo.getTopic().equals("null"))) {		
 			roomRepository.findAll()
 			.forEach((room) -> convertConnectedUserRoom(room, connectedUserRoomList));
 		}
@@ -185,7 +187,7 @@ public class RoomServiceImpl implements RoomService {
 		
 		List<Room> result = new ArrayList<Room>();
 		resultUserRoomList.forEach((room) -> result.add((Room) room.get("room")));
-		
+				
 		return result;
 	}
 	
