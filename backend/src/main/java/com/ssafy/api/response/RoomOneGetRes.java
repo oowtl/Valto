@@ -42,6 +42,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 	List<HashMap> oppositeUsers;
 	@ApiModelProperty(name="ObserverUsers")
 	List<HashMap> observerUsers;
+	@ApiModelProperty(name="TotalCountUsers")
+	Integer totalCountUsers;
 	
 	public static RoomOneGetRes of(Room room, List<User_Room> userRoomList) {
 		
@@ -88,6 +90,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 		roomInfo.setAgreeUsers(agreeUserList);
 		roomInfo.setOppositeUsers(oppositeUserList);
 		roomInfo.setObserverUsers(observerUserList);
+		
+		roomInfo.setTotalCountUsers(agreeUserList.size() + oppositeUserList.size() + observerUserList.size());
 		
 		return roomInfo;
 	}
