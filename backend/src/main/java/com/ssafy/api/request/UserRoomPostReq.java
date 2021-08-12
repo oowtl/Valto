@@ -15,6 +15,6 @@ public class UserRoomPostReq {
 	Boolean privateRoom;
 	@ApiModelProperty(name = "비밀방 비밀번호", example = "password")
 	String roomPassword;
-	@ApiModelProperty(name = "user 팀 정보", example = "True")
-	Boolean userSide;
+	@ApiModelProperty(name = "user 팀 정보", example = "Agree")
+	String userSide;
 }

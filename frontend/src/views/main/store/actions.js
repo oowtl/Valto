@@ -144,8 +144,22 @@ export function requestRoomToken({ state }, payload) {
     url: url,
     data: body
   }
+  console.log('request는 ', request)
   return util.commonAxios(request)
 }
+// 수정필요
+// export function requestRoomToken({ state }, payload) {
+//   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
+//   const url = '/room/' + payload.roomId + '/admission'
+//   const body = { sessionName: `${payload.roomId}` }
+//   const request = {
+//     method: 'post',
+//     url: url,
+//     data: body
+//   }
+//   console.log('request는 ', request)
+//   return util.commonAxios(request)
+// }
 
 // export function requestDetail({ commit }, payload){
 //   console.log('payload는', payload)

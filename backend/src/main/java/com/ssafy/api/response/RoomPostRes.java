@@ -3,6 +3,7 @@ package com.ssafy.api.response;
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.User_Room;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -36,7 +37,10 @@ public class RoomPostRes extends BaseResponseBody{
 	@ApiModelProperty(name = "privateRoom")
 	Boolean privateRoom;
 	
-	public static RoomPostRes of(Room room) {
+	@ApiModelProperty(name = "userSide")
+	String userSide;
+	
+	public static RoomPostRes of(Room room, User_Room userRoom) {
 		RoomPostRes res = new RoomPostRes();
 		res.setRoomId(room.getId());
 		res.setUserId(room.getUserId().getUserId());
@@ -47,6 +51,7 @@ public class RoomPostRes extends BaseResponseBody{
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
 		res.setPrivateRoom(room.getPrivateRoom());
+		res.setUserSide(userRoom.getUserSide());
 		return res;
 	}
 	

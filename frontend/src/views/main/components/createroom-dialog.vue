@@ -16,7 +16,7 @@
       <el-form-item prop="participants" label="참가인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.participants" placeholder="참가자 인원수">
           <el-option
-            v-for="number in state.part_numbers"
+            v-for="number in part_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -27,28 +27,33 @@
       <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.observers" placeholder="관전자 인원수">
           <el-option
-            v-for="number in state.obs_numbers"
+            v-for="number in obs_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
           </el-option>
         </el-select>
       </el-form-item>
+      <!-- 포지션 정하기 -->
+      <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
+        <el-select v-model="state.form.userSide" placeholder="포지션">
+          <el-option
+            v-for="position in userSide"
+            :key="position.value"
+            :label="position.label"
+            :value="position.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <!-- 룰(시간 설정하기) -->
       <el-form-item prop="times" label="토론시간" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.times" placeholder="토론시간">
-          <el-option>
-            test
-          </el-option>
-          <el-option>
-            test2
-          </el-option>
-          <!-- <el-option
-            v-for="time in state.times"
+          <el-option
+            v-for="time in times"
             :key="time.value"
             :label="time.label"
             :value="time.value">
-          </el-option> -->
+          </el-option>
         </el-select>
       </el-form-item>
       <!-- 비공개 여부 -->
@@ -101,7 +106,69 @@ import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 export default {
-
+  data() {
+    return {
+        part_numbers: [{
+          value: 2,
+          label: '2'
+        }, {
+          value: 4,
+          label: '4'
+        }, {
+          value: 6,
+          label: '6'
+        }, {
+          value: 8,
+          label: '8'
+        }, {
+          value: 10,
+          label: '10'
+        }],
+        obs_numbers: [{
+          value: 1,
+          label: '1'
+        }, {
+          value: 3,
+          label: '3'
+        }, {
+          value: 5,
+          label: '5'
+        }, {
+          value: 7,
+          label: '7'
+        }, {
+          value: 9,
+          label: '9'
+        }],
+        userSide: [{
+          value: 'agree',
+          label: '주제1(찬성)'
+        }, {
+          value: 'opposite',
+          label: '주제2(반대)'
+        }, {
+          value: 'observer',
+          label: '관전자'
+        }],
+        times: [{
+          value: 20,
+          label: '20'
+        }, {
+          value: 30,
+          label: '30'
+        }, {
+          value: 40,
+          label: '40'
+        }, {
+          value: 50,
+          label: '50'
+        }, {
+          value: 60,
+          label: '60'
+        }],
+        value: ''
+      }
+  },
   name: 'createroom-dialog',
 
   props: {
@@ -126,6 +193,7 @@ export default {
         topicOpposite: '',
         participants: '',
         observers: '',
+        userSide: '',
         times: '',
         privateRoom: false,
         roomPassword: '',
@@ -148,6 +216,9 @@ export default {
         observers: [
           { required: true, message: '관전자 인원수 선택하세요.' }
         ],
+        userSide: [
+          { required: true, message: '포지션을 선택하세요.' }
+        ],
         times: [
           { required: true, message: '토론시간 선택하세요.' }
         ],
@@ -160,55 +231,6 @@ export default {
       },
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
-      part_numbers: [{
-          value: 2,
-          label: '2'
-        }, {
-          value: 4,
-          label: '4'
-        }, {
-          value: 6,
-          label: '6'
-        }, {
-          value: 8,
-          label: '8'
-        }, {
-          value: 10,
-          label: '10'
-      }],
-      obs_numbers: [{
-          value: 1,
-          label: '1'
-        }, {
-          value: 3,
-          label: '3'
-        }, {
-          value: 5,
-          label: '5'
-        }, {
-          value: 7,
-          label: '7'
-        }, {
-          value: 9,
-          label: '9'
-      }],
-      times: [{
-          value: 20,
-          label: '20'
-        }, {
-          value: 30,
-          label: '30'
-        }, {
-          value: 40,
-          label: '40'
-        }, {
-          value: 50,
-          label: '50'
-        }, {
-          value: 60,
-          label: '60'
-      }],
-      value: ''
     })
 
     const clickCreateRoom = function () {
@@ -221,11 +243,11 @@ export default {
             topicOpposite: state.form.topicOpposite,// string
             participants: state.form.participants,  // integer
             observers: state.form.observers,        // integer
+            userSide: state.form.userSide,          // string
             times: state.form.times,                // integer
             privateRoom: state.form.privateRoom,    // boolean
             roomPassword: state.form.roomPassword,  // string
           })
-        // api 응답 결과로 받은 conference_id 값으로 '방 상세보기' 페이지에 진입해야함
           .then(function (result) {
             console.log('axios 성공성공');
             emit('closeCreateRoomDialog')

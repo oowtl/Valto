@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.common.auth.SsafyUserDetails;
+import com.ssafy.db.repository.RoomRepository;
 
 import io.openvidu.java.client.ConnectionProperties;
 import io.openvidu.java.client.ConnectionType;
@@ -39,8 +40,7 @@ public class SessionController {
 
 		// Collection to pair session names and OpenVidu Session objects
 		private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
-		// Collection to pair session names and tokens (the inner Map pairs tokens and
-		// role associated)
+		// Collection to pair session names and tokens (the inner Map pairs tokens and role associated)
 		private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
 
 		// URL where our OpenVidu server is listening
@@ -97,36 +97,46 @@ public class SessionController {
 			// Optional data to be passed to other users when this user connects to the
 			// video-call. In this case, a JSON with the value we stored in the HttpSession
 			// object on login
+			// 이 사용자가 영상통화에 연결할 때 다른 사용자에게 전달할 선택적 데이터
+			// 이 경우 로그인 시 객체를 HttpSession에 저장한 값을 가진 JSON 
 			String serverData = "{\"serverData\": \"" + userId + "\"}";
 
 			// Build connectionProperties object with the serverData and the role
+			// serverData 및 역할을 사용하여 connectionProperties 개체 빌드
 			ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
 			JSONObject responseJson = new JSONObject();
 
+			// 만약에 해당 세션이 존재한다면?
 			if (this.mapSessions.get(sessionName) != null) {
 				// Session already exists
 				System.out.println("Existing session " + sessionName);
 				try {
 
 					// Generate a new Connection with the recently created connectionProperties
+					// 생성된 connectionProperties로 새 연결 생성
 					String token = this.mapSessions.get(sessionName).createConnection(connectionProperties).getToken();
 
 					// Update our collection storing the new token
+					// 새 토큰을 저장하는 컬렉션 업데이트
 					this.mapSessionNamesTokens.get(sessionName).put(token, role);
 
 					// Prepare the response with the token
+					// 토큰으로 응답 준비
 					responseJson.put(0, token);
 
 					// Return the response to the client
 					return new ResponseEntity<>(responseJson, HttpStatus.OK);
 				} catch (OpenViduJavaClientException e1) {
 					// If internal error generate an error message and return it to client
+					// 내부 오류가 발생하면 오류 메시지를 생성하고 클라이언트에 반환
 					return getErrorResponse(e1);
 				} catch (OpenViduHttpException e2) {
 					if (404 == e2.getStatus()) {
 						// Invalid sessionId (user left unexpectedly). Session object is not valid
 						// anymore. Clean collections and continue as new session
+						// 잘못된 sessionId(사용자가 예기치 않게 떠났습니다). 세션 개체가 잘못되었습니다.
+						// 이후에 컬렉션을 정리하고 새 세션으로 계속
 						this.mapSessions.remove(sessionName);
 						this.mapSessionNamesTokens.remove(sessionName);
 					}
@@ -142,8 +152,21 @@ public class SessionController {
 				// Generate a new Connection with the recently created connectionProperties
 				String token = session.createConnection(connectionProperties).getToken();
 
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
+				System.out.println("session : " + session);
+				System.out.println(session.getClass());
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
+				System.out.println("token : " + token);
+				System.out.println(token.getClass());
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
+				
+				
 				// Store the session and the token in our collections
 				this.mapSessions.put(sessionName, session);
+				
+	
+				
+				
 				this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
 				this.mapSessionNamesTokens.get(sessionName).put(token, role);
 

@@ -7,9 +7,33 @@
           <span style="color: #6b6b6b;"> vs. </span>
           <span>{{ state.form.topicOpposite }}</span>
         </span>
-        <h3>토론 시간: {{ state.form.times }}분</h3>
-        <h3>좌파 인원: in development</h3>
-        <h3>우파 인원: in development</h3>
+
+        <el-form-item label="토론 시간: " :label-width="state.formLabelWidth">
+          {{ state.form.times }}분
+        </el-form-item>
+        <el-form-item label="주제1(왼쪽) 인원수: " :label-width="state.formLabelWidth">
+          {{ state.form.agreeUsers.length }}
+        </el-form-item>
+        <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
+          {{ state.form.oppositeUsers.length }}
+        </el-form-item>
+        <el-form-item label="관전자 인원수: " :label-width="state.formLabelWidth">
+          {{ state.form.observerUsers.length }}
+        </el-form-item>
+        <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
+        <el-select v-model="state.form.userSide" placeholder="포지션">
+          <el-option
+            v-for="position in userSide"
+            :key="position.value"
+            :label="position.label"
+            :value="position.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+        <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
+          <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
+          <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -39,16 +63,38 @@ export default {
     }
   },
 
+  data() {
+    return {
+      userSide: [{
+          value: 'agree',
+          label: '주제1(찬성)'
+        }, {
+          value: 'opposite',
+          label: '주제2(반대)'
+        }, {
+          value: 'observer',
+          label: '관전자'
+        }],
+    }
+  },
+
   setup(props, { emit }) {
     const router = useRouter()
     const store = useStore()
     const detailForm = ref(null)
     const state = reactive({
       form: null,
+      userSide: '',
+      roomPassword: '',
       dialogVisible: computed(() => props.open),
-      formLabelWidth: '120px',
+      formLabelWidth: '150px',
       align: 'left',
       token: null,
+      rules: {
+        roomPassword: [
+          { required: true, message: '방 비밀번호 입력하세요' }
+        ],
+      }
     })
 
     // 닫기
@@ -74,7 +120,7 @@ export default {
     })
 
     const clickEnter = function (roomId) {
-      store.dispatch('root/requestRoomToken', roomId)
+      store.dispatch('root/requestRoomToken', roomId )
         .then((result) => {
           // 임시로 로컬스토리지에 저장
           localStorage.setItem('st', result.data[0])
@@ -88,8 +134,33 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          handleClose()
         })
     }
+
+    // const clickEnter = function (roomId) {
+    //   store.dispatch('root/requestRoomToken', {
+    //     roomId: roomId,
+    //     privateRoom: state.form.privateRoom,
+    //     roomPassword: state.roomPassword,
+    //     userSide: state.userSide
+    //   })
+    //     .then((result) => {
+    //       // 임시로 로컬스토리지에 저장
+    //       localStorage.setItem('st', result.data[0])
+    //       console.log(`TOKEN: ${localStorage.getItem('st')})`)
+    //       router.push({
+    //         name: 'room',
+    //         params: {
+    //           roomId: roomId
+    //         }
+    //       })
+    //     })
+    //     .catch((err) => {
+    //       console.log(err)
+    //       handleClose()
+    //     })
+    // }
     return { state, handleClose, detailForm, clickEnter }
   }
 }
@@ -97,17 +168,19 @@ export default {
 <style>
 .detail-dialog {
   width: 600px !important;
-  height: 450px;
+  height: 750px;
 }
 .topics {
   text-align: center;
   font-weight: bold;
-  font-size: 32px;
+  font-size: 40px;
   color: black;
   display:block;
   margin-top: 20px;
   margin-bottom: 80px;
 }
+
+
 /* .detail-dialog .el-dialog__headerbtn {
   float: right;
 } */
@@ -119,6 +192,7 @@ export default {
 } */
 /* .detail-dialog .el-form-item {
   margin-bottom: 20px;
+  font-size: 20px;
 } */
 /* .detail-dialog .el-form-item__error {
   font-size: 12px;

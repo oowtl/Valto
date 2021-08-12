@@ -8,9 +8,10 @@
         <div class="logo-wrapper" @click="clickLogo">
           <div class="ic ic-logo"/>
         </div>
-        <div class="side-wrapper">
-          <el-button @click="clickHistory">기록</el-button>
-        </div>
+        <ul class="side-wrapper">
+          <li class="li-wrapper" @click="clickHistory">기록</li>
+          <li class="li-wrapper" @click="clickRanking">랭킹</li>
+        </ul>
       </div>
       <div class="tool-wrapper"> 
         <div class="search-field">
@@ -132,6 +133,7 @@ export default {
       })
     }
 
+
     const clickHistory = () => {
       store.commit('root/setMenuActive', 1)
       const MenuItems = store.getters['root/getMenus']
@@ -140,6 +142,7 @@ export default {
         name: keys[1]
       })
     }
+
 
     // const clickLogo = () => {
     //   store.commit('root/setMenuActive', 0)
@@ -282,27 +285,32 @@ export default {
     margin: auto 10%;
   }
   .main-header .hide-on-small .left-wrapper {
-    width: 15%;
+    width: 30%;
+    height: 50px;
     float: left;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper {
-    width: 50%;
+    display: inline-block;
+    width: 25%;
     float: left;
     cursor: pointer;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper .ic.ic-logo {
-    width: 50px;
+    width: 70px;
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url('../../../assets/images/ssafy-logo.png');
   }
   .main-header .hide-on-small .left-wrapper .side-wrapper {
+    display: inline-block;
     width: 50%;
     float: right;
+    margin-right: 10%;
   }
-  .main-header .hide-on-small .left-wrapper .side-wrapper .el-button {
-    width: 100%;
+  .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper {
+    display: inline-block;
+    width: 45%;
     height: 50px;
     cursor: pointer;
     margin-right: 1%;

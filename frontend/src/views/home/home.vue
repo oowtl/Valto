@@ -1,16 +1,19 @@
 <template>
   <h1>{{ state.query }}</h1>
-    <button class="el-button el-button--primary" type="button">
-      <i class="el-icon-sort"></i>
-      <span>개발중</span>
-    </button>
-  <div class="carousel">  
-    <el-carousel :interval="4000" type="card" height="300px">
-      <el-carousel-item v-for="item in 5" :key="item">
-        <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
+  <button class="el-button el-button--primary" type="button">
+    <i class="el-icon-sort"></i>
+    <span>개발중</span>
+  </button>
+  <div class="carousel">
+    <el-carousel :interval="2000" type="card" height="300px">
+      <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
+        <h3 @click="clickRoom(carousel.roomId)" class="medium">
+          {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
+        </h3>
       </el-carousel-item>
     </el-carousel>
   </div>
+
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
       <room :room="room"/>
@@ -21,14 +24,16 @@
 </template>
 <style>
 .carousel {
-  width: 100%;
+  width: 80%;
   margin-top: 30px;
+  margin-left: 10%;
 }
 .carousel .el-carousel__item h3 {
     color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
+    font-size: 3vw;
+    opacity: 0.7;
     line-height: 300px;
+    margin: 0;
 }
 .carousel .el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
@@ -39,12 +44,12 @@
 .room-list {
   padding-left: 0;
   max-height: calc(100% - 35px);
-  list-style:none;
+  list-style: none;
   margin-top: 20px;
 }
 
 @media (min-width: 701px) and (max-width: 1269px) {
-  .room-list {
+  .room-list  {
     min-width: 700px;
   }
 }
@@ -68,6 +73,7 @@
   .el-icon-arrow-down {
     font-size: 12px;
   }
+
 </style>
 <script>
   // <ul>
@@ -83,11 +89,12 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { reactive, onMounted, computed, watch } from 'vue'
 
+
 export default {
   name: 'Home',
 
   components: {
-    Room
+    Room,
   },
 
   setup (props, { emit }) {
@@ -96,6 +103,7 @@ export default {
     const state = reactive({
       query: computed(() => route.query),
       rooms: [],
+      carousels: [],
     })
 
     // watch(() => route.query, (newVal, oldVal) => {
@@ -114,11 +122,35 @@ export default {
       store.dispatch('root/requestRoomList', state.query)
         .then((result) => {
           state.rooms = result.data.content
+          carouselRoom()
+          console.log(state.carousels)
         })
         .catch((err) => {
           console.log('room list request failed')
           console.log(err)
         })
+    }
+
+    const carouselRoom = function () {
+      console.log("carouselRoom실행됨")
+      let randomIndexArray = []
+      if (state.rooms.length > 6) {
+        for (let i=0; i<6; i++) {   //check if there is any duplicate index
+          let randomNum = Math.floor(Math.random() * state.rooms.length)
+          if (randomIndexArray.indexOf(randomNum) === -1) {
+            randomIndexArray.push(randomNum)
+          } else {
+            //if the randomNum is already in the array retry
+            i--
+          }
+        }
+        for (let i=0; i<6; i++) {
+          state.carousels.push(state.rooms[randomIndexArray[i]])
+          console.log(state.carousels)
+        }
+      } else {
+        state.carousels = state.rooms
+      }
     }
 
     // 검색시 방 목록 업데이트
