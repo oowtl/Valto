@@ -24,8 +24,8 @@ function makeRoutesFromMenu () {
     {
       path: '/',
       name: 'layout',
-      // component: Main,
-      component: Layout,
+      component: Main,
+      // component: Layout,
       children: mainChildren
     },
     // {

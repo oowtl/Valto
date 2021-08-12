@@ -74,7 +74,7 @@ export default {
     })
 
     const clickEnter = function (roomId) {
-      store.dispatch('root/requestRoomToken', roomId)
+      store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           // 임시로 로컬스토리지에 저장
           localStorage.setItem('st', result.data[0])
@@ -88,7 +88,6 @@ export default {
         })
         .catch((err) => {
           console.log(err)
-          handleClose()
         })
     }
     return { state, handleClose, detailForm, clickEnter }

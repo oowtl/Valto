@@ -1,7 +1,6 @@
 <template>
   <div class="room-wrapper">
     <div class="session">
-
       <div class="divider">
         <div class="partition left">
           왼쪽
@@ -19,11 +18,16 @@
           <div class="container">
           </div>
         </div>
-        <div class="panel" v-if="true">
-          <div class="panelChat">
-            <p>채팅창, 멤버</p>
+        <transition name="slide">
+          <div class="panel" v-if="state.openPanel">
+            <div class="panelChild chat" v-if="state.openChat">
+              <p>채팅창</p>
+            </div>
+            <div class="panelChild member" v-if="state.openMember">
+              <p>멤버</p>
+            </div>
           </div>
-        </div>
+        </transition>
       </div>
 		</div>
 
@@ -33,38 +37,28 @@
       </div>
       <div class="footer-child controller">
 
-        <microphone style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
-        <mute style="width: 2em; height: 2em; color: grey; margin-right: 16px;" />
-        <video-camera style="width: 2em; height: 2em; color: green; margin-right: 16px;" />
-        <video-camera style="width: 2em; height: 2em; color: grey; margin-right: 16px;" />
-        <phone-filled style="width: 2em; height: 2em; color: red; margin-right: 16px;" />
-        <close-bold style="width: 2em; height: 2em; color: red; margin-right: 16px;" />
+        <microphone :style="[state.buttonBase]" />
+        <mute :style="[state.buttonBase, {color: 'red'}]" />
+        <video-camera :style="[state.buttonBase]" />
+        <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+        <close-bold :style="[state.buttonBase, {color: 'red'}]" />
 
       </div>
       <div class="footer-child communication">
-        <bell-filled style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
-        <opportunity style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
-        <mic style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
-        <chat-dot-round style="width: 2em; height: 2em; color: white; margin-right: 16px;" />
-        <chat-dot-round style="width: 2em; height: 2em; color: grey; margin-right: 16px;" />
-        <user style="width: 2em; height: 2em; color: white; margin-right: 8px;" />
-        <user style="width: 2em; height: 2em; color: grey; margin-right: 8px;" />
+        <bell-filled :style="[state.buttonBase]" />
+        <opportunity :style="[state.buttonBase]" />
+        <mic :style="[state.buttonBase]" />
+        <chat-dot-round :style="[state.buttonBase, state.chatButton]" @click="onClickChat" />
+        <user :style="[state.buttonBase, state.memberButton]" @click="onClickMember" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Mic } from '@element-plus/icons'
-import { Mute } from '@element-plus/icons'
-import { User } from '@element-plus/icons'
-import { BellFilled } from '@element-plus/icons'
-import { CloseBold } from '@element-plus/icons'
-import { Microphone } from '@element-plus/icons'
-import { VideoCamera } from '@element-plus/icons'
-import { PhoneFilled } from '@element-plus/icons'
-import { ChatDotRound } from '@element-plus/icons'
-import { Opportunity } from '@element-plus/icons'
+import { reactive, computed } from 'vue'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
+
 export default {
   components: {
     Mic,
@@ -73,12 +67,42 @@ export default {
     BellFilled,
     CloseBold,
     Microphone,
-    PhoneFilled,
     VideoCamera,
     ChatDotRound,
     Opportunity,
   },
   setup() {
+    const state = reactive({
+      openChat: false,
+      openMember: false,
+      openPanel: computed(() => state.openChat || state.openMember),
+      buttonBase: { width: '2em', height: '2.2em', color: 'white', marginRight: '18px', cursor: 'pointer' },
+      chatButton: { color: 'grey' },
+      memberButton: { color: 'grey' },
+    })
+
+    const onClickChat = function () {
+      state.memberButton.color = 'grey'
+      state.openMember = false
+      state.openChat = !state.openChat
+      if (state.openChat) {
+        state.chatButton.color = 'white'
+      } else {
+        state.chatButton.color = 'grey'
+      }
+    }
+
+    const onClickMember = function () {
+      state.chatButton.color = 'grey'
+      state.openChat = false
+      state.openMember = !state.openMember
+      if (state.openMember) {
+        state.memberButton.color = 'white'
+      } else {
+        state.memberButton.color = 'grey'
+      }
+    }
+    return { state, onClickChat, onClickMember }
   },
 }
 </script>

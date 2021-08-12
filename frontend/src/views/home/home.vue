@@ -5,7 +5,7 @@
       <span>개발중</span>
     </button>
   <div class="carousel">
-    <el-carousel :interval="4000" type="card" height="300px">
+    <el-carousel class="carousel-container" :interval="40000" type="card" height="300px">
       <el-carousel-item v-for="item in 5" :key="item">
         <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
       </el-carousel-item>
@@ -21,9 +21,17 @@
 </template>
 <style>
 .carousel {
-  width: 100%;
+  /* max-width: 100%; */
   margin-top: 30px;
+  padding: 24px;
 }
+
+.carousel-container {
+  /* max-width: calc(100% - 48px); */
+  /* margin: 5rem; */
+  max-width: 100%;
+}
+
 .carousel .el-carousel__item h3 {
     color: #475669;
     font-size: 14px;

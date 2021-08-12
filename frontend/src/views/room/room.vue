@@ -17,9 +17,12 @@
 </template>
 
 <script>
-import { reactive, onBeforeMount, onBeforeUnmount } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
+import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
+
 
 // 12: state.publisher, 13:state.sub?
 
@@ -31,17 +34,29 @@ export default{
   },
 
   setup () {
+    const store = useStore()
+    const route = useRoute()
     const state = reactive({
       OV: undefined,
-			session: undefined,
-			mainStreamManager: undefined,
-			publisher: undefined,
-			subscribers: [],
+            session: undefined,
+            mainStreamManager: undefined,
+            publisher: undefined,
+            subscribers: [],
       nickname: 'publisher1',
       username: 'participant1',
+      roomId: computed(() => route.path.split('/')[2])
     })
 
     onBeforeMount(() => {
+      store.dispatch('root/requestRoomToken', state.roomId)
+        .then((result) => {
+          // 임시로 로컬스토리지에 저장
+          localStorage.setItem('st', result.data[0])
+          console.log(`TOKEN: ${localStorage.getItem('st')})`)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
