@@ -133,14 +133,13 @@ public class RoomServiceImpl implements RoomService {
 			roomRepository.findByTopicAgreeContainingOrTopicOppositeContaining
 			(roomListGetInfo.getTopic(), roomListGetInfo.getTopic())
 			.forEach((room) -> convertConnectedUserRoom(room, connectedUserRoomList));
-		}
-		
+		}	
 		// 아무런 조건이 없을 때 해줘야 하는 것
-		if (connectedUserRoomList.size() == 0) {
+		if ((roomListGetInfo.getTitle().equals("null")) && (roomListGetInfo.getTopic().equals("null"))) {		
 			roomRepository.findAll()
 			.forEach((room) -> convertConnectedUserRoom(room, connectedUserRoomList));
 		}
-		
+
 		Collections.sort(connectedUserRoomList, new Comparator<HashMap<String, Object>> () {
 			@Override
 			public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
