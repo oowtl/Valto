@@ -1,15 +1,25 @@
 <template>
-  <h1>{{ state.query }}</h1>
+  <!-- <h1>{{ state.query }}</h1>
     <button class="el-button el-button--primary" type="button">
       <i class="el-icon-sort"></i>
       <span>개발중</span>
-    </button>
+    </button> -->
   <div class="carousel">
     <el-carousel class="carousel-container" :interval="40000" type="card" height="300px">
       <el-carousel-item v-for="item in 5" :key="item">
         <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
       </el-carousel-item>
     </el-carousel>
+  </div>
+  <div class="search">
+    <el-input
+      placeholder="밸런스 토론 검색"
+      prefix-icon="el-icon-search"
+      v-model="state.searchValue"
+      style="margin-left: 100rem;"
+      @keyup.enter="searchRoom">
+      <!--  나중에 메소드 이름은 다시 정할것 -->
+    </el-input>
   </div>
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
@@ -118,7 +128,6 @@ export default {
 
     // 방 목록 받아오는 함수
     const getRoomList = function () {
-      // pagination 미구현 상태
       store.dispatch('root/requestRoomList', state.query)
         .then((result) => {
           state.rooms = result.data.content
@@ -133,8 +142,9 @@ export default {
     watch (() => route.query, () => {
       console.log('query updated')
       if (Object.keys(route.query).length !== 0) {
-        // sort 키가 없으면 query를 수정해서 넘기기: default 값은 participantsAsc
-        getRoomList()
+        // sort 키가 없으면 query를 수정해서 넘기기?: default 값은 participantsAsc
+        console.log('query 넘겨서 검색하기')
+        getRoomList(route.query)
       }
     })
 

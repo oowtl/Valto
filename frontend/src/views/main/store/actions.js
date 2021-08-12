@@ -123,7 +123,6 @@ export function requestRoomList({ commit }, payload) {
   return $axios.get(url, body)
 }
 
-
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
   const url = '/room/' + payload
@@ -147,23 +146,13 @@ export function requestRoomToken({ state }, payload) {
   return util.commonAxios(request)
 }
 
-// export function requestDetail({ commit }, payload){
-//   console.log('payload는', payload)
-//   const roomId = String(payload)
-//   // const url = `/room/${ roomId }`
-//   console.log('action 도착')
-//   const url = '/room/' + roomId
-//   $axios.get(url)
-//     console.log('axios 보내기')
-//     .then(function (result) {
-//       console.log('result는', result.data)
-//       commit('mutationDetail', result.data)
-//     })
-//     .catch(function (err) {
-//       console.log('에러발생')
-//       alert(err)
-//     })
-// }
-
-
-
+export function requestDeleteRoom ({ commit }, payload) {
+  const url = `https://localhost:8443/api/v1/room/${payload.sessionName}`
+  const body = payload
+  const request = {
+    method: 'delete',
+    url: url,
+    data: body,
+  }
+  return util.commonAxios(request)
+}

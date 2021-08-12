@@ -12,13 +12,15 @@
           <el-button @click="clickHistory">기록</el-button>
         </div>
       </div>
-      <div class="tool-wrapper"> 
-        <div class="search-field">
+      <div class="tool-wrapper">
+        <i class="el-icon-search" @click="onClickSearchIcon"></i>
+        <div class="search-field" :style="{ visibility: state.searchVisibility }">
           <el-input
             placeholder="밸런스 토론 검색"
-            prefix-icon="el-icon-search"
             v-model="state.searchValue"
-            @keyup.enter="searchRoom">
+            @keyup.enter="searchRoom"
+            @blur="onBlurSearch"
+            ref="mysearch">
             <!--  나중에 메소드 이름은 다시 정할것 -->
           </el-input>
         </div>
@@ -70,10 +72,9 @@
   </el-row>
 </template>
 <script>
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-
 
 export default {
   name: 'main-header',
@@ -88,8 +89,8 @@ export default {
   setup(props, { emit }) {
     const store = useStore()
     const router = useRouter()
-
     const state = reactive({
+      searchVisibility: 'hidden',
       searchValue: null,
       isCollapse: true,
       menuItems: computed(() => {
@@ -108,11 +109,6 @@ export default {
       loginFlag: computed(() => store.getters['root/getIsLoggedIn']),
       userId: computed(() => store.getters['root/getUserId'])
     })
-
-    if (state.activeIndex === -1) {
-      state.activeIndex = 0
-      store.commit('root/setMenuActive', 0)
-    }
 
     const menuSelect = function (param) {
       store.commit('root/setMenuActive', param)
@@ -141,14 +137,17 @@ export default {
       })
     }
 
-    // const clickLogo = () => {
-    //   store.commit('root/setMenuActive', 0)
-    //   const MenuItems = store.getters['root/getMenus']
-    //   let keys = Object.keys(MenuItems)
-    //   router.push({
-    //     name: keys[0]
-    //   })
-    // }
+    const mysearch = ref(null)
+
+
+    const onClickSearchIcon = function () {
+      state.searchVisibility = 'visible'
+      mysearch.value.focus()
+    }
+
+    const onBlurSearch = function () {
+      state.searchVisibility = 'hidden'
+    }
 
     // 로그인 클릭시
     const clickLogin = () => {
@@ -179,8 +178,7 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    const searchRoom = () => {
-      console.log(`searched room, value: ${state.searchValue}`)
+    const searchRoom = function () {
       router.push({
         name: 'home',
         query: {
@@ -190,7 +188,7 @@ export default {
       })
     }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory }
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory, mysearch, onClickSearchIcon, onBlurSearch }
   }
 }
 </script>

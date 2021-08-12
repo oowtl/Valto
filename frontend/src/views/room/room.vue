@@ -44,10 +44,11 @@ export default{
             subscribers: [],
       nickname: 'publisher1',
       username: 'participant1',
-      roomId: computed(() => route.path.split('/')[2])
+      roomId: '',
     })
 
     onBeforeMount(() => {
+      state.roomId = route.path.split('/')[2]
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           // 임시로 로컬스토리지에 저장
@@ -120,6 +121,12 @@ export default{
       state.publisher = undefined
       state.subscribers = []
       state.OV = undefined
+
+      const payload = {
+        sessionName: state.roomId,
+        token: localStorage.getItem('st')
+      }
+      store.dispatch('root/requestDeleteRoom', payload)
     })
 
     const updateMainVideoStreamManager = function (stream) {
