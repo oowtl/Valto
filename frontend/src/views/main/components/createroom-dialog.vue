@@ -1,6 +1,6 @@
 <template>
   <el-dialog custom-class="createroom-dialog" title="방 생성하기" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
+    <el-form :model="state.form" status-icon :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
       <!-- 제목 설정하기 -->
       <el-form-item prop="title" label="제목" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.title" autocomplete="off"></el-input>
@@ -52,7 +52,7 @@
     <!-- 생성 버튼 -->
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="clickCreateRoom">생성</el-button>
+        <el-button type="primary" @click="clickCreateRoom" :disabled="state.isInvalid">생성</el-button>
       </span>
     </template>
   </el-dialog>
@@ -175,15 +175,43 @@ export default {
     const checkTitle = function (rule, value, callback) {
       if(!value) {
         flag.value.title = false
-        return callback(new Error('필수 입력 항목입니다.'))
-      } else if (value.lenth < 2) {
+        return callback(new Error('제목은 필수 입력 항목입니다.'))
+      } else if (value.length < 2) {
         flag.value.title = false
         return callback(new Error('최소 2글자 이상 입력해야 합니다.'))
-      } else if (value.lenth > 15) {
+      } else if (value.length > 15) {
         flag.value.title = false
-        return callback(new Error('최대 15글자까지 입력 가능합니다.'))
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.` ))
       } else {
         flag.value.title = true
+        return callback()
+      }
+    }
+
+    const checkTopicAgree = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicAgree = true
+        return callback()
+      }
+    }
+
+    const checkTopicOpposite = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicOpposite = true
         return callback()
       }
     }
@@ -210,17 +238,19 @@ export default {
       },
       rules: {
         title: [
-          { validator: dummyValidation, trigger: 'change' },
+          // { validator: dummyValidation, trigger: 'change' },
           { validator : checkTitle, trigger: 'blur'},
-          { required: true },
+          { required: true }
         ],
         topicAgree: [
-          { validator: dummyValidation, trigger: 'change' },
-          { required: true, message: '선택 항목입니다.'},
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicAgree, trigger: 'blur' },
+          { required: true }
         ],
         topicOpposite: [
-          { validator: dummyValidation, trigger: 'change' },
-          { required: true, message: '선택 항목입니다.'},
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicOpposite, trigger: 'blur' },
+          { required: true }
         ],
         participants: [
           { required: true, message: '참가자 인원수 선택하세요.' }

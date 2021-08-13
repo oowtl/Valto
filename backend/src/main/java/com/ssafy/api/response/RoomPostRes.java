@@ -37,10 +37,25 @@ public class RoomPostRes extends BaseResponseBody{
 	@ApiModelProperty(name = "privateRoom")
 	Boolean privateRoom;
 	
-	@ApiModelProperty(name = "userSide")
-	String userSide;
+//	@ApiModelProperty(name = "userSide")
+//	String userSide;
 	
-	public static RoomPostRes of(Room room, User_Room userRoom) {
+//	public static RoomPostRes of(Room room, User_Room userRoom) {
+//		RoomPostRes res = new RoomPostRes();
+//		res.setRoomId(room.getId());
+//		res.setUserId(room.getUserId().getUserId());
+//		res.setParticipants(room.getParticipants());
+//		res.setObservers(room.getObservers());
+//		res.setTimes(room.getTimes());
+//		res.setTitle(room.getTitle());
+//		res.setTopicAgree(room.getTopicAgree());
+//		res.setTopicOpposite(room.getTopicOpposite());
+//		res.setPrivateRoom(room.getPrivateRoom());
+//		res.setUserSide(userRoom.getUserSide());
+//		return res;
+//	}
+	
+	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
 		res.setRoomId(room.getId());
 		res.setUserId(room.getUserId().getUserId());
@@ -51,7 +66,7 @@ public class RoomPostRes extends BaseResponseBody{
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
 		res.setPrivateRoom(room.getPrivateRoom());
-		res.setUserSide(userRoom.getUserSide());
+//		res.setUserSide(userRoom.getUserSide());
 		return res;
 	}
 	
