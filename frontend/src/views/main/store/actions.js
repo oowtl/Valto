@@ -137,7 +137,7 @@ export function requestDetail({ state }, payload) {
 
 export function requestRoomToken({ state }, payload) {
   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = 'https://localhost:8443/api/sessions/get-token'
+  const url = '/api/sessions/get-token'
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',
