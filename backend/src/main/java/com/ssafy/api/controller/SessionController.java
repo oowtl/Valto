@@ -31,7 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Api(value = "Session Api", tags = {"Session"})
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api/vi/sessions")
 public class SessionController {
 
 	// OpenVidu object as entrypoint of the SDK
