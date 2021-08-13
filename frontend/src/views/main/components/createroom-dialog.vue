@@ -225,6 +225,7 @@ export default {
         // api 응답 결과로 받은 conference_id 값으로 '방 상세보기' 페이지에 진입해야함
           .then(function (result) {
             console.log('axios 성공성공');
+            console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
             name: 'room',

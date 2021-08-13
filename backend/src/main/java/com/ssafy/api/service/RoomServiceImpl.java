@@ -180,7 +180,7 @@ public class RoomServiceImpl implements RoomService {
 		List<Room> result = new ArrayList<Room>();
 		resultUserRoomList.forEach((room) -> result.add((Room) room.get("room")));
 		
-		return result;
+		return roomRepository.findAll();
 	}
 	
 	@Override

@@ -118,7 +118,7 @@ export function requestUpdateProfile({ commit }, payload) {
 
 // 방 목록 요청 (비로그인 상태에서도 가능)
 export function requestRoomList({ commit }, payload) {
-  const url = '/room'
+  const url = '/room?size=4&page=1'
   const body = { params: payload }
   return $axios.get(url, body)
 }
@@ -137,7 +137,7 @@ export function requestDetail({ state }, payload) {
 
 export function requestRoomToken({ state }, payload) {
   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = 'https://localhost:8443/api/sessions/get-token'
+  const url = 'https://localhost:8443/api/v1/room/'+payload+'/admission'
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',
@@ -147,6 +147,17 @@ export function requestRoomToken({ state }, payload) {
   return util.commonAxios(request)
 }
 
+export function requestDeleteRoom({ commit }, payload) {
+  console.log(payload)
+  const url = `https://localhost:8443/api/v1/room/${payload.sessionName}/admission`
+  const body = payload
+  const request = {
+    method: 'delete',
+    url: url,
+    data: body,
+  }
+  return util.commonAxios(request)
+}
 // export function requestDetail({ commit }, payload){
 //   console.log('payload는', payload)
 //   const roomId = String(payload)

@@ -40,7 +40,7 @@ public class RoomPostRes extends BaseResponseBody{
 	@ApiModelProperty(name = "userSide")
 	String userSide;
 	
-	public static RoomPostRes of(Room room, User_Room userRoom) {
+	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
 		res.setRoomId(room.getId());
 		res.setUserId(room.getUserId().getUserId());
@@ -51,7 +51,8 @@ public class RoomPostRes extends BaseResponseBody{
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
 		res.setPrivateRoom(room.getPrivateRoom());
-		res.setUserSide(userRoom.getUserSide());
+		// 임시로 observer 넣어둠
+		res.setUserSide("observer");
 		return res;
 	}
 	
