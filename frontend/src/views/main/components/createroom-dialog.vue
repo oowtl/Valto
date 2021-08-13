@@ -161,9 +161,40 @@ export default {
     const store = useStore()
     const createRoomForm = ref(null)
     const router = useRouter()
+
+    const flag = ref({
+      title: false,
+      topicAgree: false,
+      topicOpposite: false
+    })
+
+    // 아이디, 닉네임 입력 대기용 dummy function
+    const dummyValidation = function (rule, value, callback) {
+      console.log('wating for blur')
+    }
+    const checkTitle = function (rule, value, callback) {
+      if(!value) {
+        flag.value.title = false
+        return callback(new Error('필수 입력 항목입니다.'))
+      } else if (value.lenth < 2) {
+        flag.value.title = false
+        return callback(new Error('최소 2글자 이상 입력해야 합니다.'))
+      } else if (value.lenth > 15) {
+        flag.value.title = false
+        return callback(new Error('최대 15글자까지 입력 가능합니다.'))
+      } else {
+        flag.value.title = true
+        return callback()
+      }
+    }
+
+
     const state = reactive({
       userId: computed(() => {
         return store.getters['root/getUserId']
+      }),
+      isInvalid: computed(() => {
+        return Object.values(flag.value).some(bool => bool === false)
       }),
       form: {
         // userId: this.userId,
@@ -179,13 +210,16 @@ export default {
       },
       rules: {
         title: [
-          { required: true, message: '필수 입력 항목입니다.' },
-          { required: true, message: '최대 30자까지 입력 가능합니다.', max:30 }
+          { validator: dummyValidation, trigger: 'change' },
+          { validator : checkTitle, trigger: 'blur'},
+          { required: true },
         ],
         topicAgree: [
+          { validator: dummyValidation, trigger: 'change' },
           { required: true, message: '선택 항목입니다.'},
         ],
         topicOpposite: [
+          { validator: dummyValidation, trigger: 'change' },
           { required: true, message: '선택 항목입니다.'},
         ],
         participants: [
@@ -251,7 +285,9 @@ export default {
       state.privateRoom = !state.privateRoom
     }
 
-    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck }
+
+
+    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck, dummyValidation, flag }
   }
 }
 </script>

@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="tool-wrapper">
-        <i class="el-icon-search" @click="onClickSearchIcon"></i>
+        <!-- <i class="el-icon-search" @click="onClickSearchIcon"></i> -->
         <div class="search-field" :style="{ visibility: state.searchVisibility }">
           <el-input
             placeholder="밸런스 토론 검색"

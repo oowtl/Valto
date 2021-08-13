@@ -64,8 +64,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		// user 가 없는 방이라면
 		if (userRoomList.size() == 0) {
-			roomInfo.setAgreeUsers(agreeUserList);
-			roomInfo.setOppositeUsers(oppositeUserList);
+				roomInfo.setAgreeUsers(agreeUserList);
+				roomInfo.setOppositeUsers(oppositeUserList);
 			roomInfo.setObserverUsers(observerUserList);
 			return roomInfo;
 		}
