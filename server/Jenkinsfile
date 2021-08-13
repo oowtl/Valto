@@ -22,9 +22,9 @@ pipeline {
 
 				sh 'docker images -f dangling=true && docker rmi $(docker images -f dangling=true -q)'
 
-				sh 'docker run -d --name frontend -p 443:443 --network ssafy_net frontend:latest'
+				sh 'docker run -d --name frontend -p 8000:8000 -p 8443:8443 --network ssafy_net frontend:latest'
 				sh 'docker run -d --name backend -p 8080:8080 --network ssafy_net backend:latest'
-
+				
 			}
 		}
 	}
