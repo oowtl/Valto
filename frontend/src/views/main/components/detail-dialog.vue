@@ -6,30 +6,31 @@
           <span>{{ state.form.topicAgree }}</span>
           <span style="color: #6b6b6b;"> vs. </span>
           <span>{{ state.form.topicOpposite }}</span>
+          <hr>
         </span>
 
         <el-form-item label="토론 시간: " :label-width="state.formLabelWidth">
           {{ state.form.times }}분
         </el-form-item>
         <el-form-item label="주제1(왼쪽) 인원수: " :label-width="state.formLabelWidth">
-          {{ state.form.agreeUsers.length }}
+          {{ state.form.agreeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
-          {{ state.form.oppositeUsers.length }}
+          {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
         <el-form-item label="관전자 인원수: " :label-width="state.formLabelWidth">
-          {{ state.form.observerUsers.length }}
+          {{ state.form.observerUsers.length }}/{{ state.form.observers }}
         </el-form-item>
         <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
-        <el-select v-model="state.form.userSide" placeholder="포지션">
-          <el-option
-            v-for="position in userSide"
-            :key="position.value"
-            :label="position.label"
-            :value="position.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
+          <el-select class="positionSelect" v-model="state.form.userSide" placeholder="포지션">
+            <el-option
+              v-for="position in userSide"
+              :key="position.value"
+              :label="position.label"
+              :value="position.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
           <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
           <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
@@ -86,8 +87,9 @@ export default {
       form: null,
       userSide: '',
       roomPassword: '',
+      divide_participants: '',
       dialogVisible: computed(() => props.open),
-      formLabelWidth: '150px',
+      formLabelWidth: '250px',
       align: 'left',
       token: null,
       rules: {
@@ -108,8 +110,9 @@ export default {
       if (newVal === true) {
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
-            console.log(result)
+            console.log("result는", result)
             state.form = result.data
+            state.divide_participants = result.data.participants/2
           })
           .catch(function (err) {
             console.log(err)
@@ -168,7 +171,7 @@ export default {
 <style>
 .detail-dialog {
   width: 600px !important;
-  height: 750px;
+  height: 800px;
 }
 .topics {
   text-align: center;
@@ -184,12 +187,24 @@ export default {
 /* .detail-dialog .el-dialog__headerbtn {
   float: right;
 } */
-/* .detail-dialog .el-form-item__content {
-  margin-left: 0 !important;
-  float: right;
-  width: 200px;
+.detail-dialog .el-form-item__label {
+  margin-left: 50px !important;
+  font-size: 25px;
+  font-weight: bold;
   display: inline-block;
-} */
+}
+.detail-dialog .el-form-item__content {
+  margin-left: 0 !important;
+  font-size: 25px;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+}
+.detail-dialog .el-form-item__content .positionSelect {
+  width: 130px;
+  font-weight: bold;
+}
+
 /* .detail-dialog .el-form-item {
   margin-bottom: 20px;
   font-size: 20px;
@@ -202,12 +217,14 @@ export default {
   display: none;
 } */
 .detail-dialog .el-dialog__footer {
-  margin: 0 calc(50% - 80px);
+  margin: 20px calc(50% - 80px);
   padding-top: 0;
   display: inline-block;
 }
-/* .detail-dialog .dialog-footer .el-button {
+.detail-dialog .dialog-footer .el-button {
   width: 120px;
-} */
+  higtht: 100px;
+  font-size: 30px;
+}
 </style>
 p

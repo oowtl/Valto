@@ -13,7 +13,7 @@
           <li class="li-wrapper" @click="clickRanking">랭킹</li>
         </ul>
       </div>
-      <div class="tool-wrapper"> 
+      <div class="tool-wrapper">
         <div class="search-field">
           <el-input
             placeholder="밸런스 토론 검색"
@@ -23,15 +23,15 @@
             <!--  나중에 메소드 이름은 다시 정할것 -->
           </el-input>
         </div>
-        <div class="button-wrapper" v-if="!state.loginFlag">
-          <el-button @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</el-button>
-          <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
-        </div>
-        <div class="button-wrapper" v-if="state.loginFlag">
-          <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</el-button>
-          <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
-          <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
-        </div>
+        <ul class="button-wrapper" v-if="!state.loginFlag">
+          <li class="button-list" @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</li>
+          <li class="button-list" type="primary" @click="clickLogin" icon="el-icon-key">로그인</li>
+        </ul>
+        <ul class="button-wrapper" v-if="state.loginFlag">
+          <li class="button-list" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</li>
+          <li class="button-list" @click="clickProfile" icon="el-icon-user-solid">프로필</li>
+          <li class="button-list" @click="clickLogout" icon="el-icon-switch-button">로그아웃</li>
+        </ul>
       </div>
 
     </div>
@@ -317,17 +317,20 @@ export default {
   }
   .main-header .hide-on-small .tool-wrapper {
     width: 70%;
+    height: 50px;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 55%;
+    width: 50%;
     float: right;
+    display: inline-block;
   }
-  .main-header .hide-on-small .tool-wrapper .button-wrapper .el-button {
+  .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list {
     width: 30%;
     height: 50px;
     cursor: pointer;
     margin: 0 1%;
+    display: inline-block;
   }
   .main-header .hide-on-small .tool-wrapper .search-field {
     width: 45%;

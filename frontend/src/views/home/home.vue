@@ -4,15 +4,22 @@
     <i class="el-icon-sort"></i>
     <span>개발중</span>
   </button>
-  <div class="carousel">
-    <el-carousel :interval="2000" type="card" height="300px">
-      <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
-        <h3 @click="clickRoom(carousel.roomId)" class="medium">
-          {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
-        </h3>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+
+  <!-- <el-carousel :interval="2000" arrow="always">
+    <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
+      <h3 @click="clickRoom(carousel.roomId)" class="small">
+        {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
+      </h3>
+    </el-carousel-item>
+  </el-carousel> -->
+
+  <el-carousel :interval="2000" arrow="always">
+    <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
+      <h3 @click="clickRoom(carousel.roomId)" class="small">
+        {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
+      </h3>
+    </el-carousel-item>
+  </el-carousel>
 
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
@@ -20,27 +27,27 @@
     </li>
   </ul>
 
-
 </template>
 <style>
-.carousel {
+.el-carousel {
+  margin: 5% 10%;
   width: 80%;
-  margin-top: 30px;
-  margin-left: 10%;
+
 }
-.carousel .el-carousel__item h3 {
-    color: #475669;
-    font-size: 3vw;
-    opacity: 0.7;
-    line-height: 300px;
-    margin: 0;
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 20px;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0;
 }
-.carousel .el-carousel__item:nth-child(2n) {
+.el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
 }
-.carousel .el-carousel__item:nth-child(2n+1) {
+.el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
 }
+
 .room-list {
   padding-left: 0;
   max-height: calc(100% - 35px);
@@ -70,9 +77,9 @@
     cursor: pointer;
     color: #409EFF;
   }
-  .el-icon-arrow-down {
-    font-size: 12px;
-  }
+.el-icon-arrow-down {
+  font-size: 12px;
+}
 
 </style>
 <script>
@@ -162,14 +169,19 @@ export default {
       }
     })
 
-
     // 초기 데이터 로딩
     onMounted (() => {
       console.log('initial room list loading')
       getRoomList()
     })
 
-    return { state, getRoomList, clickRoom }
+    return {
+      state,
+      getRoomList,
+      clickRoom,
+    }
   }
 }
+
+
 </script>
