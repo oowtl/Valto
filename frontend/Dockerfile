@@ -19,5 +19,5 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY ./nginx/homepage.conf /etc/nginx/conf.d/homepage.conf
 COPY --from=build-stage ./homepage/dist /usr/share/nginx/html/homepage
 COPY ./ssl ./ssl
-EXPOSE 443
+EXPOSE 8443
 CMD ["nginx", "-g", "daemon off;"]
