@@ -107,8 +107,7 @@ public class RoomController {
 		 */
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
-		
-		
+
 		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
 		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
@@ -116,7 +115,8 @@ public class RoomController {
 
 		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
-//		User_Room userRoom = userRoomService.enterUserRoom(validatedUserId, room.getId(), roomCreateInfo.getUserSide());
+		// User_Room userRoom = userRoomService.enterUserRoom(validatedUserId,
+		// room.getId(), roomCreateInfo.getUserSide());
 
 		String sessionName = Long.toString(room.getId());
 		OpenViduRole role = OpenViduRole.PUBLISHER;
@@ -125,21 +125,18 @@ public class RoomController {
 		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC)
 				.data(serverData).role(role).build();
 
-//		JSONObject responseJson = new JSONObject();
+		// JSONObject responseJson = new JSONObject();
 
 		// userSide 유효성 검사
-//		if (roomCreateInfo.getUserSide()==null || !(roomCreateInfo.getUserSide().equals("agree") || roomCreateInfo.getUserSide().equals("opposite") || roomCreateInfo.getUserSide().equals("observer"))) {
-//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect userSide"));
-//		}
+		// if (roomCreateInfo.getUserSide()==null ||
+		// !(roomCreateInfo.getUserSide().equals("agree") ||
+		// roomCreateInfo.getUserSide().equals("opposite") ||
+		// roomCreateInfo.getUserSide().equals("observer"))) {
+		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect
+		// userSide"));
+		// }
 
-		
-		
-		
-		
 		// 방에 접속한 유저 정보 / User_Room 생성하기
-		// 삭제하자...
-		
-		
 
 		System.out.println("New session " + sessionName);
 		try {
@@ -158,17 +155,16 @@ public class RoomController {
 			// Store the session and the token in our collections
 			this.mapSessions.put(sessionName, session);
 			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
-//			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
-//			this.mapSessionNamesTokens.get(sessionName).put(token, role);
-			
+			// this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
+			// this.mapSessionNamesTokens.get(sessionName).put(token, role);
+
 			System.out.println("createRoom mapSession" + this.mapSessions);
 			System.out.println("createRoom mapSessionNamesTokens" + this.mapSessionNamesTokens);
 			// Prepare the response with the token
-//			responseJson.put(0, token);
+			// responseJson.put(0, token);
 
 			// Return the response to the client
 			return ResponseEntity.status(201).body(RoomPostRes.of(room));
-			
 
 		} catch (Exception e) {
 			// If error generate an error message and return it to client
@@ -299,11 +295,10 @@ public class RoomController {
 	public ResponseEntity<?> enterRoom(@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "방 입장 정보", required = true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId) {
-		
+
 		System.out.println("session test");
 		System.out.println(mapSessions);
 		System.out.println(mapSessionNamesTokens);
-		
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
@@ -316,16 +311,21 @@ public class RoomController {
 		}
 
 		// user 가 이미 하나의 방에 접속한 경우
-//		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
+		// User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
-//		if (existUserRoom.getUserId() != null) {
-//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
-//		}
+		// if (existUserRoom.getUserId() != null) {
+		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
+		// enter room user"));
+		// }
 
 		// userSide 유효성 검사
-//		if (userRoomPostReq.getUserSide()==null || !(userRoomPostReq.getUserSide().equals("agree") || userRoomPostReq.getUserSide().equals("opposite") || userRoomPostReq.getUserSide().equals("observer"))) {
-//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect userSide"));
-//		}
+		// if (userRoomPostReq.getUserSide()==null ||
+		// !(userRoomPostReq.getUserSide().equals("agree") ||
+		// userRoomPostReq.getUserSide().equals("opposite") ||
+		// userRoomPostReq.getUserSide().equals("observer"))) {
+		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect
+		// userSide"));
+		// }
 
 		// 만약에 비밀번호 방이라면??
 		// 방 입장시 한번 더 user_room 생성
@@ -374,14 +374,10 @@ public class RoomController {
 
 	@DeleteMapping("{roomId}/admission")
 	@ApiOperation(value = "방 나가기", notes = "유저가 방에서 나간다.")
-	@ApiResponses({ @ApiResponse(code = 204, message = "success"), 
-					@ApiResponse(code = 400, message = "no Exist Room"),
-					@ApiResponse(code = 400, message = "no Room User"), 
-					@ApiResponse(code = 403, message = "no entered User") })
-	public ResponseEntity<? extends BaseResponseBody> leaveRoom(
-			@ApiIgnore Authentication authentication,
-			@PathVariable("roomId") String roomId, 
-			@RequestBody String sessionNameToken) throws ParseException {
+	@ApiResponses({ @ApiResponse(code = 204, message = "success"), @ApiResponse(code = 400, message = "no Exist Room"),
+			@ApiResponse(code = 400, message = "no Room User"), @ApiResponse(code = 403, message = "no entered User") })
+	public ResponseEntity<? extends BaseResponseBody> leaveRoom(@ApiIgnore Authentication authentication,
+			@PathVariable("roomId") String roomId, @RequestBody String sessionNameToken) throws ParseException {
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
@@ -392,31 +388,32 @@ public class RoomController {
 		JSONObject sessionNameTokenJSON = (JSONObject) new JSONParser().parse(sessionNameToken);
 		String sessionName = (String) sessionNameTokenJSON.get("sessionName");
 		String token = (String) sessionNameTokenJSON.get("token");
-		
+
 		// 방 없을 때
 		if (room == null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
 		// If the session exists
-		
-		
+
 		// 접속한 유저가 아니라면
-//		javax.persistence.NonUniqueResultException: query did not return a unique result: 114
+		// javax.persistence.NonUniqueResultException: query did not return a unique
+		// result: 114
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
-//		if (existUserRoom.getUserId() == null) {
-//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
-//		}
+		// if (existUserRoom.getUserId() == null) {
+		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
+		// enter room user"));
+		// }
 
 		// 방에 속한 유저가 아니라면
 		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.
-//		if (!existUserRoom.getRoomId().equals(room)) {
-//			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no entered User"));
-//		}
-//		
+		// if (!existUserRoom.getRoomId().equals(room)) {
+		// return ResponseEntity.status(403).body(BaseResponseBody.of(403, "no entered
+		// User"));
+		// }
+		//
 		// User_Room 삭제
-		
-		
+
 		if (this.mapSessions.get(sessionName) != null && this.mapSessionNamesTokens.get(sessionName) != null) {
 
 			// If the token exists
@@ -426,7 +423,7 @@ public class RoomController {
 					// Last user left: session must be removed
 					this.mapSessions.remove(sessionName);
 					// 방삭제.
-					
+
 					// userRoom 삭제
 					String message = userRoomService.leaveRoom(existUserRoom);
 
@@ -445,7 +442,7 @@ public class RoomController {
 			System.out.println("Problems in the app server: the SESSION does not exist");
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-//		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		// return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 
 	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {
@@ -463,8 +460,8 @@ public class RoomController {
 		if (httpSession.getAttribute("loggedUser") == null) {
 			throw new Exception("not loggedUser");
 		}
-//		if (httpSession == null || httpSession.getAttribute("loggedUser") == null) {
-//			throw new Exception("User not logged");
-//		}
+		// if (httpSession == null || httpSession.getAttribute("loggedUser") == null) {
+		// throw new Exception("User not logged");
+		// }
 	}
 }

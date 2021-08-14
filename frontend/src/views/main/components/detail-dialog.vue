@@ -1,6 +1,12 @@
 <template>
   <div style="padding: 14px;">
-    <el-dialog v-if="state.form" custom-class="detail-dialog" :title="state.form.title" v-model="state.dialogVisible" @close="handleClose">
+    <el-dialog
+      v-if="state.form"
+      custom-class="detail-dialog"
+      :title="state.form.title"
+      v-model="state.dialogVisible"
+      @close="handleClose"
+    >
       <el-form :label-position="state.align">
         <span class="topics">
           <span>{{ state.form.topicAgree }}</span>
@@ -38,21 +44,24 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="clickEnter(state.form.roomId)" v-model="state.dialogVisible">입장</el-button>
+          <el-button
+            type="primary"
+            @click="clickEnter(state.form.roomId)"
+            v-model="state.dialogVisible"
+            >입장</el-button
+          >
         </span>
       </template>
     </el-dialog>
   </div>
-
 </template>
 <script>
-import { reactive, computed, ref, watch } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-
+import { reactive, computed, ref, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default {
-  name: 'detail-dialog',
+  name: "detail-dialog",
 
   props: {
     open: {
@@ -60,7 +69,7 @@ export default {
       default: false
     },
     roomId: {
-      type: String,
+      type: String
     }
   },
 
@@ -80,9 +89,9 @@ export default {
   },
 
   setup(props, { emit }) {
-    const router = useRouter()
-    const store = useStore()
-    const detailForm = ref(null)
+    const router = useRouter();
+    const store = useStore();
+    const detailForm = ref(null);
     const state = reactive({
       form: null,
       userSide: '',
@@ -100,10 +109,10 @@ export default {
     })
 
     // 닫기
-    const handleClose = function () {
-      state.form = null
-      emit('closeDetailDialog')
-    }
+    const handleClose = function() {
+      state.form = null;
+      emit("closeDetailDialog");
+    };
 
     // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
     watch(() => props.open, (newVal, oldVal) => {
@@ -118,55 +127,22 @@ export default {
             console.log(err)
           })
         } else if (newVal === false) {
-        console.log('detail dialog closed')
+          console.log("detail dialog closed");
+        }
       }
-    })
+    );
 
-    const clickEnter = function (roomId) {
-      store.dispatch('root/requestRoomToken', roomId )
-        .then((result) => {
-          // 임시로 로컬스토리지에 저장
-          localStorage.setItem('st', result.data[0])
-          console.log(`TOKEN: ${localStorage.getItem('st')})`)
-          router.push({
-            name: 'room',
-            params: {
-              roomId: roomId
-            }
-          })
-        })
-        .catch((err) => {
-          console.log(err)
-          handleClose()
-        })
-    }
-
-    // const clickEnter = function (roomId) {
-    //   store.dispatch('root/requestRoomToken', {
-    //     roomId: roomId,
-    //     privateRoom: state.form.privateRoom,
-    //     roomPassword: state.roomPassword,
-    //     userSide: state.userSide
-    //   })
-    //     .then((result) => {
-    //       // 임시로 로컬스토리지에 저장
-    //       localStorage.setItem('st', result.data[0])
-    //       console.log(`TOKEN: ${localStorage.getItem('st')})`)
-    //       router.push({
-    //         name: 'room',
-    //         params: {
-    //           roomId: roomId
-    //         }
-    //       })
-    //     })
-    //     .catch((err) => {
-    //       console.log(err)
-    //       handleClose()
-    //     })
-    // }
-    return { state, handleClose, detailForm, clickEnter }
+    const clickEnter = function(roomId) {
+      router.push({
+        name: "room",
+        params: {
+          roomId: roomId
+        }
+      });
+    };
+    return { state, handleClose, detailForm, clickEnter };
   }
-}
+};
 </script>
 <style>
 .detail-dialog {
@@ -178,7 +154,7 @@ export default {
   font-weight: bold;
   font-size: 40px;
   color: black;
-  display:block;
+  display: block;
   margin-top: 20px;
   margin-bottom: 80px;
 }

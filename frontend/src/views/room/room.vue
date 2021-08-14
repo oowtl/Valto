@@ -31,28 +31,66 @@ export default{
   components: {
     UserVideo
   },
-
   setup () {
     const store = useStore()
     const route = useRoute()
-    const state = reactive({
-      OV: undefined,
-            session: undefined,
-            mainStreamManager: undefined,
-            publisher: undefined,
-            subscribers: [],
-      nickname: 'publisher1',
-      username: 'participant1',
-      roomId: '',
-    })
-
-    onBeforeMount(() => {
-      state.roomId = route.path.split('/')[2]
+    const getToken = function(){
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           // 임시로 로컬스토리지에 저장
           localStorage.setItem('st', result.data[0])
           console.log(`TOKEN: ${localStorage.getItem('st')})`)
+          console.log(`RoomID: ${state.roomId}`)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+    }
+    const state = reactive({
+      OV: undefined,
+      session: undefined,
+      mainStreamManager: undefined,
+      publisher: undefined,
+      subscribers: [],
+      //user nickname 으로 수정해야함
+      nickname: 'publisher1',
+      //username 으로 수정해야함
+      username: 'participant1',
+      roomId: '',
+      token: null,
+    })
+
+    const connectSession = function () {
+      state.session.connect(state.token, {})
+        .then(() => {
+          // --- Get your own camera stream with the desired properties ---
+          let publisher = state.OV.initPublisher(undefined, {
+            audioSource: undefined, // The source of audio. If undefined default microphone
+            videoSource: undefined, // The source of video. If undefined default webcam
+            publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
+            publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
+            resolution: '640x480',  // The resolution of your video
+            frameRate: 30,			// The frame rate of your video
+            insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
+            mirror: false       	// Whether to mirror your local video or not
+          })
+          state.mainStreamManager = publisher
+          state.publisher = publisher
+          state.session.publish(state.publisher)
+        })
+        .catch(error => {
+          console.log('There was an error connecting to the session:', error.code, error.message);
+        })
+    }
+
+    onBeforeMount(() => {
+      state.roomId = computed(() => route.path.split('/')[2])
+      //localStorage.setItem('roomId', state.roomId)
+      store.dispatch('root/requestRoomToken', state.roomId)
+        .then((result) => {
+          state.token = result.data[0]
+          connectSession()
         })
         .catch((err) => {
           console.log(err)
@@ -60,7 +98,7 @@ export default{
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
-      console.log(state.session)
+      console.log('before session :' + state.session)
       state.session = state.OV.initSession()
       console.log('room onBeforeMount session : ')
       console.log(state.session)
@@ -88,32 +126,11 @@ export default{
 			})
 
       // 토큰과 클라이언트의 정보를 전달하며 세션에 연결함
-      const token = localStorage.getItem('st')
-      // state.session.connect(token, { clientData: state.nickname })
-      state.session.connect(token, {})
-        .then(() => {
-          // --- Get your own camera stream with the desired properties ---
-          let publisher = state.OV.initPublisher(undefined, {
-            audioSource: undefined, // The source of audio. If undefined default microphone
-            videoSource: undefined, // The source of video. If undefined default webcam
-            publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
-            publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-            resolution: '640x480',  // The resolution of your video
-            frameRate: 30,			// The frame rate of your video
-            insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-            mirror: false       	// Whether to mirror your local video or not
-          })
-          state.mainStreamManager = publisher
-          state.publisher = publisher
-          state.session.publish(state.publisher)
-        })
-        .catch(error => {
-          console.log('There was an error connecting to the session:', error.code, error.message);
-        })
+
     })
 
     //세션 나가기
-    onBeforeUnmount(() => {
+      onBeforeUnmount(() => {
       state.session.disconnect();
       state.session = undefined
       state.mainStreamManager = undefined
@@ -125,9 +142,9 @@ export default{
         sessionName: state.roomId,
         token: localStorage.getItem('st')
       }
+      localStorage.removeItem('st')
       store.dispatch('root/requestDeleteRoom', payload)
     })
-
     const updateMainVideoStreamManager = function (stream) {
       if (state.mainStreamManager === stream) return;
       state.mainStreamManager = stream
@@ -139,7 +156,7 @@ export default{
 
     //disconnect로 세션 leave
 
-    return { state, updateMainVideoStreamManager, leaveSession }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession }
   }
 
 }

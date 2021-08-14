@@ -314,6 +314,7 @@ export default {
           })
           .then(function (result) {
             console.log('axios 성공성공');
+            console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
             name: 'room',
