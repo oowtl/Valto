@@ -31,24 +31,10 @@ export default{
   components: {
     UserVideo
   },
-
   setup () {
     const store = useStore()
     const route = useRoute()
-    const state = reactive({
-      OV: undefined,
-      session: undefined,
-      mainStreamManager: undefined,
-      publisher: undefined,
-      subscribers: [],
-      nickname: 'publisher1',
-      username: 'participant1',
-      roomId: '',
-    })
-
-    onBeforeMount(() => {
-      state.roomId = computed(() => route.path.split('/')[2])
-      //localStorage.setItem('roomId', state.roomId)
+    const getToken = function(){
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           // 임시로 로컬스토리지에 저장
@@ -59,6 +45,29 @@ export default{
         .catch((err) => {
           console.log(err)
         })
+
+    }
+    const state = reactive({
+      OV: undefined,
+      session: undefined,
+      mainStreamManager: undefined,
+      publisher: undefined,
+      subscribers: [],
+      //user nickname 으로 수정해야함
+      nickname: 'publisher1',
+      //username 으로 수정해야함
+      username: 'participant1',
+      roomId: '',
+    })
+
+    onBeforeMount(() => {
+     state.roomId = route.path.split('/')[2]
+      localStorage.setItem('roomId', state.roomId)
+      
+      async function requestToken(){
+        console.log('request Token!')
+        await getToken();
+      }
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
