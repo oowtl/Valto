@@ -168,6 +168,7 @@ public class RoomController {
 
 			// Return the response to the client
 			return ResponseEntity.status(201).body(RoomPostRes.of(room));
+			
 
 		} catch (Exception e) {
 			// If error generate an error message and return it to client

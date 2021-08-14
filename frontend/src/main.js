@@ -216,12 +216,9 @@ app.mount('#app')
 const requireLogin = ['history', 'room']
 
 router.beforeEach(function (to, from, next) {
-  console.log('beforeEach')
-  console.log(to.name)
   let token = localStorage.getItem('jwt')
   if (!token) {
     store.commit('root/setUserId', '')
-    console.log('no token detected, main.js')
     if (requireLogin.some((path) => path === to.name)) {
       router.push({
         name: 'home'
@@ -230,7 +227,6 @@ router.beforeEach(function (to, from, next) {
   } else {
     store.dispatch('root/onPageEnter')
     .then(function (result) {
-      console.log('logged in, page entered. main.js')
       store.commit('root/setUserId', result.data.userId)
       // do sth
     })

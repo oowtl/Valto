@@ -6,13 +6,11 @@ import router from '@/common/lib/vue-router.js'
 export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
   let body = payload //id, password JSON객체
-  console.log(body)
   return $axios.post(url, body)
 }
 
 //페이지 진입
 export function onPageEnter () {
-  console.log('onPageEnter: actions.js')
   const url = '/users/me'
   const request = {
     method: 'get',
@@ -42,16 +40,13 @@ export function checkNickname({ commit }, payload) {
 
 // Axios error handler
 export function axiosErrorHandler ({ commit }, payload) {
-  console.log('axiosErrorHandler, actions.js')
   const err = payload
 
   if (err.response) {
     // alert('요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.')
-    console.log(err.response)
 
     // 401
     if (err.response.data.status === 401) {
-      console.log('here')
       if (err.response.data.error === 'SignatureVerificationException') {
         alert('세션이 유효하지 않습니다')
       } else if (err.response.data.error === 'JWTDecodeException') {
@@ -68,7 +63,6 @@ export function axiosErrorHandler ({ commit }, payload) {
   }
   else if (err.request) {
       // 요청이 이루어 졌으나 응답을 받지 못했습니다.
-      console.log(err.request);
   }
 }
 
@@ -80,7 +74,6 @@ export function setLogout({ commit }) {
   router.push({
     name: 'home'
     })
-  console.log('logout')
 }
 
 // 방 생성
@@ -107,7 +100,6 @@ export function requestMyProfile() {
 // 내 프로필 수정요청
 export function requestUpdateProfile({ commit }, payload) {
   const url = '/users/' +  payload.userId
-  console.log(payload)
   const request = {
     method: 'patch',
     url: url,
@@ -143,22 +135,8 @@ export function requestRoomToken({ state }, payload) {
     url: url,
     data: body
   }
-  console.log('request는 ', request)
   return util.commonAxios(request)
 }
-// 수정필요
-// export function requestRoomToken({ state }, payload) {
-//   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-//   const url = '/room/' + payload.roomId + '/admission'
-//   const body = { sessionName: `${payload.roomId}` }
-//   const request = {
-//     method: 'post',
-//     url: url,
-//     data: body
-//   }
-//   console.log('request는 ', request)
-//   return util.commonAxios(request)
-// }
 
 export function requestDeleteRoom ({ commit }, payload) {
   const url = `https://localhost:8443/api/v1/room/${payload.sessionName}`

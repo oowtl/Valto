@@ -6,8 +6,6 @@ import Main from '@/views/main/main'
 import Room from '@/views/room/room'
 import Layout from '@/views/layout'
 
-
-// eslint-disable-next-line no-undef
 const fullMenu = require('@/views/main/menu.json')
 function makeRoutesFromMenu () {
   let mainChildren = Object.keys(fullMenu).map((key) => {
@@ -61,7 +59,5 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
-
-
 
 export default router
