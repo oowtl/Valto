@@ -12,7 +12,7 @@ buildscript{
     repositories {
         mavenCentral()
         jcenter()
-    }
+    } 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVer}"
         classpath "io.spring.gradle:dependency-management-plugin:${springDependencyMgmtVer}.RELEASE"

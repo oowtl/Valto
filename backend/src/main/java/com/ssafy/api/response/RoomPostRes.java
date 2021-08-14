@@ -37,8 +37,8 @@ public class RoomPostRes extends BaseResponseBody {
 	@ApiModelProperty(name = "privateRoom")
 	Boolean privateRoom;
 
-	// @ApiModelProperty(name = "userSide")
-	// String userSide;
+	 @ApiModelProperty(name = "userSide")
+	 String userSide;
 
 	// public static RoomPostRes of(Room room, User_Room userRoom) {
 	// RoomPostRes res = new RoomPostRes();
