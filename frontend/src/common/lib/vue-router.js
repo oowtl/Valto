@@ -21,6 +21,13 @@ function makeRoutesFromMenu () {
   })
 
   let routes = [
+    // {
+    //   path: '/',
+    //   name: 'layout',
+    //   // component: Main,
+    //   component: Layout,
+    //   children: mainChildren
+    // },
     {
       path: '/',
       name: 'layout',

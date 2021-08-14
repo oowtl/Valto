@@ -23,7 +23,6 @@ import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
 
-
 // 12: state.publisher, 13:state.sub?
 
 export default{

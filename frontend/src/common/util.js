@@ -13,7 +13,7 @@ export default {
       headers: config,
       ...payload
     }
-    console.log(payload)
+    console.log(request)
     return $axios(request)
   },
 }

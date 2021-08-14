@@ -107,7 +107,8 @@ public class RoomController {
 		 */
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
-
+		
+		
 		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
 		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));

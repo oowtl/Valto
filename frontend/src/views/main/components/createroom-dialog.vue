@@ -34,6 +34,17 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <!-- 포지션 정하기 -->
+      <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
+        <el-select v-model="state.form.userSide" placeholder="포지션">
+          <el-option
+            v-for="position in userSide"
+            :key="position.value"
+            :label="position.label"
+            :value="position.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <!-- 룰(시간 설정하기) -->
       <el-form-item prop="times" label="토론시간" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.times" placeholder="토론시간">
@@ -128,6 +139,16 @@ export default {
         }, {
           value: 9,
           label: '9'
+        }],
+        userSide: [{
+          value: 'agree',
+          label: '주제1(찬성)'
+        }, {
+          value: 'opposite',
+          label: '주제2(반대)'
+        }, {
+          value: 'observer',
+          label: '관전자'
         }],
         times: [{
           value: 20,
@@ -231,6 +252,7 @@ export default {
         topicOpposite: '',
         participants: '',
         observers: '',
+        userSide: '',
         times: '',
         privateRoom: false,
         roomPassword: '',
@@ -258,6 +280,9 @@ export default {
         observers: [
           { required: true, message: '관전자 인원수 선택하세요.' }
         ],
+        userSide: [
+          { required: true, message: '포지션을 선택하세요.' }
+        ],
         times: [
           { required: true, message: '토론시간 선택하세요.' }
         ],
@@ -282,11 +307,11 @@ export default {
             topicOpposite: state.form.topicOpposite,// string
             participants: state.form.participants,  // integer
             observers: state.form.observers,        // integer
+            userSide: state.form.userSide,          // string
             times: state.form.times,                // integer
             privateRoom: state.form.privateRoom,    // boolean
             roomPassword: state.form.roomPassword,  // string
           })
-        // api 응답 결과로 받은 conference_id 값으로 '방 상세보기' 페이지에 진입해야함
           .then(function (result) {
             console.log('axios 성공성공');
             emit('closeCreateRoomDialog')
