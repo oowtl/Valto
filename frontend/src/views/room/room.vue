@@ -85,15 +85,6 @@ export default{
     }
 
     onBeforeMount(() => {
-<<<<<<< HEAD
-     state.roomId = route.path.split('/')[2]
-      localStorage.setItem('roomId', state.roomId)
-      
-      async function requestToken(){
-        console.log('request Token!')
-        await getToken();
-      }
-=======
       state.roomId = computed(() => route.path.split('/')[2])
       //localStorage.setItem('roomId', state.roomId)
       store.dispatch('root/requestRoomToken', state.roomId)
@@ -104,7 +95,6 @@ export default{
         .catch((err) => {
           console.log(err)
         })
->>>>>>> 5b1cb2ff71448a70a0e042282868e02582fddeaf
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
