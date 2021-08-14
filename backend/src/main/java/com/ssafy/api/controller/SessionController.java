@@ -52,12 +52,15 @@ public class SessionController {
 			this.SECRET = secret;
 			this.OPENVIDU_URL = openviduUrl;
 			this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
+//			System.out.println(secret + " " + openviduUrl);
+//			System.out.println(this.openVidu.toString());
 		}
 		
 		@PostMapping("/get-token")
 		public ResponseEntity<JSONObject> getToken(@RequestBody String sessionNameParam, @ApiIgnore Authentication authentication)
 				throws ParseException {
-
+			System.out.println("get Token!");
+			System.out.println(sessionNameParam);
 			String userId = "";
 			try {
 				SsafyUserDetails userDetails = (SsafyUserDetails)authentication.getDetails();
@@ -110,8 +113,9 @@ public class SessionController {
 				try {
 
 					// Generate a new Connection with the recently created connectionProperties
+					
 					String token = this.mapSessions.get(sessionName).createConnection(connectionProperties).getToken();
-
+					System.out.println(token);
 					// Update our collection storing the new token
 					this.mapSessionNamesTokens.get(sessionName).put(token, role);
 
@@ -141,7 +145,7 @@ public class SessionController {
 				Session session = this.openVidu.createSession();
 				// Generate a new Connection with the recently created connectionProperties
 				String token = session.createConnection(connectionProperties).getToken();
-
+				System.out.println(token);
 				// Store the session and the token in our collections
 				this.mapSessions.put(sessionName, session);
 				this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());

@@ -18,6 +18,8 @@
 
 <script>
 import { reactive, computed, ref } from 'vue'
+import { ElLoading } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 
 export default {
@@ -92,22 +94,24 @@ export default {
 
     const clickLogin = function () {
       if (!state.isInvalid) {
-          store.dispatch('root/requestLogin', { userId: state.form.userId, password: state.form.password })
+        let loadingInstance = ElLoading.service({ fullscreen: true });
+        store.dispatch('root/requestLogin', { userId: state.form.userId, password: state.form.password })
           .then(result => {
             if(result.status === 200){
               localStorage.setItem('jwt', result.data.accessToken)
               store.commit('root/setUserId', state.form.userId)
               console.log(state.form.userId)
               console.log('after commit, login dialog')
-              alert('로그인 성공')
+              ElMessage({ message: '로그인에 성공했습니다.', type: 'success', duration: 2000 })
+              loadingInstance.close()
               handleClose()
             }
           })
           .catch(function (err) {
-            alert(err)
+            state.form.password = ''
+            ElMessage({ message: '로그인에 실패했습니다.', type: 'error', duration: 2000 })
+            loadingInstance.close()
           })
-        } else {
-          alert('Validate error!')
         }
     }
 

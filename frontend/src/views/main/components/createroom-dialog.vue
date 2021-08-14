@@ -1,6 +1,6 @@
 <template>
   <el-dialog custom-class="createroom-dialog" title="방 생성하기" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
+    <el-form :model="state.form" status-icon :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
       <!-- 제목 설정하기 -->
       <el-form-item prop="title" label="제목" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.title" autocomplete="off"></el-input>
@@ -16,7 +16,7 @@
       <el-form-item prop="participants" label="참가인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.participants" placeholder="참가자 인원수">
           <el-option
-            v-for="number in state.part_numbers"
+            v-for="number in part_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
@@ -27,28 +27,33 @@
       <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.observers" placeholder="관전자 인원수">
           <el-option
-            v-for="number in state.obs_numbers"
+            v-for="number in obs_numbers"
             :key="number.value"
             :label="number.label"
             :value="number.value">
           </el-option>
         </el-select>
       </el-form-item>
+      <!-- 포지션 정하기 -->
+      <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
+        <el-select v-model="state.form.userSide" placeholder="포지션">
+          <el-option
+            v-for="position in userSide"
+            :key="position.value"
+            :label="position.label"
+            :value="position.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <!-- 룰(시간 설정하기) -->
       <el-form-item prop="times" label="토론시간" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.times" placeholder="토론시간">
-          <el-option>
-            test
-          </el-option>
-          <el-option>
-            test2
-          </el-option>
-          <!-- <el-option
-            v-for="time in state.times"
+          <el-option
+            v-for="time in times"
             :key="time.value"
             :label="time.label"
             :value="time.value">
-          </el-option> -->
+          </el-option>
         </el-select>
       </el-form-item>
       <!-- 비공개 여부 -->
@@ -58,7 +63,7 @@
     <!-- 생성 버튼 -->
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="clickCreateRoom">생성</el-button>
+        <el-button type="primary" @click="clickCreateRoom" :disabled="state.isInvalid">생성</el-button>
       </span>
     </template>
   </el-dialog>
@@ -101,66 +106,9 @@ import { reactive, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 export default {
-
-  name: 'createroom-dialog',
-
-  props: {
-    open: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  setup(props, { emit }) {
-    const store = useStore()
-    const createRoomForm = ref(null)
-    const router = useRouter()
-    const state = reactive({
-      userId: computed(() => {
-        return store.getters['root/getUserId']
-      }),
-      form: {
-        // userId: this.userId,
-        title: '',
-        topicAgree: '',
-        topicOpposite: '',
-        participants: '',
-        observers: '',
-        times: '',
-        privateRoom: false,
-        roomPassword: '',
-        align: 'left'
-      },
-      rules: {
-        title: [
-          { required: true, message: '필수 입력 항목입니다.' },
-          { required: true, message: '최대 30자까지 입력 가능합니다.', max:30 }
-        ],
-        topicAgree: [
-          { required: true, message: '선택 항목입니다.'},
-        ],
-        topicOpposite: [
-          { required: true, message: '선택 항목입니다.'},
-        ],
-        participants: [
-          { required: true, message: '참가자 인원수 선택하세요.' }
-        ],
-        observers: [
-          { required: true, message: '관전자 인원수 선택하세요.' }
-        ],
-        times: [
-          { required: true, message: '토론시간 선택하세요.' }
-        ],
-        privateRoom: [
-          { required: true, message: '비공개 여부 체크하세요' }
-        ],
-        roomPassword: [
-          { required: true, message: '방 비밀번호 입력하세요' }
-        ],
-      },
-      dialogVisible: computed(() => props.open),
-      formLabelWidth: '120px',
-      part_numbers: [{
+  data() {
+    return {
+        part_numbers: [{
           value: 2,
           label: '2'
         }, {
@@ -175,8 +123,8 @@ export default {
         }, {
           value: 10,
           label: '10'
-      }],
-      obs_numbers: [{
+        }],
+        obs_numbers: [{
           value: 1,
           label: '1'
         }, {
@@ -191,8 +139,18 @@ export default {
         }, {
           value: 9,
           label: '9'
-      }],
-      times: [{
+        }],
+        userSide: [{
+          value: 'agree',
+          label: '주제1(찬성)'
+        }, {
+          value: 'opposite',
+          label: '주제2(반대)'
+        }, {
+          value: 'observer',
+          label: '관전자'
+        }],
+        times: [{
           value: 20,
           label: '20'
         }, {
@@ -207,8 +165,136 @@ export default {
         }, {
           value: 60,
           label: '60'
-      }],
-      value: ''
+        }],
+        value: ''
+      }
+  },
+  name: 'createroom-dialog',
+
+  props: {
+    open: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  setup(props, { emit }) {
+    const store = useStore()
+    const createRoomForm = ref(null)
+    const router = useRouter()
+
+    const flag = ref({
+      title: false,
+      topicAgree: false,
+      topicOpposite: false
+    })
+
+    // 아이디, 닉네임 입력 대기용 dummy function
+    const dummyValidation = function (rule, value, callback) {
+      console.log('wating for blur')
+    }
+    const checkTitle = function (rule, value, callback) {
+      if(!value) {
+        flag.value.title = false
+        return callback(new Error('제목은 필수 입력 항목입니다.'))
+      } else if (value.length < 2) {
+        flag.value.title = false
+        return callback(new Error('최소 2글자 이상 입력해야 합니다.'))
+      } else if (value.length > 15) {
+        flag.value.title = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.` ))
+      } else {
+        flag.value.title = true
+        return callback()
+      }
+    }
+
+    const checkTopicAgree = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicAgree = true
+        return callback()
+      }
+    }
+
+    const checkTopicOpposite = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicOpposite = true
+        return callback()
+      }
+    }
+
+
+    const state = reactive({
+      userId: computed(() => {
+        return store.getters['root/getUserId']
+      }),
+      isInvalid: computed(() => {
+        return Object.values(flag.value).some(bool => bool === false)
+      }),
+      form: {
+        // userId: this.userId,
+        title: '',
+        topicAgree: '',
+        topicOpposite: '',
+        participants: '',
+        observers: '',
+        userSide: '',
+        times: '',
+        privateRoom: false,
+        roomPassword: '',
+        align: 'left'
+      },
+      rules: {
+        title: [
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator : checkTitle, trigger: 'blur'},
+          { required: true }
+        ],
+        topicAgree: [
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicAgree, trigger: 'blur' },
+          { required: true }
+        ],
+        topicOpposite: [
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicOpposite, trigger: 'blur' },
+          { required: true }
+        ],
+        participants: [
+          { required: true, message: '참가자 인원수 선택하세요.' }
+        ],
+        observers: [
+          { required: true, message: '관전자 인원수 선택하세요.' }
+        ],
+        userSide: [
+          { required: true, message: '포지션을 선택하세요.' }
+        ],
+        times: [
+          { required: true, message: '토론시간 선택하세요.' }
+        ],
+        privateRoom: [
+          { required: true, message: '비공개 여부 체크하세요' }
+        ],
+        roomPassword: [
+          { required: true, message: '방 비밀번호 입력하세요' }
+        ],
+      },
+      dialogVisible: computed(() => props.open),
+      formLabelWidth: '120px',
     })
 
     const clickCreateRoom = function () {
@@ -221,13 +307,14 @@ export default {
             topicOpposite: state.form.topicOpposite,// string
             participants: state.form.participants,  // integer
             observers: state.form.observers,        // integer
+            userSide: state.form.userSide,          // string
             times: state.form.times,                // integer
             privateRoom: state.form.privateRoom,    // boolean
             roomPassword: state.form.roomPassword,  // string
           })
-        // api 응답 결과로 받은 conference_id 값으로 '방 상세보기' 페이지에 진입해야함
           .then(function (result) {
             console.log('axios 성공성공');
+            console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
             name: 'room',
@@ -254,7 +341,9 @@ export default {
       state.privateRoom = !state.privateRoom
     }
 
-    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck }
+
+
+    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck, dummyValidation, flag }
   }
 }
 </script>

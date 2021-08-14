@@ -1,50 +1,48 @@
 <template>
-  <h1>{{ state.query }}</h1>
-    <button class="el-button el-button--primary" type="button">
-      <i class="el-icon-sort"></i>
-      <span>개발중</span>
-    </button>
-  <div class="carousel">  
-    <el-carousel :interval="4000" type="card" height="300px">
-      <el-carousel-item v-for="item in 5" :key="item">
-        <h3 @click="clickRoom(item)" class="medium">{{ item }}</h3>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+  <el-carousel :interval="2000" arrow="always">
+    <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
+      <h3 @click="clickRoom(carousel.roomId)" class="small">
+        {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
+      </h3>
+    </el-carousel-item>
+  </el-carousel>
+
   <ul class="room-list">
     <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
       <room :room="room"/>
     </li>
   </ul>
 
-
 </template>
 <style>
-.carousel {
-  width: 100%;
-  margin-top: 30px;
+.el-carousel {
+  margin: 5% 10%;
+  width: 80%;
+
 }
-.carousel .el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 300px;
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 20px;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0;
 }
-.carousel .el-carousel__item:nth-child(2n) {
+.el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
 }
-.carousel .el-carousel__item:nth-child(2n+1) {
+.el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
 }
+
 .room-list {
   padding-left: 0;
   max-height: calc(100% - 35px);
-  list-style:none;
+  list-style: none;
   margin-top: 20px;
 }
 
 @media (min-width: 701px) and (max-width: 1269px) {
-  .room-list {
+  .room-list  {
     min-width: 700px;
   }
 }
@@ -65,9 +63,10 @@
     cursor: pointer;
     color: #409EFF;
   }
-  .el-icon-arrow-down {
-    font-size: 12px;
-  }
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+
 </style>
 <script>
   // <ul>
@@ -83,11 +82,12 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { reactive, onMounted, computed, watch } from 'vue'
 
+
 export default {
   name: 'Home',
 
   components: {
-    Room
+    Room,
   },
 
   setup (props, { emit }) {
@@ -96,6 +96,7 @@ export default {
     const state = reactive({
       query: computed(() => route.query),
       rooms: [],
+      carousels: [],
     })
 
     // watch(() => route.query, (newVal, oldVal) => {
@@ -104,40 +105,60 @@ export default {
 
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
-      console.log(roomId)
       emit('openDetailDialog', roomId)
     }
 
     // 방 목록 받아오는 함수
     const getRoomList = function () {
-      // pagination 미구현 상태
       store.dispatch('root/requestRoomList', state.query)
         .then((result) => {
           state.rooms = result.data.content
+          carouselRoom()
         })
         .catch((err) => {
-          console.log('room list request failed')
-          console.log(err)
         })
+    }
+
+    const carouselRoom = function () {
+      let randomIndexArray = []
+      if (state.rooms.length > 6) {
+        for (let i=0; i<6; i++) {   //check if there is any duplicate index
+          let randomNum = Math.floor(Math.random() * state.rooms.length)
+          if (randomIndexArray.indexOf(randomNum) === -1) {
+            randomIndexArray.push(randomNum)
+          } else {
+            //if the randomNum is already in the array retry
+            i--
+          }
+        }
+        for (let i=0; i<6; i++) {
+          state.carousels.push(state.rooms[randomIndexArray[i]])
+        }
+      } else {
+        state.carousels = state.rooms
+      }
     }
 
     // 검색시 방 목록 업데이트
     watch (() => route.query, () => {
-      console.log('query updated')
       if (Object.keys(route.query).length !== 0) {
-        // sort 키가 없으면 query를 수정해서 넘기기: default 값은 participantsAsc
-        getRoomList()
+        // sort 키가 없으면 query를 수정해서 넘기기?: default 값은 participantsAsc
+        getRoomList(route.query)
       }
     })
 
-
     // 초기 데이터 로딩
     onMounted (() => {
-      console.log('initial room list loading')
       getRoomList()
     })
 
-    return { state, getRoomList, clickRoom }
+    return {
+      state,
+      getRoomList,
+      clickRoom,
+    }
   }
 }
+
+
 </script>

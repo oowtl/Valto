@@ -29,6 +29,8 @@
 </template>
 <script>
 import { reactive, computed, ref, watch } from 'vue'
+import { ElLoading } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 
 export default {
@@ -133,6 +135,7 @@ export default {
     const clickUpdateProfile = function () {
       // 수정 클릭 시 validate 체크 후 그 결과 값에 따라, 로그인 API 호출 또는 경고창 표시
       if (!state.isInvalid) {
+        let loadingInstance = ElLoading.service({ fullscreen: true });
         store.dispatch('root/requestUpdateProfile', {
           userId: state.form.userId,
           nickName: state.form.nickName,
@@ -141,12 +144,14 @@ export default {
           .then(function (result) {
             // status code 수정
             if(result.status === 201){
-              alert('프로필을 수정하였습니다.')
+              ElMessage({ message: '프로필 수정에 성공했습니다.', type: 'success', duration: 2000 })
+              loadingInstance.close()
               handleClose()
             }
           })
           .catch(function (err) {
-            alert(err)
+            ElMessage({ message: '프로필 수정에 실패했습니다.', type: 'error', duration: 2000 })
+            loadingInstance.close()
           })
       } else {
         alert('Validate error!')

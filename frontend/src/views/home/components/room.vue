@@ -1,25 +1,41 @@
 <template>
   <li>
     <el-card :body-style="{ padding: '0px' }">
-      <!-- <div class="image-wrapper">
-        <el-skeleton style="width: 100%">
-          <template #template>
-            <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
-          </template>
-        </el-skeleton>
-        </div> -->
       <div class="cardBody">
-        <span class="title" style="display: flex; justify-content: space-between;">
-            <span>{{ room.roomId }}</span>
-            <span>{{ room.title }}</span>
+        <span class="title" style="display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: flex-start;">
+              <!-- <span>{{ room.topicAgree }}</span> -->
+              <!-- 15 글자 / 12 글자 -->
+              <span>하하하하하하하하하하하하</span>
+            </div>
+            <div style="display: flex; justify-content: center;">
+              <span style="color: #6b6b6b;">VS</span>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <!-- <span>{{ room.topicOpposite }}</span> -->
+              <span>딱복숭아가 맛있는가</span>
+            </div>
         </span>
         <hr>
         <div class="bottom">
-          <span>
-            <span>{{ room.topicAgree }}</span>
-            <span style="color: #6b6b6b;"> vs. </span>
-            <span>{{ room.topicOpposite }}</span>
-          </span>
+          <div style="display: flex; justify-content: center;">
+            <!-- 15글자 -->
+            <span>{{ room.title }}</span>
+          </div>
+          <div class="roomInfo" style="display: flex; justify-content: space-between;">
+            <el-button type="primary" size="mini">Waiting</el-button>
+            <el-button type="danger" size="mini" v-if="false">Playing</el-button>
+            <div style="display: flex; align-items: center;">
+              <div style="display: flex; align-items: center; margin-right: 1rem;">
+                <UserFilled :style="[state.buttonBase]" style="color: grey; opacity: 0.8;"/>
+                <span style="color: grey; opacity: 0.8; font-size: 1rem;">{{ room.userTotalCount }} / {{ room.participants + room.observers }}</span>
+              </div>
+              <div>
+                <Lock v-if="false" :style="[state.buttonBase]"/>
+                <Unlock :style="[state.buttonBase]"/>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </el-card>
@@ -30,19 +46,17 @@
   margin: 0 8px;
   margin-bottom: 40px;
 }
-.el-card .image-wrapper {
-  width: 100%;
-  height: 190px;
-}
 .el-card .title {
   /* font-weight: bold; */
+  font-size: 25px;
 }
+
 .el-card .bottom {
   font-weight: bold;
   font-size: 20px;
   /* border-bottom: 1px solid black; */
   text-align: center;
-  margin-top: 45px;
+  /* margin-top: 1rem; */
   display:-webkit-box;
   word-wrap:break-word;
   -webkit-box-orient:vertical;
@@ -54,32 +68,49 @@ div .cardBody {
   padding: 14px;
   background-color: #fafafa;
 }
+
+.el-card .bottom .roomInfo {
+  margin-top: 1rem;
+}
+
 /* 테블릿, 모바일의 경우 두 줄 말줄임표시 */
 @media (max-width: 1269px) {
   .el-card .bottom {
     -webkit-line-clamp: 2;
-    height:42px;
+    /* height:42px; */
   }
 }
 /* 데스크탑의 경우 세 줄 말줄임표시 */
 @media (min-width: 1270px) {
   .el-card .bottom {
     -webkit-line-clamp: 3;
-    height:60px;
+    /* height:60px; */
   }
 }
 
 </style>
 <script>
+import { reactive } from 'vue'
+import { Lock, Unlock, UserFilled } from '@element-plus/icons'
+
 export default {
   name: 'Room',
-
+  components: {
+    Lock,
+    Unlock,
+    UserFilled,
+  },
   props: {
     room: {
       type: Object
     }
   },
+  setup () {
+    const state = reactive({
+      buttonBase: { width: '1em'},
+    })
 
-  setup () {}
+    return { state }
+  }
 }
 </script>

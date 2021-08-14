@@ -15,4 +15,6 @@ public class RoomListGetReq {
 	String title;
 	@ApiModelProperty(name = "주제", example = "주제")
 	String topic;
+	@ApiModelProperty(name = "정렬", example = "createdAt")
+	String sorting;
 }

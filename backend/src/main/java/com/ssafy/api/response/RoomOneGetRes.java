@@ -35,15 +35,13 @@ public class RoomOneGetRes extends BaseResponseBody{
 	@ApiModelProperty(name="privateRoom")
 	Boolean privateRoom;
 	
-
-	
-	
+	// user side
 	@ApiModelProperty(name="AgreeeUsers")
-	List<HashMap> agrreUsers;
+	List<HashMap> agreeUsers;
 	@ApiModelProperty(name="OppositeUsers")
 	List<HashMap> oppositeUsers;
 	@ApiModelProperty(name="ObserverUsers")
-    List<HashMap> observerUsers;
+	List<HashMap> observerUsers;
 	
 	public static RoomOneGetRes of(Room room, List<User_Room> userRoomList) {
 		
@@ -64,6 +62,14 @@ public class RoomOneGetRes extends BaseResponseBody{
 		List<HashMap>oppositeUserList = new ArrayList<HashMap>();
 		List<HashMap>observerUserList = new ArrayList<HashMap>();
 		
+		// user 가 없는 방이라면
+		if (userRoomList.size() == 0) {
+			roomInfo.setAgreeUsers(agreeUserList);
+			roomInfo.setOppositeUsers(oppositeUserList);
+			roomInfo.setObserverUsers(observerUserList);
+			return roomInfo;
+		}
+		
 		for (User_Room userRoom: userRoomList) {
 			HashMap<String, String> user = new HashMap<>();
 			user.put("userId", userRoom.getUserId().getUserId());
@@ -71,20 +77,18 @@ public class RoomOneGetRes extends BaseResponseBody{
 			user.put("nickName", userRoom.getUserId().getNickName());
 
 			if (userRoom.getUserSide().equals("agree")) {
-                agreeUserList.add(user);
-            } else if (userRoom.getUserSide().equals("opposite")) {
-                oppositeUserList.add(user);
-            } else {
-//                 위 두개가 아닌 다른 것은 전부 observer 로 추가된다.
-                observerUserList.add(user);
-            }
-			
-			
+				agreeUserList.add(user);
+			} else if (userRoom.getUserSide().equals("opposite")) {
+				oppositeUserList.add(user);
+			} else {
+				// 위 두개가 아닌 다른 것은 전부 observer 로 추가된다.
+				observerUserList.add(user);
+			}
 		}
-			
-		roomInfo.setAgrreUsers(agreeUserList);
+		roomInfo.setAgreeUsers(agreeUserList);
 		roomInfo.setOppositeUsers(oppositeUserList);
 		roomInfo.setObserverUsers(observerUserList);
+		
 		return roomInfo;
 	}
 }
