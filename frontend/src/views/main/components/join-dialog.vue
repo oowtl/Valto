@@ -55,7 +55,6 @@ export default {
 
     // 아이디, 닉네임 입력 대기용 dummy function
     const dummyValidation = function (rule, value, callback) {
-      console.log('wating for blur')
     }
 
     // 아이디
@@ -70,9 +69,7 @@ export default {
         store.dispatch('root/checkId', state.form.userId)
         .then(function (result) {
           if (result.status === 200){
-            console.log('id is available')
             flag.value.userId = true
-            console.log(flag.value.userId)
             return callback()
           }
         })
@@ -134,14 +131,12 @@ export default {
         store.dispatch('root/checkNickname', state.form.nickname)
         .then(function (result) {
           if (result.status === 200){
-            console.log('nickname is available')
             flag.value.nickname = true
             return callback()
           }
         })
         .catch(function (err) {
           // if (err.response.data.status === 409) {
-          console.log('닉네임중복')
           flag.value.nickname = false
           return callback(new Error('이미 존재하는 닉네임입니다.'))
         })
@@ -219,7 +214,6 @@ export default {
           name: state.form.name,
         })
           .then(function (result) {
-            console.log('result.id' + result.userId)
             // status code 수정
             if(result.status === 201){
               ElMessage({ message: '회원가입에 성공했습니다.', type: 'success', duration: 2000 })

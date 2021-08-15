@@ -31,8 +31,9 @@ public class User_Room extends BaseEntity {
 	private User userId;
 	
 	// user 의 팀
-	// True = Agree
-	// False = Opposite
+	// Agree = Agree
+	// Opposite = Opposite
+	// Observer = Observer
 	@NotNull
-	Boolean userSide;
+	String userSide;
 }

@@ -20,10 +20,11 @@ pipeline {
 				sh 'docker container ls -a -f name=frontend -q | xargs -r docker container rm'
 				sh 'docker container ls -a -f name=backend -q | xargs -r docker container rm'
 
-				sh 'docker images prune'
+				sh 'docker images -f dangling=true && docker rmi $(docker images -f dangling=true -q)'
 
-				sh 'docker run -d --name frontend -p 80:80 -p 443:443 --network ssafy_net frontend:latest'
+				sh 'docker run -d --name frontend -p 8000:8000 -p 8443:8443 --network ssafy_net frontend:latest'
 				sh 'docker run -d --name backend -p 8080:8080 --network ssafy_net backend:latest'
+				
 			}
 		}
 	}

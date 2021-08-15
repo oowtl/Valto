@@ -33,7 +33,7 @@ public class RoomPostReq {
 	@ApiModelProperty(name = "토론 발언 시간 제한", example = "15")
 	Integer times;
 	
-	@ApiModelProperty(name = "방장의 토론 팀", example = "True")
-	Boolean userSide;
+	@ApiModelProperty(name = "방장의 토론 팀", example = "Agree")
+	String userSide;
 		
 }	
