@@ -36,7 +36,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 
 		System.out.println("userside : " + userSide);
 
-		if ((userSide == null) | !(userSide.equals("agree")) | !(userSide.equals("opposite"))) {
+		if ((userSide == null) || !(userSide.equals("agree")) || !(userSide.equals("opposite"))) {
 			userRoom.setUserSide("observer");
 		} else {
 			userRoom.setUserSide(userSide);

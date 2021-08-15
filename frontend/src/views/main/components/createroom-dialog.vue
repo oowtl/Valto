@@ -191,8 +191,8 @@ export default {
 
     // 아이디, 닉네임 입력 대기용 dummy function
     const dummyValidation = function (rule, value, callback) {
-      console.log('wating for blur')
     }
+
     const checkTitle = function (rule, value, callback) {
       if(!value) {
         flag.value.title = false
@@ -260,19 +260,19 @@ export default {
       },
       rules: {
         title: [
-          // { validator: dummyValidation, trigger: 'change' },
+          { validator: dummyValidation, trigger: 'change' },
           { validator : checkTitle, trigger: 'blur'},
-          { required: true }
+          { required: true },
         ],
         topicAgree: [
-          // { validator: dummyValidation, trigger: 'change' },
+          { validator: dummyValidation, trigger: 'change' },
           { validator: checkTopicAgree, trigger: 'blur' },
-          { required: true }
+          { required: true },
         ],
         topicOpposite: [
-          // { validator: dummyValidation, trigger: 'change' },
+          { validator: dummyValidation, trigger: 'change' },
           { validator: checkTopicOpposite, trigger: 'blur' },
-          { required: true }
+          { required: true },
         ],
         participants: [
           { required: true, message: '참가자 인원수 선택하세요.' }
@@ -313,8 +313,6 @@ export default {
             roomPassword: state.form.roomPassword,  // string
           })
           .then(function (result) {
-            console.log('axios 성공성공');
-            console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
             name: 'room',
@@ -325,7 +323,6 @@ export default {
           })
           .catch(function (err) {
             alert(err)
-            console.log('axios 에러에러');
           })
         } else {
           alert('Validate error!')
