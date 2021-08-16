@@ -9,7 +9,7 @@ import axios from './common/lib/axios'
 import i18n from './common/lib/i18n'
 import router from './common/lib/vue-router'
 
-import 'element-plus/packages/theme-chalk/src/base.scss'
+// import 'element-plus/packages/theme-chalk/src/base.scss'
 
 // Element UI Components [시작]
 import {
@@ -216,12 +216,9 @@ app.mount('#app')
 const requireLogin = ['history', 'room']
 
 router.beforeEach(function (to, from, next) {
-  console.log('beforeEach')
-  console.log(to.name)
   let token = localStorage.getItem('jwt')
   if (!token) {
     store.commit('root/setUserId', '')
-    console.log('no token detected, main.js')
     if (requireLogin.some((path) => path === to.name)) {
       router.push({
         name: 'home'
@@ -230,7 +227,6 @@ router.beforeEach(function (to, from, next) {
   } else {
     store.dispatch('root/onPageEnter')
     .then(function (result) {
-      console.log('logged in, page entered. main.js')
       store.commit('root/setUserId', result.data.userId)
       // do sth
     })

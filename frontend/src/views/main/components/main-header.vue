@@ -8,29 +8,28 @@
         <div class="logo-wrapper" @click="clickLogo">
           <div class="ic ic-logo"/>
         </div>
-        <div class="side-wrapper">
-          <el-button @click="clickHistory">기록</el-button>
-        </div>
+        <ul class="side-wrapper">
+          <li class="li-wrapper" @click="clickHistory">기록</li>
+          <li class="li-wrapper" @click="clickRanking">랭킹</li>
+        </ul>
       </div>
-      <div class="tool-wrapper"> 
+      <div class="tool-wrapper">
         <div class="search-field">
           <el-input
             placeholder="밸런스 토론 검색"
-            prefix-icon="el-icon-search"
             v-model="state.searchValue"
             @keyup.enter="searchRoom">
-            <!--  나중에 메소드 이름은 다시 정할것 -->
           </el-input>
         </div>
-        <div class="button-wrapper" v-if="!state.loginFlag">
-          <el-button @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</el-button>
-          <el-button type="primary" @click="clickLogin" icon="el-icon-key">로그인</el-button>
-        </div>
-        <div class="button-wrapper" v-if="state.loginFlag">
-          <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</el-button>
-          <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
-          <el-button @click="clickLogout" icon="el-icon-switch-button">로그아웃</el-button>
-        </div>
+        <ul class="button-wrapper" v-if="!state.loginFlag">
+          <li class="button-list" @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</li>
+          <li class="button-list" type="primary" @click="clickLogin" icon="el-icon-key">로그인</li>
+        </ul>
+        <ul class="button-wrapper" v-if="state.loginFlag">
+          <li class="button-list" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</li>
+          <li class="button-list" @click="clickProfile" icon="el-icon-user-solid">프로필</li>
+          <li class="button-list" @click="clickLogout" icon="el-icon-switch-button">로그아웃</li>
+        </ul>
       </div>
 
     </div>
@@ -74,7 +73,6 @@ import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
-
 export default {
   name: 'main-header',
 
@@ -88,8 +86,8 @@ export default {
   setup(props, { emit }) {
     const store = useStore()
     const router = useRouter()
-
     const state = reactive({
+      searchVisibility: 'hidden',
       searchValue: null,
       isCollapse: true,
       menuItems: computed(() => {
@@ -109,11 +107,6 @@ export default {
       userId: computed(() => store.getters['root/getUserId'])
     })
 
-    if (state.activeIndex === -1) {
-      state.activeIndex = 0
-      store.commit('root/setMenuActive', 0)
-    }
-
     const menuSelect = function (param) {
       store.commit('root/setMenuActive', param)
       const MenuItems = store.getters['root/getMenus']
@@ -132,6 +125,7 @@ export default {
       })
     }
 
+
     const clickHistory = () => {
       store.commit('root/setMenuActive', 1)
       const MenuItems = store.getters['root/getMenus']
@@ -140,6 +134,7 @@ export default {
         name: keys[1]
       })
     }
+
 
     // const clickLogo = () => {
     //   store.commit('root/setMenuActive', 0)
@@ -166,7 +161,6 @@ export default {
     }
     //방 생성 클릭시
     const clickCreateRoom = () => {
-      console.log('clickCreateRoom')
       emit('openCreateRoomDialog')
     }
 
@@ -179,8 +173,7 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    const searchRoom = () => {
-      console.log(`searched room, value: ${state.searchValue}`)
+    const searchRoom = function () {
       router.push({
         name: 'home',
         query: {
@@ -282,47 +275,55 @@ export default {
     margin: auto 10%;
   }
   .main-header .hide-on-small .left-wrapper {
-    width: 15%;
+    width: 30%;
+    height: 50px;
     float: left;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper {
-    width: 50%;
+    display: inline-block;
+    width: 25%;
     float: left;
     cursor: pointer;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper .ic.ic-logo {
-    width: 50px;
+    width: 70px;
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url('../../../assets/images/ssafy-logo.png');
   }
   .main-header .hide-on-small .left-wrapper .side-wrapper {
+    display: inline-block;
     width: 50%;
     float: right;
+    margin-right: 10%;
   }
-  .main-header .hide-on-small .left-wrapper .side-wrapper .el-button {
-    width: 100%;
+  .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper {
+    display: inline-block;
+    width: 45%;
     height: 50px;
     cursor: pointer;
     margin-right: 1%;
   }
   .main-header .hide-on-small .tool-wrapper {
     width: 70%;
+    height: 50px;
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 55%;
+    width: 50%;
     float: right;
+    display: inline-block;
   }
-  .main-header .hide-on-small .tool-wrapper .button-wrapper .el-button {
+  .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list {
     width: 30%;
     height: 50px;
     cursor: pointer;
     margin: 0 1%;
+    display: inline-block;
   }
   .main-header .hide-on-small .tool-wrapper .search-field {
-    width: 45%;
+    width: 40%;
     height: 50px;
     max-width: 400px;
     display: inline-block;
@@ -342,144 +343,3 @@ export default {
   }
 
 </style>
-
-<!--
-<template>
-  <el-row
-    class="main-sidebar"
-    :gutter="10"
-    :style="{ 'width': width }">
-    <div class="hide-on-small">
-      <loading
-          :show="show"
-          :label="label">
-      </loading>
-      <el-menu
-        :default-active="String(state.activeIndex)"
-        active-text-color="#ffd04b"
-        class="el-menu-vertical-demo"
-        @select="menuSelect">
-        <el-menu-item v-for="(item, index) in state.menuItems" :key="index" :index="index.toString()">
-          <i v-if="item.icon" :class="['ic', item.icon]"/>
-          <el-button @click.prevent="doAjax">{{ item.title }}</el-button>
-        </el-menu-item>
-      </el-menu>
-    </div>
-  </el-row>
-</template>
-<style>
-.main-sidebar .el-menu {
-  margin-top: 0;
-  padding-left: 0;
-}
-.main-sidebar .hide-on-small {
-  height: 100%;
-}
-.main-sidebar .hide-on-small .el-menu {
-  height: 100%;
-}
-.main-sidebar .el-menu .el-menu-item {
-  cursor: pointer;
-  border-right: none;
-}
-.main-sidebar .el-menu .el-menu-item .ic {
-  margin-right: 5px;
-}
-</style>
-<script>
-import { reactive, computed, ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-// Import component
-import Loading from 'vue-full-loading';
-// Import stylesheet
-import 'vue-loading-overlay/dist/vue-loading.css';
-
-export default {
-  name: 'main-header',
-
-  props: {
-    width: {
-      type: String,
-      default: '240px'
-    }
-  },
-  setup() {
-
-    // const isLoading = ref(false);
-    // const fullPage = ref(true);
-
-    const show = ref(false);
-
-    const doAjax = () => {
-      show.value = true;
-
-      setTimeout(() => {
-        show.value = false
-      }, 1000)
-      // // console.log('fullPage'+fullPage.value)
-      // isLoading.value = true;
-      // // fullPage.value = true;
-
-      // setTimeout(() => {
-      //   isLoading.value = false
-      // }, 2000)
-      // show.value = true;
-    }
-
-    // const onCancel= ()=> {
-    //     console.log('User cancelled the loader.');
-    //     //because the props is single flow direction, you need to set isLoading status normally.
-    //     isLoading.value = false;
-    // }
-
-    const store = useStore()
-    const router = useRouter()
-
-    const state = reactive({
-      searchValue: null,
-      loginFlag: computed(() => store.getters['root/getIsLoggedIn']),
-      menuItems: computed(() => {
-        const MenuItems = store.getters['root/getMenus']
-        // Object.keys() 메소드는 주어진 객체의 속성 이름들을
-        // 일반적인 반복문과 동일한 순서로 순회되는 열거할 수 있는 배열로 반환합니다.
-        // >>> key값만 배열화하여 반환: home, history
-        // let keys = Object.keys(MenuItems)
-        let menuArray = []
-        for (let menu in MenuItems) {
-          if (MenuItems[`${menu}`].needLogin === true && state.loginFlag === false) {
-            // 추가하지 않음
-          } else {
-            let menuObject = {}
-            menuObject.icon = MenuItems[`${menu}`].icon
-            menuObject.title =  MenuItems[`${menu}`].name
-            menuArray.push(menuObject)
-          }
-        }
-        return menuArray
-      }),
-      activeIndex: computed(() => store.getters['root/getActiveMenuIndex'])
-    })
-
-    if (state.activeIndex === -1) {
-      state.activeIndex = 0
-      store.commit('root/setMenuActive', 0)
-    }
-
-    const menuSelect = function (param) {
-      store.commit('root/setMenuActive', param)
-      const MenuItems = store.getters['root/getMenus']
-      let keys = Object.keys(MenuItems)
-      router.push({
-        name: keys[param]
-      })
-    }
-
-    return { state, menuSelect , doAjax, show}
-  },
-  components:{
-    Loading
-  }
-}
-</script>
--->
