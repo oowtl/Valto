@@ -434,7 +434,6 @@
                 "roomdId" : Integer,
                 "userId" : "String",   
                 "participants" : integer,
-                "observers" : integer,
                 "times" : integer,
                 "title" : "String",
                 "privateRoom" : Boolean,
@@ -519,24 +518,17 @@
                 "name" : "String",
                 "nickName" : "String"
     		},
-        ],
-        "ObserverUsers" : [
-            {
-                "userId" : "String",
-                "name" : "String",
-                "nickName" : "String"
-            },
         ]
     }
     ```
-
+    
   - 400
-
+  
     ```json
     {
         "StatusCode" : 400,
         "message" : "noExist roomId",
-    }
+  }
     ```
 
 - 권한
@@ -679,7 +671,6 @@
   - 설명(`userSide`)
     - `agree` = Agree
     - `opposite`  = Opposite
-    - `observer` = Observer
 
 - Response
 

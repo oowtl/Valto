@@ -22,8 +22,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 	Long roomId;
 	@ApiModelProperty(name="participants")
 	Integer participants;
-	@ApiModelProperty(name="observers")
-	Integer observers;
+//	@ApiModelProperty(name="observers")
+//	Integer observers;
 	@ApiModelProperty(name="times")
 	Integer times;
 	@ApiModelProperty(name="user id")
@@ -53,7 +53,7 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		roomInfo.setRoomId(room.getId());
 		roomInfo.setParticipants(room.getParticipants());
-		roomInfo.setObservers(room.getObservers());
+//		roomInfo.setObservers(room.getObservers());
 		roomInfo.setTimes(room.getTimes());
 		roomInfo.setUserId(room.getUserId().getUserId());
 		roomInfo.setTitle(room.getTitle());
@@ -86,7 +86,7 @@ public class RoomOneGetRes extends BaseResponseBody{
 			} else {
 				oppositeUserList.add(user);
 				// 위 두개가 아닌 다른 것은 전부 observer 로 추가된다.
-				observerUserList.add(user);
+//				observerUserList.add(user);
 			}
 		}
 		roomInfo.setAgreeUsers(agreeUserList);
