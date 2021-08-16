@@ -178,17 +178,12 @@ public class RoomController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 204, message = "no Room") })
 	public ResponseEntity<? extends BaseResponseBody> checkRoomList(
 			// 파라미터를 string 으로 받아서 판단
-			@PageableDefault(size = 20, page = 1) Pageable pageable,
+			@PageableDefault(size = 20, page = 0) Pageable pageable,
 			@RequestParam(value = "title", defaultValue = "null", required = false) @ApiParam(value = "제목으로 조회") String IN_title,
 			@RequestParam(value = "topic", defaultValue = "null", required = false) @ApiParam(value = "주제로 조회") String IN_topic,
 			@RequestParam(value = "sorting", defaultValue = "participant", required = false) @ApiParam(value = "정렬 파라미터") String IN_sort) {
 
-		System.out.println(IN_title);
-		System.out.println(IN_topic);
-		System.out.println(pageable.getPageSize());
-		System.out.println(pageable.getPageNumber());
-		System.out.println(pageable.getSort());
-
+		
 		RoomListGetReq roomListGetInfo = new RoomListGetReq();
 		roomListGetInfo.setTitle(IN_title);
 		roomListGetInfo.setTopic(IN_topic);

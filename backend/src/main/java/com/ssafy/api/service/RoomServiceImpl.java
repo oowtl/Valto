@@ -71,6 +71,12 @@ public class RoomServiceImpl implements RoomService {
 		// roomListGetInfo 에 따라서 다르게 넣어준다.
 		// only title, only topic, topic and title
 
+		System.out.println();
+		System.out.println(roomListGetInfo.getSorting());
+		System.out.println(roomListGetInfo.getTitle());
+		System.out.println(roomListGetInfo.getTopic());
+		System.out.println();
+		
 		// sort 기준 : createdAt(생성 시간) - Desc
 		if (roomListGetInfo.getSorting().equals("createdAtDesc")) {
 
@@ -191,7 +197,7 @@ public class RoomServiceImpl implements RoomService {
 		List<Room> result = new ArrayList<Room>();
 		resultUserRoomList.forEach((room) -> result.add((Room) room.get("room")));
 
-		return roomRepository.findAll();
+		return result;
 	}
 
 	@Override
