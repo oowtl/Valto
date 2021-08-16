@@ -128,7 +128,7 @@ export function requestDetail({ state }, payload) {
 
 export function requestRoomToken({ state }, payload) {
   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = '/room/'+payload+'/admission'
+  const url = `/room/${payload}/admission`
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',

@@ -25,9 +25,6 @@
                 <el-option label="주제" value="topic"></el-option>
               </el-select>
             </template>
-            <template #append>
-              <el-button icon="el-icon-search"></el-button>
-            </template>
           </el-input>
         </div>
         <ul class="button-wrapper" v-if="!state.loginFlag">
@@ -201,6 +198,7 @@ export default {
 <style>
   .main-header {
     padding: 10px 20px;
+    border-bottom: 1px solid #cacaca;
   }
   /*Mobile, Tablet*/
   .menu-icon-wrapper {
@@ -308,13 +306,17 @@ export default {
     width: 50%;
     float: right;
     margin-right: 10%;
+    padding: 0;
   }
   .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper {
     display: inline-block;
-    width: 45%;
-    height: 50px;
+    /* width: 45%; */
+    height: 25px;
     cursor: pointer;
-    margin-right: 1%;
+    margin-right: 44px;
+  }
+  .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper:hover {
+    border-bottom: 2px solid black;
   }
   .main-header .hide-on-small .tool-wrapper {
     width: 70%;
@@ -322,25 +324,32 @@ export default {
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 50%;
+    width: 44%;
     float: right;
     display: inline-block;
     text-align: right;
+    padding: 0;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list {
-    width: 30%;
-    height: 50px;
+    /* width: 20%; */
+    height: 25px;
     cursor: pointer;
-    margin: 0 1%;
+    margin-left: 50px;
     display: inline-block;
     text-align: right;
+    /* border-radius: 3px; */
+    }
+  .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list:hover {
+    /* background-color: rgba(0, 0, 0, 0.1); */
+    border-bottom: 2px solid black;
   }
   .main-header .hide-on-small .tool-wrapper .search-field {
-    width: 40%;
-    height: 50px;
-    max-width: 400px;
+    width: 56%;
+    max-width: 450px;
+    float: left;
     display: inline-block;
     background-color: white;
+    margin: 7px 0px;
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input {
     width: 100%;
@@ -348,14 +357,19 @@ export default {
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__inner {
     width: 100%;
-    height: 50px;
+    padding: 0px 25px 0px 10px;
+    /* background: #ffffff; */
     /* margin: 0 1%; */
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__prefix {
     top: 5px;
   }
+  /* .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__suffix {
+    max-width: 38px;
+  } */
   .el-select {
-    width: 90px;
+    width: 70px;
+    /* padding: 0px 25px 0px 10px; */
   }
 
 </style>

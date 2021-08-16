@@ -275,22 +275,22 @@ export default {
           { required: true },
         ],
         participants: [
-          { required: true, message: '참가자 인원수 선택하세요.' }
+          { required: true, message: '참가자 인원수를 선택해 주세요.' }
         ],
         observers: [
-          { required: true, message: '관전자 인원수 선택하세요.' }
+          { required: true, message: '관전자 인원수를 선택해 주세요.' }
         ],
         userSide: [
-          { required: true, message: '포지션을 선택하세요.' }
+          { required: true, message: '포지션을 선택해 주세요.' }
         ],
         times: [
-          { required: true, message: '토론시간 선택하세요.' }
+          { required: true, message: '토론시간을 선택해 주세요.' }
         ],
         privateRoom: [
-          { required: true, message: '비공개 여부 체크하세요' }
+          { required: true, message: '비공개 여부를 체크해 주세요' }
         ],
         roomPassword: [
-          { required: true, message: '방 비밀번호 입력하세요' }
+          { required: true, message: '방 비밀번호를 입력해 주세요' }
         ],
       },
       dialogVisible: computed(() => props.open),
@@ -298,36 +298,32 @@ export default {
     })
 
     const clickCreateRoom = function () {
-      createRoomForm.value.validate((valid) => {
-        if (valid) {
-          store.dispatch('root/requestCreateRoom', {
-            userId: state.userId,              // string
-            title: state.form.title,                // string
-            topicAgree: state.form.topicAgree,      // string
-            topicOpposite: state.form.topicOpposite,// string
-            participants: state.form.participants,  // integer
-            observers: state.form.observers,        // integer
-            userSide: state.form.userSide,          // string
-            times: state.form.times,                // integer
-            privateRoom: state.form.privateRoom,    // boolean
-            roomPassword: state.form.roomPassword,  // string
-          })
+      if (!state.isInvalid) {
+        store.dispatch('root/requestCreateRoom', {
+          userId: state.userId,              // string
+          title: state.form.title,                // string
+          topicAgree: state.form.topicAgree,      // string
+          topicOpposite: state.form.topicOpposite,// string
+          participants: state.form.participants,  // integer
+          observers: state.form.observers,        // integer
+          userSide: state.form.userSide,          // string
+          times: state.form.times,                // integer
+          privateRoom: state.form.privateRoom,    // boolean
+          roomPassword: state.form.roomPassword,  // string
+        })
           .then(function (result) {
             emit('closeCreateRoomDialog')
             router.push({
-            name: 'room',
-            params: {
-              roomId: result.data.roomId
-            }
+              name: 'room',
+              params: { roomId: result.data.roomId }
             })
           })
           .catch(function (err) {
             alert(err)
           })
-        } else {
-          alert('Validate error!')
-        }
-      });
+      } else {
+        alert('Validate error!')
+      }
     }
 
     const handleClose = function () {

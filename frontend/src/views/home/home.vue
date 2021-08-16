@@ -1,6 +1,6 @@
 <template>
   <div ref="homeContainer">
-    <el-carousel :interval="2000" arrow="always">
+    <el-carousel :interval="2000" arrow="always" height="200px">
       <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
         <h3 @click="clickRoom(carousel.roomId)" class="small">
           {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
@@ -60,22 +60,22 @@
 </template>
 <style>
 .el-carousel {
-  margin: 5% auto 0%;
+  margin: 0% auto 0%;
   width: 80%;
 
 }
 .el-carousel__item h3 {
-  color: #475669;
-  font-size: 20px;
+  color: #1b1b1b;
+  font-size: 30px;
   opacity: 0.75;
-  line-height: 300px;
+  line-height: 200px;
   margin: 0;
 }
 .el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+  background-color: #FFFFFF;
 }
 .el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
+  background-color: #FFFFFF;
 }
 
 .room-list {

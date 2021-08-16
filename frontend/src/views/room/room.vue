@@ -86,7 +86,6 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = computed(() => route.path.split('/')[2])
-      //localStorage.setItem('roomId', state.roomId)
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           state.token = result.data[0]

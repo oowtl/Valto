@@ -56,12 +56,12 @@
   </div>
 </template>
 <script>
-import { reactive, computed, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { reactive, computed, ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
-  name: "detail-dialog",
+  name: 'detail-dialog',
 
   props: {
     open: {
@@ -111,7 +111,7 @@ export default {
     // 닫기
     const handleClose = function() {
       state.form = null;
-      emit("closeDetailDialog");
+      emit('closeDetailDialog');
     };
 
     // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
@@ -124,6 +124,7 @@ export default {
           })
           .catch(function (err) {
             console.log(err)
+            handleClose()
           })
         } else if (newVal === false) {
           handleClose()
@@ -133,7 +134,7 @@ export default {
 
     const clickEnter = function(roomId) {
       router.push({
-        name: "room",
+        name: 'room',
         params: {
           roomId: roomId
         }
