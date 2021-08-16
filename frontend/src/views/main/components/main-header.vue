@@ -19,6 +19,15 @@
             placeholder="밸런스 토론 검색"
             v-model="state.searchValue"
             @keyup.enter="searchRoom">
+            <template #prepend>
+              <el-select v-model="state.searchCategory" placeholder="제목">
+                <el-option label="제목" value="title"></el-option>
+                <el-option label="주제" value="topic"></el-option>
+              </el-select>
+            </template>
+            <template #append>
+              <el-button icon="el-icon-search"></el-button>
+            </template>
           </el-input>
         </div>
         <ul class="button-wrapper" v-if="!state.loginFlag">
@@ -87,7 +96,7 @@ export default {
     const store = useStore()
     const router = useRouter()
     const state = reactive({
-      searchVisibility: 'hidden',
+      searchCategory: 'title',
       searchValue: null,
       isCollapse: true,
       menuItems: computed(() => {
@@ -174,13 +183,15 @@ export default {
     }
 
     const searchRoom = function () {
-      router.push({
-        name: 'home',
-        query: {
-          q: state.searchValue,
-          sort: 'default'
-        }
-      })
+      let query = {
+        page: 1,
+      }
+      if (state.searchCategory === 'title') {
+        query = { title: state.searchValue }
+        } else if (state.searchCategory === 'topic') {
+        query = { topic: state.searchValue }
+      }
+      store.dispatch('root/queryUpdate', query)
     }
 
     return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory }
@@ -314,6 +325,7 @@ export default {
     width: 50%;
     float: right;
     display: inline-block;
+    text-align: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list {
     width: 30%;
@@ -321,6 +333,7 @@ export default {
     cursor: pointer;
     margin: 0 1%;
     display: inline-block;
+    text-align: right;
   }
   .main-header .hide-on-small .tool-wrapper .search-field {
     width: 40%;
@@ -334,12 +347,15 @@ export default {
     height: 100%;
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__inner {
-    width: 88%;
+    width: 100%;
     height: 50px;
-    margin: 0 1%;
+    /* margin: 0 1%; */
   }
   .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__prefix {
     top: 5px;
+  }
+  .el-select {
+    width: 90px;
   }
 
 </style>

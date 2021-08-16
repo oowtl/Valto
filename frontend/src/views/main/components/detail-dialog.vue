@@ -119,7 +119,6 @@ export default {
       if (newVal === true) {
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
-            console.log("result는", result)
             state.form = result.data
             state.divide_participants = result.data.participants/2
           })
@@ -127,7 +126,7 @@ export default {
             console.log(err)
           })
         } else if (newVal === false) {
-          console.log("detail dialog closed");
+          handleClose()
         }
       }
     );
