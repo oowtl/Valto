@@ -15,4 +15,5 @@ public interface UserRoomService {
 	String leaveRoom(User_Room userRoom);
 	String deleteUserRoom(User_Room userRoom);
 	ArrayList<HashMap> getUserRoomTotalCount(List<Room> getRoomsList);
+	Boolean checkLimitRoom(Room room, String UserSide);
 }

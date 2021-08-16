@@ -118,6 +118,8 @@ public class RoomController {
 		// User_Room userRoom = userRoomService.enterUserRoom(validatedUserId,
 		// room.getId(), roomCreateInfo.getUserSide());
 
+		
+		//Session
 		String sessionName = Long.toString(room.getId());
 		OpenViduRole role = OpenViduRole.PUBLISHER;
 		String serverData = "{\"serverData\": \"" + validatedUserId + "\"}";
@@ -138,7 +140,7 @@ public class RoomController {
 
 		// 방에 접속한 유저 정보 / User_Room 생성하기
 
-		System.out.println("New session " + sessionName);
+//		System.out.println("New session " + sessionName);
 		try {
 
 			// Create a new OpenVidu Session
@@ -146,28 +148,23 @@ public class RoomController {
 			// Generate a new Connection with the recently created connectionProperties
 			String token = session.createConnection(connectionProperties).getToken();
 
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
-			System.out.println("session : " + session);
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
-			System.out.println("token : " + token);
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
-
 			// Store the session and the token in our collections
 			this.mapSessions.put(sessionName, session);
 			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
 			// this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
 			// this.mapSessionNamesTokens.get(sessionName).put(token, role);
-
+			
 			System.out.println("createRoom mapSession" + this.mapSessions);
 			System.out.println("createRoom mapSessionNamesTokens" + this.mapSessionNamesTokens);
 			// Prepare the response with the token
 			// responseJson.put(0, token);
-
+			System.out.println();
 			// Return the response to the client
 			return ResponseEntity.status(201).body(RoomPostRes.of(room));
 
 		} catch (Exception e) {
 			// If error generate an error message and return it to client
+			System.out.println(e);
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "session failed"));
 		}
 
@@ -291,42 +288,44 @@ public class RoomController {
 			@RequestBody @ApiParam(value = "방 입장 정보", required = true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId) {
 
-		System.out.println("session test");
-		System.out.println(mapSessions);
-		System.out.println(mapSessionNamesTokens);
+//		System.out.println("session test");
+//		System.out.println(mapSessions);
+//		System.out.println(mapSessionNamesTokens);
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
 
 		Room room = roomService.getRoomByRoomId(roomId);
-		System.out.println("Enter Room!");
+//		System.out.println("Enter Room!");
 		// 방이 없을 경우
 		if (room == null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
-
+		
+		
+		// room 별 userSide 정원 체크
+		// 필요한 것: Room 정보, userRoom 갯수
+		if (!userRoomService.checkLimitRoom(room, userRoomPostReq.getUserSide())) {
+			// true 일때 가능하다.
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "don't enter Room : maximum userside"));
+		}
+		
 		// user 가 이미 하나의 방에 접속한 경우
-		// User_Room existUserRoom = userRoomService.getUserByUserId(userId);
-
-		// if (existUserRoom.getUserId() != null) {
-		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
-		// enter room user"));
-		// }
-
-		// userSide 유효성 검사
-		// if (userRoomPostReq.getUserSide()==null ||
-		// !(userRoomPostReq.getUserSide().equals("agree") ||
-		// userRoomPostReq.getUserSide().equals("opposite") ||
-		// userRoomPostReq.getUserSide().equals("observer"))) {
-		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect
-		// userSide"));
-		// }
-
-		// 만약에 비밀번호 방이라면??
-		// 방 입장시 한번 더 user_room 생성
-		// 중복 체크 해줘야함
+		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
+		 
+		if (existUserRoom.getUserId() != null) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+		}
+		 
+		
+		
+		
+		
+		
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
-
+		
+		
+		// Session
 		String sessionName = Long.toString(room.getId());
 		OpenViduRole role = OpenViduRole.PUBLISHER;
 		String serverData = "{\"serverData\": \"" + userId + "\"}";

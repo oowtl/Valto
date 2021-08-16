@@ -45,12 +45,40 @@ public class UserRoomServiceImpl implements UserRoomService {
 	}
 
 	@Override
+	public Boolean checkLimitRoom(Room room, String UserSide) {
+		// TODO Auto-generated method stub
+			
+		Integer userSideCount = 0;
+		String convertUserSide = "agree";
+		
+		// userSide 기본값 opposite
+		if (UserSide.equals("opposite")) {
+			convertUserSide = "opposite";
+		}
+		
+		List<User_Room> checkUserRoom = userRoomRepository.findByRoomIdAndUserSide(room, UserSide);
+		 
+		if (checkUserRoom.size() + 1 <= room.getParticipants()) {
+			System.out.println("size : " + checkUserRoom.size());
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	@Override
 	public User_Room getUserByUserId(String UserId) {
 		// TODO Auto-generated method stub
 
-		User user = userRepository.findByUserId(UserId).get();
-
-		return userRoomRepository.findByUserId(user).orElseGet(() -> new User_Room());
+		List<User> getExistUser = userRepository.findAllByUserId(UserId);
+		
+		// 없을 때
+		if (getExistUser.size() == 0) {
+			return new User_Room();
+		}
+		// 있을 때
+		return userRoomRepository.findByUserId(getExistUser.get(0)).orElseGet(() -> new User_Room());
 	}
 
 	@Override
@@ -100,7 +128,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 			// 반대 측 유저 수
 			mapRoom.put("userOppositeCount", userRoomRepository.findByRoomIdAndUserSide(room, "opposite").size());
 			// 관전 측 유저 수
-			mapRoom.put("userObserverCount", userRoomRepository.findByRoomIdAndUserSide(room, "observer").size());
+//			mapRoom.put("userObserverCount", userRoomRepository.findByRoomIdAndUserSide(room, "observer").size());
 
 			roomListArray.add(mapRoom);
 		}
