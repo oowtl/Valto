@@ -24,7 +24,7 @@
           </template>
         </el-dropdown>
         <span>방 갯수: </span>
-        <el-dropdown @command="pageSizeChange">
+        <el-dropdown @command="pageSizeChange" style="margin-right: 15px;">
           <el-button type="text" style="font-size: 16px;">
             {{ state.pageSize }}개
           </el-button>
@@ -36,6 +36,18 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <el-input
+          placeholder="밸런스 토론 검색"
+          v-model="state.searchValue"
+          @keyup.enter="searchRoom"
+          style="width: 40%; max-width: 350px;">
+          <template #prepend>
+            <el-select v-model="state.searchCategory" placeholder="제목" style="width: 85px;">
+              <el-option label="제목" value="title"></el-option>
+              <el-option label="주제" value="topic"></el-option>
+            </el-select>
+          </template>
+        </el-input>
       </div>
     </div>
 
@@ -72,10 +84,10 @@
   margin: 0;
 }
 .el-carousel__item:nth-child(2n) {
-  background-color: #FFFFFF;
+  background-color: #daffff;
 }
 .el-carousel__item:nth-child(2n+1) {
-  background-color: #FFFFFF;
+  background-color: #daffff;
 }
 
 .room-list {
@@ -118,6 +130,7 @@
   text-align: right;
 }
 
+
 </style>
 <script>
 import Room from './components/room'
@@ -139,6 +152,8 @@ export default {
     const store = useStore()
     const route = useRoute()
     const state = reactive({
+      searchCategory: 'title',
+      searchValue: '',
       query: computed(() => route.query),
       rooms: [],
       carousels: [],
@@ -243,6 +258,19 @@ export default {
       store.dispatch('root/queryUpdate', query)
     }
 
+    // 검색버튼: main-header에서 home.vue로 이동
+    const searchRoom = function () {
+      let query = {
+        page: 1,
+      }
+      if (state.searchCategory === 'title') {
+        query = { title: state.searchValue }
+        } else if (state.searchCategory === 'topic') {
+        query = { topic: state.searchValue }
+      }
+      store.dispatch('root/queryUpdate', query)
+    }
+
     // 검색시 방 목록 업데이트
     watch (() => route.query, () => {
       if (Object.keys(route.query).length !== 0) {
@@ -267,6 +295,7 @@ export default {
       pageSizeChange,
       sortChange,
       onChangePageOption,
+      searchRoom,
     }
   }
 }

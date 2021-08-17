@@ -14,19 +14,6 @@
         </ul>
       </div>
       <div class="tool-wrapper">
-        <div class="search-field">
-          <el-input
-            placeholder="밸런스 토론 검색"
-            v-model="state.searchValue"
-            @keyup.enter="searchRoom">
-            <template #prepend>
-              <el-select v-model="state.searchCategory" placeholder="제목">
-                <el-option label="제목" value="title"></el-option>
-                <el-option label="주제" value="topic"></el-option>
-              </el-select>
-            </template>
-          </el-input>
-        </div>
         <ul class="button-wrapper" v-if="!state.loginFlag">
           <li class="button-list" @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</li>
           <li class="button-list" type="primary" @click="clickLogin" icon="el-icon-key">로그인</li>
@@ -93,8 +80,6 @@ export default {
     const store = useStore()
     const router = useRouter()
     const state = reactive({
-      searchCategory: 'title',
-      searchValue: null,
       isCollapse: true,
       menuItems: computed(() => {
         const MenuItems = store.getters['root/getMenus']
@@ -179,19 +164,9 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    const searchRoom = function () {
-      let query = {
-        page: 1,
-      }
-      if (state.searchCategory === 'title') {
-        query = { title: state.searchValue }
-        } else if (state.searchCategory === 'topic') {
-        query = { topic: state.searchValue }
-      }
-      store.dispatch('root/queryUpdate', query)
-    }
 
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory }
+
+    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, clickHistory }
   }
 }
 </script>
@@ -295,8 +270,9 @@ export default {
     cursor: pointer;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper .ic.ic-logo {
-    width: 70px;
+    width: 100px;
     height: 50px;
+    margin-top: 14px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url('../../../assets/images/ssafy-logo.png');
@@ -343,33 +319,4 @@ export default {
     /* background-color: rgba(0, 0, 0, 0.1); */
     border-bottom: 2px solid black;
   }
-  .main-header .hide-on-small .tool-wrapper .search-field {
-    width: 56%;
-    max-width: 450px;
-    float: left;
-    display: inline-block;
-    background-color: white;
-    margin: 7px 0px;
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input {
-    width: 100%;
-    height: 100%;
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__inner {
-    width: 100%;
-    padding: 0px 25px 0px 10px;
-    /* background: #ffffff; */
-    /* margin: 0 1%; */
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__prefix {
-    top: 5px;
-  }
-  /* .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__suffix {
-    max-width: 38px;
-  } */
-  .el-select {
-    width: 70px;
-    /* padding: 0px 25px 0px 10px; */
-  }
-
 </style>
