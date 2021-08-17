@@ -52,7 +52,7 @@
       <mute :style="[state.buttonBase, {color: 'red'}]" />
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
-      <close-bold :style="[state.buttonBase, {color: 'red'}]" />
+      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
     </div>
     <div class="footer-child communication">
       <bell-filled :style="[state.buttonBase]" />
@@ -117,8 +117,14 @@ export default{
 
     })
 
+    const subsTest = function () {
+      console.log(state.subscribers)
+    }
+
+
     const connectSession = function () {
-      state.session.connect(state.token, {})
+      // state.session.connect(state.token, {})
+      state.session.connect(state.token, { side: state.side })
         .then(() => {
           // --- Get your own camera stream with the desired properties ---
           let publisher = state.OV.initPublisher(undefined, {
@@ -145,6 +151,9 @@ export default{
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           state.token = result.data[0]
+          console.log('@@@@@@@@@@')
+          console.log(result.data)
+          state.side = result.data[1]
           connectSession()
         })
         .catch((err) => {
@@ -236,7 +245,15 @@ export default{
 
     //disconnect로 세션 leave
 
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession , onClickChat, onClickMember}
+    return {
+      state,
+      updateMainVideoStreamManager,
+      leaveSession,
+      connectSession,
+      onClickChat,
+      onClickMember,
+      subsTest,
+    }
   }
 }
 </script>
