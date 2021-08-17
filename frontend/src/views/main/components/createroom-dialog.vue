@@ -23,17 +23,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <!-- 관전자 인원수 설정하기 -->
-      <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
-        <el-select v-model="state.form.observers" placeholder="관전자 인원수">
-          <el-option
-            v-for="number in obs_numbers"
-            :key="number.value"
-            :label="number.label"
-            :value="number.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <!-- 포지션 정하기 -->
       <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.userSide" placeholder="포지션">
@@ -108,66 +97,26 @@ import { useRouter } from 'vue-router'
 export default {
   data() {
     return {
-        part_numbers: [{
-          value: 2,
-          label: '2'
-        }, {
-          value: 4,
-          label: '4'
-        }, {
-          value: 6,
-          label: '6'
-        }, {
-          value: 8,
-          label: '8'
-        }, {
-          value: 10,
-          label: '10'
-        }],
-        obs_numbers: [{
-          value: 1,
-          label: '1'
-        }, {
-          value: 3,
-          label: '3'
-        }, {
-          value: 5,
-          label: '5'
-        }, {
-          value: 7,
-          label: '7'
-        }, {
-          value: 9,
-          label: '9'
-        }],
-        userSide: [{
-          value: 'agree',
-          label: '주제1(찬성)'
-        }, {
-          value: 'opposite',
-          label: '주제2(반대)'
-        }, {
-          value: 'observer',
-          label: '관전자'
-        }],
-        times: [{
-          value: 20,
-          label: '20'
-        }, {
-          value: 30,
-          label: '30'
-        }, {
-          value: 40,
-          label: '40'
-        }, {
-          value: 50,
-          label: '50'
-        }, {
-          value: 60,
-          label: '60'
-        }],
-        value: ''
-      }
+        part_numbers: [
+          { value: 2, label: '2' },
+          { value: 4, label: '4' },
+          { value: 6, label: '6' },
+          { value: 8, label: '8' },
+          { value: 10,label: '10'},
+        ],
+        userSide: [
+          { value: 'agree', label: '주제1(찬성)' },
+          { value: 'opposite', label: '주제2(반대)' },
+        ],
+        times: [
+          { value: 20, label: '20' },
+          { value: 30, label: '30' },
+          { value: 40, label: '40' },
+          { value: 50, label: '50' },
+          { value: 60, label: '60' },
+        ],
+        value: '',
+    }
   },
   name: 'createroom-dialog',
 
@@ -275,22 +224,22 @@ export default {
           { required: true },
         ],
         participants: [
-          { required: true, message: '참가자 인원수 선택하세요.' }
+          { required: true, message: '참가자 인원수를 선택해 주세요.' }
         ],
         observers: [
-          { required: true, message: '관전자 인원수 선택하세요.' }
+          { required: true, message: '관전자 인원수를 선택해 주세요.' }
         ],
         userSide: [
-          { required: true, message: '포지션을 선택하세요.' }
+          { required: true, message: '포지션을 선택해 주세요.' }
         ],
         times: [
-          { required: true, message: '토론시간 선택하세요.' }
+          { required: true, message: '토론시간을 선택해 주세요.' }
         ],
         privateRoom: [
-          { required: true, message: '비공개 여부 체크하세요' }
+          { required: true, message: '비공개 여부를 체크해 주세요' }
         ],
         roomPassword: [
-          { required: true, message: '방 비밀번호 입력하세요' }
+          { required: true, message: '방 비밀번호를 입력해 주세요' }
         ],
       },
       dialogVisible: computed(() => props.open),
@@ -298,36 +247,32 @@ export default {
     })
 
     const clickCreateRoom = function () {
-      createRoomForm.value.validate((valid) => {
-        if (valid) {
-          store.dispatch('root/requestCreateRoom', {
-            userId: state.userId,              // string
-            title: state.form.title,                // string
-            topicAgree: state.form.topicAgree,      // string
-            topicOpposite: state.form.topicOpposite,// string
-            participants: state.form.participants,  // integer
-            observers: state.form.observers,        // integer
-            userSide: state.form.userSide,          // string
-            times: state.form.times,                // integer
-            privateRoom: state.form.privateRoom,    // boolean
-            roomPassword: state.form.roomPassword,  // string
-          })
+      if (!state.isInvalid) {
+        store.dispatch('root/requestCreateRoom', {
+          userId: state.userId,              // string
+          title: state.form.title,                // string
+          topicAgree: state.form.topicAgree,      // string
+          topicOpposite: state.form.topicOpposite,// string
+          participants: state.form.participants,  // integer
+          observers: state.form.observers,        // integer
+          userSide: state.form.userSide,          // string
+          times: state.form.times,                // integer
+          privateRoom: state.form.privateRoom,    // boolean
+          roomPassword: state.form.roomPassword,  // string
+        })
           .then(function (result) {
             emit('closeCreateRoomDialog')
             router.push({
-            name: 'room',
-            params: {
-              roomId: result.data.roomId
-            }
+              name: 'room',
+              params: { roomId: result.data.roomId }
             })
           })
           .catch(function (err) {
             alert(err)
           })
-        } else {
-          alert('Validate error!')
-        }
-      });
+      } else {
+        alert('Validate error!')
+      }
     }
 
     const handleClose = function () {
