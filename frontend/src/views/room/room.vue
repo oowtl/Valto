@@ -95,19 +95,6 @@ export default{
   setup (){
     const store = useStore()
     const route = useRoute()
-    const getToken = function(){
-      store.dispatch('root/requestRoomToken', state.roomId)
-        .then((result) => {
-          // 임시로 로컬스토리지에 저장
-          localStorage.setItem('st', result.data[0])
-          console.log(`TOKEN: ${localStorage.getItem('st')})`)
-          console.log(`RoomID: ${state.roomId}`)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-
     const state = reactive({
       OV: undefined,
       session: undefined,
@@ -154,7 +141,7 @@ export default{
     }
 
     onBeforeMount(() => {
-      state.roomId = computed(() => route.path.split('/')[2])
+      state.roomId = route.path.split('/')[2]
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           state.token = result.data[0]
@@ -163,15 +150,11 @@ export default{
         .catch((err) => {
           console.log(err)
         })
-      store.dispatch('root/')
 
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
-      // console.log('before session :' + state.session)
       state.session = state.OV.initSession()
-      // console.log('room onBeforeMount session : ')
-      // console.log(state.session)
 
 
       // session.on으로 웹소켓 수신에 대한 동작 맵핑
@@ -210,10 +193,14 @@ export default{
 
       const payload = {
         sessionName: state.roomId,
-        token: localStorage.getItem('st')
+        token: state.token,
       }
-      localStorage.removeItem('st')
       store.dispatch('root/requestDeleteRoom', payload)
+        .then((res) => {
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     })
     const updateMainVideoStreamManager = function (stream) {
       if (state.mainStreamManager === stream) return;
