@@ -159,7 +159,7 @@ export default {
       carousels: [],
       currentPage: 1,
       pageSize: 10,
-      totalSize: 1000,
+      totalSize: 1,
       sort: '',
       sortNameArray: {
         'participantsAsc': '빈 자리 많은 순',
@@ -196,6 +196,7 @@ export default {
         store.dispatch('root/requestRoomList', query)
           .then((result) => {
             state.rooms = result.data.content
+            state.totalSize = result.data.roomCount
             carouselRoom()
           })
           .catch((err) => {

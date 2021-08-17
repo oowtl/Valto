@@ -148,6 +148,10 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = route.path.split('/')[2]
+      const payload = {
+        roomId: state.roomId,
+        userSide: store.getters(['root/getUserSide'])
+      }
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           state.token = result.data[0]
