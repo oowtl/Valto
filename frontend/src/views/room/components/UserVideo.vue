@@ -1,6 +1,6 @@
 <template>
 <div v-if="this.streamManager">
-	<h1>test</h1>
+	<h1></h1>
 	<ov-video :stream-manager="this.streamManager"/>
 	<div><p>{{ state.clientData }}</p></div>
 </div>
@@ -21,13 +21,14 @@ export default {
     streamManager: {
       type: Object,
     },
+
   },
 
   setup (props) {
     const getConnectionData = function () {
       const { connection } = props.streamManager.stream
-      console.log('!UserVideo connection data : ' + connection.data) // << 이거는 출력됨?
-      console.log('!UserVideo setup streamManager : ' + props.streamManager)
+      // console.log('!UserVideo connection data : ' + connection.data) // << 이거는 출력됨?
+      // console.log('!UserVideo setup streamManager : ' + props.streamManager)
 			return connection.data
     }
 

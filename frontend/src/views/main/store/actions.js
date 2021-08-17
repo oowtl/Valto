@@ -99,7 +99,7 @@ export function requestMyProfile() {
 
 // 내 프로필 수정요청
 export function requestUpdateProfile({ commit }, payload) {
-  const url = '/users/' +  payload.userId
+  const url = `/users/${payload.userId}`
   const request = {
     method: 'patch',
     url: url,
@@ -110,14 +110,14 @@ export function requestUpdateProfile({ commit }, payload) {
 
 // 방 목록 요청 (비로그인 상태에서도 가능)
 export function requestRoomList({ commit }, payload) {
-  const url = '/room?size=4&page=1'
+  const url = '/room'
   const body = { params: payload }
   return $axios.get(url, body)
 }
 
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
-  const url = '/room/' + payload
+  const url = `/room/${payload}`
   const request = {
     method: 'get',
     url: url,
@@ -127,8 +127,7 @@ export function requestDetail({ state }, payload) {
 
 
 export function requestRoomToken({ state }, payload) {
-  // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = '/room/' + payload + '/admission'
+  const url = `/room/${payload}/admission`
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',
@@ -149,23 +148,11 @@ export function requestDeleteRoom({ commit }, payload) {
   }
   return util.commonAxios(request)
 }
-// export function requestDetail({ commit }, payload){
-//   console.log('payload는', payload)
-//   const roomId = String(payload)
-//   // const url = `/room/${ roomId }`
-//   console.log('action 도착')
-//   const url = '/room/' + roomId
-//   $axios.get(url)
-//     console.log('axios 보내기')
-//     .then(function (result) {
-//       console.log('result는', result.data)
-//       commit('mutationDetail', result.data)
-//     })
-//     .catch(function (err) {
-//       console.log('에러발생')
-//       alert(err)
-//     })
-// }
 
-
-
+// 검색 및 검색조건 업데이트
+export function queryUpdate({ commit }, query) {
+  router.push({
+    name: 'home',
+    query: query,
+  })
+}

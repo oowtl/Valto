@@ -2,6 +2,7 @@
   <el-container class="main-wrapper">
     <main-header
       :height="`70px`"
+      @openRankingDialog="onOpenRankingDialog"
       @openLoginDialog="onOpenLoginDialog"
       @openJoinDialog="onOpenJoinDialog"
       @openCreateRoomDialog="onOpenCreateRoomDialog"
@@ -13,6 +14,9 @@
       </el-main>
     </el-container>
   </el-container>
+   <ranking-dialog
+    :open="rankingDialogOpen"
+    @closeRankingDialog="onCloseRankingDialog"/>
   <login-dialog
     :open="loginDialogOpen"
     @closeLoginDialog="onCloseLoginDialog"/>
@@ -48,6 +52,7 @@ import JoinDialog from './components/join-dialog'
 import CreateroomDialog from './components/createroom-dialog'
 import ProfileDialog from './components/profile-dialog'
 import DetailDialog from './components/detail-dialog'
+import RankingDialog from './components/ranking-dialog'
 
 
 
@@ -60,6 +65,7 @@ export default {
     CreateroomDialog,
     ProfileDialog,
     DetailDialog,
+    RankingDialog
   },
 
   data () {
@@ -71,6 +77,7 @@ export default {
       profileDialogOpen: false,
       createRoomDialogOpen: false,
       detailDialogOpen: false,
+      rankingDialogOpen: false,
       roomId: '',
     }
   },
@@ -105,6 +112,14 @@ export default {
     },
     onCloseDetailDialog () {
       this.detailDialogOpen = false
+    },
+    onOpenRankingDialog () {
+      console.log('랭킹다이아로그 열기')
+      this.rankingDialogOpen = true
+    },
+    onCloseRankingDialog () {
+      console.log('랭킹다이아로그 닫기')
+      this.rankingDialogOpen = false
     },
   }
 }

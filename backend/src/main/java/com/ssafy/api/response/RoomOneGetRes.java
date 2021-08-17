@@ -22,7 +22,9 @@ public class RoomOneGetRes extends BaseResponseBody{
 	Long roomId;
 	@ApiModelProperty(name="participants")
 	Integer participants;
-	@ApiModelProperty(name="observers")
+//	@ApiModelProperty(name="observers")
+//	Integer observers;
+	@ApiModelProperty(name="times")
 	Integer times;
 	@ApiModelProperty(name="user id")
 	String userId;
@@ -40,8 +42,10 @@ public class RoomOneGetRes extends BaseResponseBody{
 	List<HashMap> agreeUsers;
 	@ApiModelProperty(name="OppositeUsers")
 	List<HashMap> oppositeUsers;
-	@ApiModelProperty(name="ObserverUsers")
-	List<HashMap> observerUsers;
+//	@ApiModelProperty(name="ObserverUsers")
+//	List<HashMap> observerUsers;
+	@ApiModelProperty(name="TotalCountUsers")
+	Integer totalCountUsers;
 	
 	public static RoomOneGetRes of(Room room, List<User_Room> userRoomList) {
 		
@@ -49,6 +53,7 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		roomInfo.setRoomId(room.getId());
 		roomInfo.setParticipants(room.getParticipants());
+//		roomInfo.setObservers(room.getObservers());
 		roomInfo.setTimes(room.getTimes());
 		roomInfo.setUserId(room.getUserId().getUserId());
 		roomInfo.setTitle(room.getTitle());
@@ -60,13 +65,13 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		List<HashMap>agreeUserList = new ArrayList<HashMap>();
 		List<HashMap>oppositeUserList = new ArrayList<HashMap>();
-		List<HashMap>observerUserList = new ArrayList<HashMap>();
+//		List<HashMap>observerUserList = new ArrayList<HashMap>();
 		
 		// user 가 없는 방이라면
 		if (userRoomList.size() == 0) {
 			roomInfo.setAgreeUsers(agreeUserList);
 			roomInfo.setOppositeUsers(oppositeUserList);
-			roomInfo.setObserverUsers(observerUserList);
+//			roomInfo.setObserverUsers(observerUserList);
 			return roomInfo;
 		}
 		
@@ -78,16 +83,17 @@ public class RoomOneGetRes extends BaseResponseBody{
 
 			if (userRoom.getUserSide().equals("agree")) {
 				agreeUserList.add(user);
-			} else if (userRoom.getUserSide().equals("opposite")) {
-				oppositeUserList.add(user);
 			} else {
+				oppositeUserList.add(user);
 				// 위 두개가 아닌 다른 것은 전부 observer 로 추가된다.
-				observerUserList.add(user);
+//				observerUserList.add(user);
 			}
 		}
 		roomInfo.setAgreeUsers(agreeUserList);
 		roomInfo.setOppositeUsers(oppositeUserList);
-		roomInfo.setObserverUsers(observerUserList);
+//		roomInfo.setObserverUsers(observerUserList);
+		
+		roomInfo.setTotalCountUsers(agreeUserList.size() + oppositeUserList.size());
 		
 		return roomInfo;
 	}

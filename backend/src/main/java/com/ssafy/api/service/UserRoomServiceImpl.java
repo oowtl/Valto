@@ -34,23 +34,52 @@ public class UserRoomServiceImpl implements UserRoomService {
 		// 계정 유효성 검사는 createUserRoom 이 실행되기 전에 이미 한다.
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
 
-		System.out.println("userside : " + userSide);
-
-		if (userSide == null) {
-			userRoom.setUserSide("observer");
+		// userSide 의 기본값 agree
+		if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
+			userRoom.setUserSide("agree");
 		} else {
 			userRoom.setUserSide(userSide);
 		}
+		
 		return userRoomRepository.save(userRoom);
 	}
 
 	@Override
+	public Boolean checkLimitRoom(Room room, String userSide) {
+		// TODO Auto-generated method stub
+			
+		Integer userSideCount = 0;
+		String convertUserSide = "agree";
+		
+		// userSide 기본값 opposite
+		if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
+			convertUserSide = "agree";
+		} else {
+			convertUserSide = "opposite";
+		}
+		
+		List<User_Room> checkUserRoom = userRoomRepository.findByRoomIdAndUserSide(room, convertUserSide);
+			
+		// 입장가능 = true
+		if (checkUserRoom.size() + 1 <= room.getParticipants()) {
+			System.out.println("size : " + checkUserRoom.size());
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public User_Room getUserByUserId(String UserId) {
 		// TODO Auto-generated method stub
 
-		User user = userRepository.findByUserId(UserId).get();
-
-		return userRoomRepository.findByUserId(user).orElseGet(() -> new User_Room());
+		List<User> getExistUser = userRepository.findAllByUserId(UserId);
+		
+		// 없을 때
+		if (getExistUser.size() == 0) {
+			return new User_Room();
+		}
+		// 있을 때
+		return userRoomRepository.findByUserId(getExistUser.get(0)).orElseGet(() -> new User_Room());
 	}
 
 	@Override
@@ -100,7 +129,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 			// 반대 측 유저 수
 			mapRoom.put("userOppositeCount", userRoomRepository.findByRoomIdAndUserSide(room, "opposite").size());
 			// 관전 측 유저 수
-			mapRoom.put("userObserverCount", userRoomRepository.findByRoomIdAndUserSide(room, "observer").size());
+//			mapRoom.put("userObserverCount", userRoomRepository.findByRoomIdAndUserSide(room, "observer").size());
 
 			roomListArray.add(mapRoom);
 		}
