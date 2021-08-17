@@ -346,8 +346,10 @@ public class RoomController {
 			this.mapSessionNamesTokens.get(sessionName).put(token, role);
 
 			// Prepare the response with the token
+			String side = userRoom.getUserSide().equals("agree")? "left" : "right";
 			responseJson.put(0, token);
 
+			responseJson.put(1, side);
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
