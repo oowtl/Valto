@@ -14,10 +14,6 @@
           <span>{{ state.form.topicOpposite }}</span>
           <hr>
         </span>
-        <el-form-item label="아이디 :" :label-width="state.formLabelWidth">
-          {{ state.form.userId}}
-        </el-form-item>
-
         <el-form-item label="토론 시간: " :label-width="state.formLabelWidth">
           {{ state.form.times }}분
         </el-form-item>
@@ -26,9 +22,6 @@
         </el-form-item>
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
-        </el-form-item>
-        <el-form-item label="관전자 인원수: " :label-width="state.formLabelWidth">
-          {{ state.form.observerUsers.length }}/{{ state.form.observers }}
         </el-form-item>
         <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
           <el-select class="positionSelect" v-model="state.form.userSide" placeholder="포지션">
@@ -84,10 +77,8 @@ export default {
         }, {
           value: 'opposite',
           label: '주제2(반대)'
-        }, {
-          value: 'observer',
-          label: '관전자'
-        }],
+        },
+      ],
     }
   },
 
