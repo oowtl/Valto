@@ -50,10 +50,10 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child controller">
-      <microphone :style="[state.buttonBase]" />
-      <mute :style="[state.buttonBase, {color: 'red'}]" />
-      <video-camera :style="[state.buttonBase]" />
-      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <microphone v-if="state.micOn" @click="onMute" :style="[state.buttonBase]" />
+      <mute v-else @click="onUnmute" :style="[state.buttonBase, {color: 'red'}]" />
+      <video-camera v-if="state.vidOn" @click="onVideoOff" :style="[state.buttonBase]" />
+      <video-camera v-else @click="onVideoOn" :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="leaveSession"/>
     </div>
     <div class="footer-child communication">
@@ -129,7 +129,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
@@ -157,6 +157,7 @@ export default{
   setup (){
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const state = reactive({
       OV: undefined,
       session: undefined,
@@ -184,12 +185,48 @@ export default{
       // RightRecvList: [],
       recvList: [],
       stompClient: '',
+      micOn: true,
+      vidOn: true,
     })
 
-    const subsTest = function () {
-      console.log(state.subscribers)
+    const onVideoOn = function () {
+      state.publisher.publishVideo(true)
+      state.vidOn = true
+    }
+    const onVideoOff = function () {
+      state.publisher.publishVideo(false)
+      state.vidOn = false
+    }
+    const onMute = function () {
+      state.publisher.publishAudio(false)
+      state.micOn = false
+      }
+    const onUnmute = function () {
+      state.publisher.publishAudio(true)
+      state.micOn = true
     }
 
+    const leaveSession = function () {
+      state.session.disconnect();
+      state.session = undefined
+      state.mainStreamManager = undefined
+      state.publisher = undefined
+      state.subscribers = []
+      state.OV = undefined
+
+      const payload = {
+        sessionName: state.roomId,
+        token: state.token,
+      }
+      store.dispatch('root/requestDeleteRoom', payload)
+        .then((res) => {
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+      router.push({ name: 'home' })
+    }
 
     const connectSession = function () {
       // state.session.connect(state.token, {})
@@ -270,40 +307,15 @@ export default{
     })
 
     //세션 나가기
-      onBeforeUnmount(() => {
-      state.session.disconnect();
-      state.session = undefined
-      state.mainStreamManager = undefined
-      state.publisher = undefined
-      state.subscribers = []
-      state.OV = undefined
-
-      const payload = {
-        sessionName: state.roomId,
-        token: state.token,
-      }
-      store.dispatch('root/requestDeleteRoom', payload)
-        .then((res) => {
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+    onBeforeUnmount(() => {
+      leaveSession()
     })
     const updateMainVideoStreamManager = function (stream) {
       if (state.mainStreamManager === stream) return;
       state.mainStreamManager = stream
     }
 
-    const leaveSession = function(){
-      // state.session.disconnect();
-      // state.session = undefined
-      // state.mainStreamManager = undefined
-      // state.publisher = undefined
-      // state.subscribers = []
-      // state.OV = undefined
-    }
-
-     const onClickMember = function () {
+    const onClickMember = function () {
       state.chatButton.color = 'grey'
       state.openChat = false
       state.openMember = !state.openMember
@@ -313,7 +325,6 @@ export default{
         state.memberButton.color = 'grey'
       }
     }
-
 
     const onClickChat = function () {
       state.memberButton.color = 'grey'
@@ -386,7 +397,7 @@ export default{
 
     //disconnect로 세션 leave
 
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, chatConnect, send, sendMessage,onClickChat,onClickMember, subsTest }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, chatConnect, send, sendMessage,onClickChat,onClickMember, onVideoOn, onVideoOff, onMute, onUnmute }
   }
 
 }
