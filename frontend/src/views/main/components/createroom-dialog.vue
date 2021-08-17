@@ -23,17 +23,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <!-- 관전자 인원수 설정하기 -->
-      <el-form-item prop="observers" label="관전인원수" :label-width="state.formLabelWidth">
-        <el-select v-model="state.form.observers" placeholder="관전자 인원수">
-          <el-option
-            v-for="number in obs_numbers"
-            :key="number.value"
-            :label="number.label"
-            :value="number.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <!-- 포지션 정하기 -->
       <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
         <el-select v-model="state.form.userSide" placeholder="포지션">
@@ -108,66 +97,26 @@ import { useRouter } from 'vue-router'
 export default {
   data() {
     return {
-        part_numbers: [{
-          value: 2,
-          label: '2'
-        }, {
-          value: 4,
-          label: '4'
-        }, {
-          value: 6,
-          label: '6'
-        }, {
-          value: 8,
-          label: '8'
-        }, {
-          value: 10,
-          label: '10'
-        }],
-        obs_numbers: [{
-          value: 1,
-          label: '1'
-        }, {
-          value: 3,
-          label: '3'
-        }, {
-          value: 5,
-          label: '5'
-        }, {
-          value: 7,
-          label: '7'
-        }, {
-          value: 9,
-          label: '9'
-        }],
-        userSide: [{
-          value: 'agree',
-          label: '주제1(찬성)'
-        }, {
-          value: 'opposite',
-          label: '주제2(반대)'
-        }, {
-          value: 'observer',
-          label: '관전자'
-        }],
-        times: [{
-          value: 20,
-          label: '20'
-        }, {
-          value: 30,
-          label: '30'
-        }, {
-          value: 40,
-          label: '40'
-        }, {
-          value: 50,
-          label: '50'
-        }, {
-          value: 60,
-          label: '60'
-        }],
-        value: ''
-      }
+        part_numbers: [
+          { value: 2, label: '2' },
+          { value: 4, label: '4' },
+          { value: 6, label: '6' },
+          { value: 8, label: '8' },
+          { value: 10,label: '10'},
+        ],
+        userSide: [
+          { value: 'agree', label: '주제1(찬성)' },
+          { value: 'opposite', label: '주제2(반대)' },
+        ],
+        times: [
+          { value: 20, label: '20' },
+          { value: 30, label: '30' },
+          { value: 40, label: '40' },
+          { value: 50, label: '50' },
+          { value: 60, label: '60' },
+        ],
+        value: '',
+    }
   },
   name: 'createroom-dialog',
 
