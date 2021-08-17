@@ -41,13 +41,14 @@ public class RoomServiceImpl implements RoomService {
 	public Room createRoom(RoomPostReq roomPostRequestInfo, String validatedUserId) {
 		Room room = new Room();
 
-		if (validatedUserId.equals(roomPostRequestInfo.getUserId())) {
-			room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
-		}
+//		if (validatedUserId.equals(roomPostRequestInfo.getUserId())) {
+//			room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
+//		}
+		room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
 		// userId 도 중복검사를 진행할 것이라서 없을리는... 없을 것이다.
 
 		room.setParticipants(roomPostRequestInfo.getParticipants());
-		room.setObservers(roomPostRequestInfo.getObservers());
+//		room.setObservers(roomPostRequestInfo.getObservers());
 		room.setTimes(roomPostRequestInfo.getTimes());
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());

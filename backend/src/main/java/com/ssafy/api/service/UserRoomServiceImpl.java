@@ -45,27 +45,28 @@ public class UserRoomServiceImpl implements UserRoomService {
 	}
 
 	@Override
-	public Boolean checkLimitRoom(Room room, String UserSide) {
+	public Boolean checkLimitRoom(Room room, String userSide) {
 		// TODO Auto-generated method stub
 			
 		Integer userSideCount = 0;
 		String convertUserSide = "agree";
 		
 		// userSide 기본값 opposite
-		if (UserSide.equals("opposite")) {
+		if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
+			convertUserSide = "agree";
+		} else {
 			convertUserSide = "opposite";
 		}
 		
-		List<User_Room> checkUserRoom = userRoomRepository.findByRoomIdAndUserSide(room, UserSide);
-		 
+		List<User_Room> checkUserRoom = userRoomRepository.findByRoomIdAndUserSide(room, convertUserSide);
+			
+		// 입장가능 = true
 		if (checkUserRoom.size() + 1 <= room.getParticipants()) {
 			System.out.println("size : " + checkUserRoom.size());
 			return true;
 		}
 		return false;
 	}
-	
-	
 	
 	@Override
 	public User_Room getUserByUserId(String UserId) {

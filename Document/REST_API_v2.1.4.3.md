@@ -528,7 +528,7 @@
     {
         "StatusCode" : 400,
         "message" : "noExist roomId",
-  }
+    }
     ```
 
 - 권한
@@ -696,6 +696,13 @@
     {
         "StatusCode" : 400,
         "message" : "already enter room user"
+    }
+    ```
+    
+    ```json
+    {
+        "StatusCode" : 400,
+        "message" : "don't enter Room : maximum userside"
     }
     ```
 
