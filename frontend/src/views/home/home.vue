@@ -84,10 +84,10 @@
   margin: 0;
 }
 .el-carousel__item:nth-child(2n) {
-  background-color: #daffff;
+  background-color: #c0c0c0;
 }
 .el-carousel__item:nth-child(2n+1) {
-  background-color: #daffff;
+  background-color: #c0c0c0;
 }
 
 .room-list {
@@ -183,7 +183,6 @@ export default {
 
     // 방 목록 받아오는 함수
     const getRoomList = function () {
-      // let loadingInstance = ElLoading.service({ target: homeContainer.value, background: 'rgba(0, 0, 0, 0.2)' })
       let loadingInstance = ElLoading.service({ target: homeContainer.value })
       setTimeout(() => {
         let query = {
@@ -274,7 +273,6 @@ export default {
     // 검색시 방 목록 업데이트
     watch (() => route.query, () => {
       if (Object.keys(route.query).length !== 0) {
-        // sort 키가 없으면 query를 수정해서 넘기기?: default 값은 participantsAsc
         getRoomList()
       }
     })

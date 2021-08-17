@@ -126,7 +126,10 @@ export default {
       })
     }
 
-
+    const clickRanking = () => {
+      console.log('click랭킹함')
+      emit('openRankingDialog')
+    }
     // const clickLogo = () => {
     //   store.commit('root/setMenuActive', 0)
     //   const MenuItems = store.getters['root/getMenus']
@@ -164,9 +167,18 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-
-
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, clickHistory }
+    return {
+      state,
+      menuSelect,
+      clickLogo,
+      clickLogin,
+      changeCollapse,
+      clickJoin,
+      clickProfile ,
+      clickLogout ,
+      clickCreateRoom,
+      clickHistory,
+    }
   }
 }
 </script>

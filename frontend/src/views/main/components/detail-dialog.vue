@@ -97,7 +97,6 @@ export default {
     const detailForm = ref(null);
     const state = reactive({
       form: null,
-
       userSide: '',
       roomPassword: '',
       divide_participants: '',
@@ -115,8 +114,8 @@ export default {
     // 닫기
     const handleClose = function() {
       state.form = null;
-      emit('closeDetailDialog');
-    };
+      emit('closeDetailDialog')
+    }
 
     // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
     // 여기 수정해야할거 같다. 내 프로필이 아니라 방을 만든 사람의 프로필 정보를 넣기 때문에 이상한거 같음.
@@ -126,7 +125,7 @@ export default {
           .then(function (result) {
             state.form = result.data
             state.divide_participants = result.data.participants/2
-            console.log(state.form.userId);
+            console.log(state.form.userId)
           })
           .catch(function (err) {
             console.log(err)

@@ -99,7 +99,7 @@ export function requestMyProfile() {
 
 // 내 프로필 수정요청
 export function requestUpdateProfile({ commit }, payload) {
-  const url = '/users/' +  payload.userId
+  const url = `/users/${payload.userId}`
   const request = {
     method: 'patch',
     url: url,
@@ -117,7 +117,7 @@ export function requestRoomList({ commit }, payload) {
 
 // 방 상세 정보 요청
 export function requestDetail({ state }, payload) {
-  const url = '/room/' + payload
+  const url = `/room/${payload}`
   const request = {
     method: 'get',
     url: url,
@@ -127,7 +127,6 @@ export function requestDetail({ state }, payload) {
 
 
 export function requestRoomToken({ state }, payload) {
-  // 추후 'api/v1/room/{roomId}/admission' 으로 변경
   const url = `/room/${payload}/admission`
   const body = { sessionName: `${payload}` }
   const request = {
