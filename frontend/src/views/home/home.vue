@@ -1,18 +1,4 @@
 <template>
-  <h1>{{ state.query }}</h1>
-  <button class="el-button el-button--primary" type="button">
-    <i class="el-icon-sort"></i>
-    <span>개발중</span>
-  </button>
-
-  <!-- <el-carousel :interval="2000" arrow="always">
-    <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
-      <h3 @click="clickRoom(carousel.roomId)" class="small">
-        {{ carousel.topicAgree }} vs {{ carousel.topicOpposite }}
-      </h3>
-    </el-carousel-item>
-  </el-carousel> -->
-
   <el-carousel :interval="2000" arrow="always">
     <el-carousel-item v-for="carousel in state.carousels" :key="carousel.roomId">
       <h3 @click="clickRoom(carousel.roomId)" class="small">
@@ -119,27 +105,21 @@ export default {
 
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
-      console.log(roomId)
       emit('openDetailDialog', roomId)
     }
 
     // 방 목록 받아오는 함수
     const getRoomList = function () {
-      // pagination 미구현 상태
       store.dispatch('root/requestRoomList', state.query)
         .then((result) => {
           state.rooms = result.data.content
           carouselRoom()
-          console.log(state.carousels)
         })
         .catch((err) => {
-          console.log('room list request failed')
-          console.log(err)
         })
     }
 
     const carouselRoom = function () {
-      console.log("carouselRoom실행됨")
       let randomIndexArray = []
       if (state.rooms.length > 6) {
         for (let i=0; i<6; i++) {   //check if there is any duplicate index
@@ -153,7 +133,6 @@ export default {
         }
         for (let i=0; i<6; i++) {
           state.carousels.push(state.rooms[randomIndexArray[i]])
-          console.log(state.carousels)
         }
       } else {
         state.carousels = state.rooms
@@ -162,16 +141,14 @@ export default {
 
     // 검색시 방 목록 업데이트
     watch (() => route.query, () => {
-      console.log('query updated')
       if (Object.keys(route.query).length !== 0) {
-        // sort 키가 없으면 query를 수정해서 넘기기: default 값은 participantsAsc
-        getRoomList()
+        // sort 키가 없으면 query를 수정해서 넘기기?: default 값은 participantsAsc
+        getRoomList(route.query)
       }
     })
 
     // 초기 데이터 로딩
     onMounted (() => {
-      console.log('initial room list loading')
       getRoomList()
     })
 

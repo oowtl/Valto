@@ -1,10 +1,16 @@
 package com.ssafy.db.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +26,7 @@ import com.sun.istack.NotNull;
 @Entity
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Room extends BaseEntity{
 
 	// owner_id
@@ -27,7 +34,8 @@ public class Room extends BaseEntity{
 	@JoinColumn(name = "ownerId") // fk
 	private User userId;
 	
-	private Date localDateTime;
+	@CreatedDate
+	private LocalDateTime createdAt;
 	
 	@NotNull
 	private String title; // 방 제목

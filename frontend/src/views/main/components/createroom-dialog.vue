@@ -1,6 +1,6 @@
 <template>
   <el-dialog custom-class="createroom-dialog" title="방 생성하기" v-model="state.dialogVisible" @close="handleClose">
-    <el-form :model="state.form" :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
+    <el-form :model="state.form" status-icon :rules="state.rules" ref="createRoomForm" :label-position="state.form.align">
       <!-- 제목 설정하기 -->
       <el-form-item prop="title" label="제목" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.title" autocomplete="off"></el-input>
@@ -63,7 +63,7 @@
     <!-- 생성 버튼 -->
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="clickCreateRoom">생성</el-button>
+        <el-button type="primary" @click="clickCreateRoom" :disabled="state.isInvalid">생성</el-button>
       </span>
     </template>
   </el-dialog>
@@ -182,9 +182,68 @@ export default {
     const store = useStore()
     const createRoomForm = ref(null)
     const router = useRouter()
+
+    const flag = ref({
+      title: false,
+      topicAgree: false,
+      topicOpposite: false
+    })
+
+    // 아이디, 닉네임 입력 대기용 dummy function
+    const dummyValidation = function (rule, value, callback) {
+      console.log('wating for blur')
+    }
+    const checkTitle = function (rule, value, callback) {
+      if(!value) {
+        flag.value.title = false
+        return callback(new Error('제목은 필수 입력 항목입니다.'))
+      } else if (value.length < 2) {
+        flag.value.title = false
+        return callback(new Error('최소 2글자 이상 입력해야 합니다.'))
+      } else if (value.length > 15) {
+        flag.value.title = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.` ))
+      } else {
+        flag.value.title = true
+        return callback()
+      }
+    }
+
+    const checkTopicAgree = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicAgree = true
+        return callback()
+      }
+    }
+
+    const checkTopicOpposite = function (rule, value, callback) {
+      if (!value) {
+        flag.value.topicAgree = false
+        return callback(new Error('필수 입력 항목 입니다.'))
+      }else if (value.length > 15) {
+        flag.value.topicAgree = false
+        return callback(new Error(`최대 15글자까지 입력 가능합니다. 현재 ${value.length} 글자.`))
+      }
+      else {
+        flag.value.topicOpposite = true
+        return callback()
+      }
+    }
+
+
     const state = reactive({
       userId: computed(() => {
         return store.getters['root/getUserId']
+      }),
+      isInvalid: computed(() => {
+        return Object.values(flag.value).some(bool => bool === false)
       }),
       form: {
         // userId: this.userId,
@@ -201,14 +260,19 @@ export default {
       },
       rules: {
         title: [
-          { required: true, message: '필수 입력 항목입니다.' },
-          { required: true, message: '최대 30자까지 입력 가능합니다.', max:30 }
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator : checkTitle, trigger: 'blur'},
+          { required: true }
         ],
         topicAgree: [
-          { required: true, message: '선택 항목입니다.'},
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicAgree, trigger: 'blur' },
+          { required: true }
         ],
         topicOpposite: [
-          { required: true, message: '선택 항목입니다.'},
+          // { validator: dummyValidation, trigger: 'change' },
+          { validator: checkTopicOpposite, trigger: 'blur' },
+          { required: true }
         ],
         participants: [
           { required: true, message: '참가자 인원수 선택하세요.' }
@@ -250,6 +314,7 @@ export default {
           })
           .then(function (result) {
             console.log('axios 성공성공');
+            console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
             name: 'room',
@@ -276,7 +341,9 @@ export default {
       state.privateRoom = !state.privateRoom
     }
 
-    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck }
+
+
+    return { state, handleClose, createRoomForm, clickCreateRoom, buttonCheck, dummyValidation, flag }
   }
 }
 </script>

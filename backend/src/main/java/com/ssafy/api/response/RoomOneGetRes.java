@@ -23,6 +23,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 	@ApiModelProperty(name="participants")
 	Integer participants;
 	@ApiModelProperty(name="observers")
+	Integer observers;
+	@ApiModelProperty(name="times")
 	Integer times;
 	@ApiModelProperty(name="user id")
 	String userId;
@@ -49,6 +51,7 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		roomInfo.setRoomId(room.getId());
 		roomInfo.setParticipants(room.getParticipants());
+		roomInfo.setObservers(room.getObservers());
 		roomInfo.setTimes(room.getTimes());
 		roomInfo.setUserId(room.getUserId().getUserId());
 		roomInfo.setTitle(room.getTitle());
