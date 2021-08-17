@@ -114,7 +114,7 @@ export default{
       buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
       chatButton: { color: 'grey' },
       memberButton: { color: 'grey' },
-
+      userSide: computed(() => store.getters['root/getUserSide'])
     })
 
     const subsTest = function () {
@@ -150,14 +150,13 @@ export default{
       state.roomId = route.path.split('/')[2]
       const payload = {
         roomId: state.roomId,
-        userSide: store.getters(['root/getUserSide'])
+        userSide: state.userSide,
       }
-      store.dispatch('root/requestRoomToken', state.roomId)
+      store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           state.token = result.data[0]
           console.log('@@@@@@@@@@')
           console.log(result.data)
-          state.side = result.data[1]
           connectSession()
         })
         .catch((err) => {

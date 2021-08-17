@@ -129,7 +129,7 @@ export default {
     );
 
     const clickEnter = function(roomId) {
-      store.commit('root/setUserSide', state.userSide)
+      store.commit('root/setUserSide', roomId)
       router.push({
         name: 'room',
         params: {
