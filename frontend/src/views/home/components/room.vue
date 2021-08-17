@@ -28,7 +28,7 @@
             <div style="display: flex; align-items: center;">
               <div style="display: flex; align-items: center; margin-right: 1rem;">
                 <UserFilled :style="[state.buttonBase]" style="color: grey; opacity: 0.8;"/>
-                <span style="color: grey; opacity: 0.8; font-size: 1rem;">{{ room.userTotalCount }} / {{ room.participants + room.observers }}</span>
+                <span style="color: grey; opacity: 0.8; font-size: 1rem;">{{ room.userTotalCount }} / {{ room.participants }}</span>
               </div>
               <div>
                 <Lock v-if="false" :style="[state.buttonBase]"/>

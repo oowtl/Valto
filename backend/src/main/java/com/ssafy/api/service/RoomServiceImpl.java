@@ -41,13 +41,14 @@ public class RoomServiceImpl implements RoomService {
 	public Room createRoom(RoomPostReq roomPostRequestInfo, String validatedUserId) {
 		Room room = new Room();
 
-		if (validatedUserId.equals(roomPostRequestInfo.getUserId())) {
-			room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
-		}
+//		if (validatedUserId.equals(roomPostRequestInfo.getUserId())) {
+//			room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
+//		}
+		room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
 		// userId 도 중복검사를 진행할 것이라서 없을리는... 없을 것이다.
 
 		room.setParticipants(roomPostRequestInfo.getParticipants());
-		room.setObservers(roomPostRequestInfo.getObservers());
+//		room.setObservers(roomPostRequestInfo.getObservers());
 		room.setTimes(roomPostRequestInfo.getTimes());
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
@@ -71,6 +72,12 @@ public class RoomServiceImpl implements RoomService {
 		// roomListGetInfo 에 따라서 다르게 넣어준다.
 		// only title, only topic, topic and title
 
+//		System.out.println();
+//		System.out.println(roomListGetInfo.getSorting());
+//		System.out.println(roomListGetInfo.getTitle());
+//		System.out.println(roomListGetInfo.getTopic());
+//		System.out.println();
+		
 		// sort 기준 : createdAt(생성 시간) - Desc
 		if (roomListGetInfo.getSorting().equals("createdAtDesc")) {
 
@@ -191,7 +198,7 @@ public class RoomServiceImpl implements RoomService {
 		List<Room> result = new ArrayList<Room>();
 		resultUserRoomList.forEach((room) -> result.add((Room) room.get("room")));
 
-		return roomRepository.findAll();
+		return result;
 	}
 
 	@Override

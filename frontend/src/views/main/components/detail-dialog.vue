@@ -14,7 +14,6 @@
           <span>{{ state.form.topicOpposite }}</span>
           <hr>
         </span>
-
         <el-form-item label="토론 시간: " :label-width="state.formLabelWidth">
           {{ state.form.times }}분
         </el-form-item>
@@ -24,25 +23,33 @@
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
-        <el-form-item label="관전자 인원수: " :label-width="state.formLabelWidth">
-          {{ state.form.observerUsers.length }}/{{ state.form.observers }}
-        </el-form-item>
-        <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
-          <el-select class="positionSelect" v-model="state.form.userSide" placeholder="포지션">
-            <el-option
-              v-for="position in userSide"
-              :key="position.value"
-              :label="position.label"
-              :value="position.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
           <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
           <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
+        <span class="dialog-footer1">
+          <el-button
+            type="primary"
+            @click="clickEnter1(state.form.roomId)"
+            :disabled="state.isInvalid1"
+            >주제1로 입장</el-button
+          >
+        </span>
+        <span class="dialog-footer2">
+          <el-button
+            type="primary"
+            @click="clickEnter2(state.form.roomId)"
+            :disabled="state.isInvalid2"
+            >주제2로 입장</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+<!--<template #footer>
         <span class="dialog-footer">
           <el-button
             type="primary"
@@ -51,17 +58,14 @@
             >입장</el-button
           >
         </span>
-      </template>
-    </el-dialog>
-  </div>
-</template>
+      </template>-->
 <script>
-import { reactive, computed, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { reactive, computed, ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
-  name: "detail-dialog",
+  name: 'detail-dialog',
 
   props: {
     open: {
@@ -73,29 +77,12 @@ export default {
     }
   },
 
-  data() {
-    return {
-      userSide: [{
-          value: 'agree',
-          label: '주제1(찬성)'
-        }, {
-          value: 'opposite',
-          label: '주제2(반대)'
-        }, {
-          value: 'observer',
-          label: '관전자'
-        }],
-    }
-  },
-
   setup(props, { emit }) {
     const router = useRouter();
     const store = useStore();
     const detailForm = ref(null);
-    // const flag = ref({})
     const state = reactive({
       form: null,
-      userSide: '',
       roomPassword: '',
       divide_participants: '',
       dialogVisible: computed(() => props.open),
@@ -106,48 +93,102 @@ export default {
         roomPassword: [
           { required: true, message: '방 비밀번호 입력하세요' }
         ],
-      }
+      },
+      isInvalid1: false,
+      isInvalide2: false
     })
 
     // 닫기
     const handleClose = function() {
       state.form = null;
-      emit("closeDetailDialog");
-    };
+      emit('closeDetailDialog')
+    }
 
+    // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
+    // 여기 수정해야할거 같다. 내 프로필이 아니라 방을 만든 사람의 프로필 정보를 넣기 때문에 이상한거 같음.
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
-            console.log("result는", result)
             state.form = result.data
             state.divide_participants = result.data.participants/2
+            if ( state.form.agreeUsers.length == state.divide_participants ) {
+              state.isInvalid1 = true
+            }
+            if ( state.form.oppositeUsers.length == state.divide_participants ) {
+              state.isInvalid2 = true
+            }
+            console.log(state.form.userId)
           })
           .catch(function (err) {
             console.log(err)
+            handleClose()
           })
         } else if (newVal === false) {
-          console.log("detail dialog closed");
+          handleClose()
         }
       }
     );
 
-    const clickEnter = function(roomId) {
-      router.push({
-        name: "room",
-        params: {
-          roomId: roomId
-        }
-      });
+    const clickEnter1 = function(roomId) {
+      state.form.userSide = 'agree'
+      if (!state.isInvalid1) {
+        store.commit('root/setUserSide', state.form.userSide )
+        router.push({
+          name: 'room',
+          params: {
+            roomId: roomId
+          }
+        });
+      }
     };
-    return { state, handleClose, detailForm, clickEnter };
+
+    const clickEnter2 = function(roomId) {
+      state.form.userSide = 'agree'
+      if (!state.isInvalid2) {
+        store.commit('root/setUserSide', state.form.userSide )
+        router.push({
+          name: 'room',
+          params: {
+            roomId: roomId
+          }
+        });
+      }
+    };
+
+    // const clickEnter2 = function(roomId) {
+    //   state.form.userSide = 'opposite'
+    //   if (!state.isInvalid2) {
+    //     store.dispatch('root/requestRoomToken', {
+    //       roomId: roomId,
+    //       privateRoom: state.form.privateRoom,
+    //       roomPassword: state.roomPassword,
+    //       userSide: state.form.userSide,
+    //     })
+    //     .then(function (reuslt) {
+    //       emit('closeDetailDialog')
+    //       router.push({
+    //         name: 'room',
+    //         params: {
+    //           roomId: roomId
+    //         }
+    //       })
+    //     })
+    //     .catch(function (err) {
+    //       alert(err)
+    //     })
+    //   }
+    // };
+
+
+    return { state, handleClose, detailForm, clickEnter1, clickEnter2 };
   }
 };
 </script>
 <style>
 .detail-dialog {
   width: 600px !important;
-  height: 800px;
+  height: 650px;
 }
 .topics {
   text-align: center;
@@ -192,15 +233,22 @@ export default {
 /* .detail-dialog .el-input__suffix {
   display: none;
 } */
-.detail-dialog .el-dialog__footer {
-  margin: 20px calc(50% - 80px);
-  padding-top: 0;
-  display: inline-block;
-}
+
 .detail-dialog .dialog-footer .el-button {
   width: 120px;
   height: 100px;
   font-size: 30px;
 }
+.detail-dialog .el-dialog__footer .dialog-footer1 {
+  float: left;
+  padding-top: 0;
+  display: inline-block;
+  margin-left: 100px;
+}
+.detail-dialog .el-dialog__footer .dialog-footer2 {
+  float: right;
+  padding-top: 0;
+  display: inline-block;
+  margin-right: 100px;
+}
 </style>
-p

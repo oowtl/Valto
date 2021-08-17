@@ -14,13 +14,6 @@
         </ul>
       </div>
       <div class="tool-wrapper">
-        <div class="search-field">
-          <el-input
-            placeholder="밸런스 토론 검색"
-            v-model="state.searchValue"
-            @keyup.enter="searchRoom">
-          </el-input>
-        </div>
         <ul class="button-wrapper" v-if="!state.loginFlag">
           <li class="button-list" @click="clickJoin" icon="el-icon-circle-plus-outline">회원가입</li>
           <li class="button-list" type="primary" @click="clickLogin" icon="el-icon-key">로그인</li>
@@ -87,8 +80,6 @@ export default {
     const store = useStore()
     const router = useRouter()
     const state = reactive({
-      searchVisibility: 'hidden',
-      searchValue: null,
       isCollapse: true,
       menuItems: computed(() => {
         const MenuItems = store.getters['root/getMenus']
@@ -176,23 +167,25 @@ export default {
       state.isCollapse = !state.isCollapse
     }
 
-    const searchRoom = function () {
-      router.push({
-        name: 'home',
-        query: {
-          q: state.searchValue,
-          sort: 'default'
-        }
-      })
+    return {
+      state,
+      menuSelect,
+      clickLogo,
+      clickLogin,
+      changeCollapse,
+      clickJoin,
+      clickProfile ,
+      clickLogout ,
+      clickCreateRoom,
+      clickHistory,
     }
-
-    return { state, menuSelect, clickLogo, clickLogin, changeCollapse, clickJoin, clickProfile , clickLogout , clickCreateRoom, searchRoom, clickHistory, clickRanking }
   }
 }
 </script>
 <style>
   .main-header {
     padding: 10px 20px;
+    border-bottom: 1px solid #cacaca;
   }
   /*Mobile, Tablet*/
   .menu-icon-wrapper {
@@ -289,8 +282,9 @@ export default {
     cursor: pointer;
   }
   .main-header .hide-on-small .left-wrapper .logo-wrapper .ic.ic-logo {
-    width: 70px;
+    width: 100px;
     height: 50px;
+    margin-top: 14px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url('../../../assets/images/ssafy-logo.png');
@@ -300,13 +294,17 @@ export default {
     width: 50%;
     float: right;
     margin-right: 10%;
+    padding: 0;
   }
   .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper {
     display: inline-block;
-    width: 45%;
-    height: 50px;
+    /* width: 45%; */
+    height: 25px;
     cursor: pointer;
-    margin-right: 1%;
+    margin-right: 44px;
+  }
+  .main-header .hide-on-small .left-wrapper .side-wrapper .li-wrapper:hover {
+    border-bottom: 2px solid black;
   }
   .main-header .hide-on-small .tool-wrapper {
     width: 70%;
@@ -314,35 +312,23 @@ export default {
     float: right;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper {
-    width: 50%;
+    width: 44%;
     float: right;
     display: inline-block;
+    text-align: right;
+    padding: 0;
   }
   .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list {
-    width: 30%;
-    height: 50px;
+    /* width: 20%; */
+    height: 25px;
     cursor: pointer;
-    margin: 0 1%;
+    margin-left: 50px;
     display: inline-block;
+    text-align: right;
+    /* border-radius: 3px; */
+    }
+  .main-header .hide-on-small .tool-wrapper .button-wrapper .button-list:hover {
+    /* background-color: rgba(0, 0, 0, 0.1); */
+    border-bottom: 2px solid black;
   }
-  .main-header .hide-on-small .tool-wrapper .search-field {
-    width: 40%;
-    height: 50px;
-    max-width: 400px;
-    display: inline-block;
-    background-color: white;
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input {
-    width: 100%;
-    height: 100%;
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__inner {
-    width: 88%;
-    height: 50px;
-    margin: 0 1%;
-  }
-  .main-header .hide-on-small .tool-wrapper .search-field .el-input .el-input__prefix {
-    top: 5px;
-  }
-
 </style>

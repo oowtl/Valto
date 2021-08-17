@@ -1,21 +1,30 @@
-<template>
+r<template>
   <el-dialog custom-class="ranking-dialog" title="랭킹" v-model="state.dialogVisible" @close="handleClose">
     <ul class="ranking-list">
       <li v-for="rank in 10" class="ranking-list-item">
-          <div>{{ rank }}등 : {{ state.form.rankingList[rank-1] }}</div>
+        <ranking-form>{{ rank }}등 :</ranking-form>
+        <ranking-id>{{ state.form.rankingList[rank-1] }}</ranking-id>
       </li>
     </ul>
   </el-dialog>
 </template>
+
 <style>
 .ranking-dialog {
   width: 400px !important;
-  height: 600px;
+  height: 650px;
 }
 .ranking-list .ranking-list-item {
-  list-style:none;
+  list-style: none;
   font-size: 30px;
-  margin-left: 30%
+  margin: 5px 20px;
+}
+.ranking-list .ranking-list-item ranking-form{
+  margin-left: 50px;
+}
+.ranking-list .ranking-list-item ranking-id{
+  float: right;
+  margin-right: 100px;
 }
 
 </style>
@@ -46,6 +55,7 @@ export default {
       formLabelWidth: '120px',
     })
 
+    // 아래로 바꿀거
     // watch(() => props.open, (newVal, oldVal) => {
     //   if (newVal === true) {
     //     store.dispatch('root/requestRanking')
@@ -56,7 +66,7 @@ export default {
     //         console.log(err)
     //       })
     //     } else if (newVal === false) {
-    //       console.log("ranking dialog closed");
+    //       handleClose()
     //     }
     //   }
     // );

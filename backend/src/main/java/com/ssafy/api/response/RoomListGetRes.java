@@ -17,6 +17,9 @@ import lombok.Setter;
 @ApiModel("RoomListGetRes")
 public class RoomListGetRes extends BaseResponseBody{
 	
+	@ApiModelProperty(name="RoomCount")
+	Integer roomCount;
+	
 	@ApiModelProperty(name="content")
 	ArrayList<HashMap> content;	
 	
@@ -35,7 +38,7 @@ public class RoomListGetRes extends BaseResponseBody{
 			mapRoom.put("roomId", curRoom.getId());
 			mapRoom.put("userId", curRoom.getUserId().getNickName());
 			mapRoom.put("participants", curRoom.getParticipants());
-			mapRoom.put("observers", curRoom.getObservers());
+//			mapRoom.put("observers", curRoom.getObservers());
 			mapRoom.put("times", curRoom.getTimes());
 			mapRoom.put("title", curRoom.getTitle());
 			mapRoom.put("topicAgree", curRoom.getTopicAgree());
@@ -45,12 +48,12 @@ public class RoomListGetRes extends BaseResponseBody{
 			mapRoom.put("userTotalCount", room.get("userCount"));
 			mapRoom.put("userAgreeCount", room.get("userAgreeCount"));
 			mapRoom.put("userOppositeCount", room.get("userOppositeCount"));
-			mapRoom.put("userObserverCount", room.get("userObserverCount"));
 			
 			roomListArray.add(mapRoom);
 		}
 		
 		roomList.setContent(roomListArray);
+		roomList.setRoomCount(getRoomListAddCount.size());
 		
 		return roomList;
 		
