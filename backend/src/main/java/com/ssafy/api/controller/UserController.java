@@ -1,5 +1,7 @@
 package com.ssafy.api.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import com.ssafy.api.request.UserLoginPostReq;
 import com.ssafy.api.request.UserModifyPatchReq;
 import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.api.response.UserLoginPostRes;
+import com.ssafy.api.response.UserRankListRes;
 import com.ssafy.api.response.UserRes;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.auth.SsafyUserDetails;
@@ -191,5 +194,21 @@ public class UserController {
 		
 		return ResponseEntity.status(200).body(UserRes.opp(user));
 	}
+	
+	@GetMapping("/rank/list")
+	@ApiOperation(value = "유저 랭킹 리스트", notes = "1위에서 10위 까지의 유저 랭킹")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 400, message = "No Exist User")
+	})
+	public ResponseEntity<? extends BaseResponseBody> getRankingList(){
 		
+		List<User> rankingList = userService.getRankList();
+		
+		if (rankingList.size() == 0) {
+			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "No Exist User"));
+		}
+		
+		return ResponseEntity.status(200).body(UserRankListRes.of(rankingList));
+	}
 }

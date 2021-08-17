@@ -16,8 +16,6 @@ import lombok.Setter;
 @Setter
 public class UserRecord extends BaseEntity{
 	
-	Long point;
-	
 	int win;
 	int draw;
 	int lose;

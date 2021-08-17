@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,15 @@ public class UserServiceImpl implements UserService {
 		// user conference delete
 		
 		return 1;
+	}
+	
+	@Override
+	public List<User> getRankList() {
+		// TODO Auto-generated method stub
+		
+		List<User> rankList = userRepository.findTop10ByOrderByPointDesc();
+		
+		return rankList;
 	}
 	
 }

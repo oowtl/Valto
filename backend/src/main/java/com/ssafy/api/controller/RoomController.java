@@ -296,7 +296,7 @@ public class RoomController {
 //		System.out.println(mapSessions);
 //		System.out.println(mapSessionNamesTokens);
 		
-		System.out.println(userRoomPostReq);
+//		System.out.println(userRoomPostReq);
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();

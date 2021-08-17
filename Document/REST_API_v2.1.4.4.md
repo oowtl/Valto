@@ -15,6 +15,7 @@
 | `/users/me`                | GET           | JSON     | 페이지 권한 여부 확인           |
 | `/users/myprofile`         | GET           | JSON     | 자기 프로필 확인                |
 | `/users/{userId}/profile/` | GET           | JSON     | 타인 프로필 확인                |
+| `/users/rank/list`         | GET           | JSON     | 유저 랭킹 1 ~ 10위 확인         |
 | `/room`                    | POST          | JSON     | 방 생성                         |
 | `/room`                    | GET           | JSON     | 전체 방 목록 조회               |
 | `/room/{roomId}`           | GET           | JSON     | 방 상세 정보 조회               |
@@ -55,6 +56,7 @@
 | `/users/me`               | GET           | JSON     | userId 확인                    |
 | `/users/myprofile`        | GET           | JSON     | 자기 프로필 확인               |
 | `/users/profile/{userId}` | GET           | JSON     | 타인 프로필 확인               |
+| `/users/rank/list`        | GET           | JSON     | 유저 랭킹 1 ~ 10위 확인        |
 
 
 
@@ -300,6 +302,47 @@
     ```
 
 
+
+### [GET] `/users/rank/list`
+
+- Request
+
+  - 없음
+
+- Response
+
+  - 200
+
+    ```json
+    {
+        "rank" : [
+            {
+                "userId" : "String",
+                "nickName" : "String",
+                "name" : "String",
+                "point": Integer
+            },
+            {
+                "userId" : "String",
+                "nickName" : "String",
+                "name" : "String",
+                "point": Integer
+            },
+            ...
+        ]
+    }
+    ```
+
+  - 400
+
+    ```json
+    {
+    	"statusCode" : 400,
+        "message" : "No Exist User"
+    }
+    ```
+
+    
 
 
 
