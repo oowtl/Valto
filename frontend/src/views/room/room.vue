@@ -62,10 +62,68 @@
       <user :style="[state.buttonBase, state.memberButton]" @click="onClickMember" />
     </div>
   </div>
-    <!-- footer end -->
-<!-- 세션 나가기 버튼  -->
-  <!-- <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session"> -->
+  <el-container>
+    <el-aside width="250px">
+      <div id="socket">
+        <el-scrollbar height="50pc">
+          <div v-for="(item, idx) in state.recvList" :key="idx">
+            <span> {{ item.userId }}</span>
+            <span> : {{ item.message }}</span>
+          </div>
+          채팅: <input
+            v-model="state.message"
+            type="text"
+            @keyup="sendMessage"
+          >
+        </el-scrollbar>
+      </div>
+    </el-aside>
+    </el-container>
 </template>
+
+<style scoped>
+  #socket {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: left;
+    color: #2c3e50;
+    margin-top: 60px;
+    margin-left: 10px;
+  }
+  .el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+
+  .el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 30px;
+  }
+
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 100px;
+  }
+  body > .el-container {
+    margin-bottom: 100px;
+  }
+
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
+</style>
 
 <script>
 import { useStore } from 'vuex'
@@ -74,6 +132,8 @@ import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
 import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 // 12: state.publisher, 13:state.sub?
 
@@ -114,7 +174,14 @@ export default{
       buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
       chatButton: { color: 'grey' },
       memberButton: { color: 'grey' },
-      userSide: computed(() => store.getters['root/getUserSide'])
+      userSide: computed(() => store.getters['root/getUserSide']),
+      //임의 userId
+      userId:'test',
+      message: '',
+      // leftRecvList: [],
+      // RightRecvList: [],
+      recvList: [],
+      stompClient: '',
     })
 
     const subsTest = function () {
@@ -192,6 +259,9 @@ export default{
 			})
 
       // 토큰과 클라이언트의 정보를 전달하며 세션에 연결함
+
+      //chat connect
+      chatConnect()
     })
 
     //세션 나가기
@@ -223,6 +293,17 @@ export default{
       console.log('test')
     }
 
+     const onClickMember = function () {
+      state.chatButton.color = 'grey'
+      state.openChat = false
+      state.openMember = !state.openMember
+      if (state.openMember) {
+        state.memberButton.color = 'white'
+      } else {
+        state.memberButton.color = 'grey'
+      }
+    }
+
 
     const onClickChat = function () {
       state.memberButton.color = 'grey'
@@ -234,30 +315,70 @@ export default{
         state.chatButton.color = 'grey'
       }
     }
+    ///////////////////////// 채팅 관련 ////////////////////////////
 
-    const onClickMember = function () {
-      state.chatButton.color = 'grey'
-      state.openChat = false
-      state.openMember = !state.openMember
-      if (state.openMember) {
-        state.memberButton.color = 'white'
-      } else {
-        state.memberButton.color = 'grey'
+    const sendMessage = function (e) {
+      console.log('eeeeee', e.keyCode, 'userId', state.userId, 'msg', state.message, 'recvList', state.recvList )
+      if(e.keyCode === 13 && state.userId !== '' && state.message !== ''){
+        console.log("send!@!@@@@@@@@")
+        send()
+        state.message = ''
       }
     }
 
+    const send = function() {
+      console.log('Send message:' + state.message);
+      if (state.stompClient && state.stompClient.connected) {
+        const msg = {
+          type:'CHAT',
+          roomId: state.roomId,
+          // userName: state.form.userName,
+          message: state.message,
+          userId: state.userId
+          // recvList: state.form.recvList,
+        };
+        console.log('메세지확인', msg)
+        state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {});
+      }
+    }
+
+    const chatConnect = function() {
+      const serverURL = 'https://localhost:8443/'
+      let socket = new SockJS(serverURL);
+      state.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
+      state.stompClient.connect(
+        {},
+        frame => {
+          // 소켓 연결 성공
+          state.stompClient.connected = true;
+          console.log('소켓 연결 성공', frame, 'id', state.roomId);
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
+          res => {
+            console.log('구독으로 받은 메시지 입니다.', res.body);
+
+            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+            if(state.userSid)
+            state.recvList.push(JSON.parse(res.body))
+          });
+        },
+        error => {
+          // 소켓 연결 실패
+          console.log('소켓 연결 실패', error);
+          state.stompClient.connected = false;
+        }
+      );
+    }
+
+
+
     //disconnect로 세션 leave
 
-    return {
-      state,
-      updateMainVideoStreamManager,
-      leaveSession,
-      connectSession,
-      onClickChat,
-      onClickMember,
-      subsTest,
-    }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, chatConnect, send, sendMessage,onClickChat,onClickMember, subsTest }
   }
+
 }
 </script>
 <style scoped>
