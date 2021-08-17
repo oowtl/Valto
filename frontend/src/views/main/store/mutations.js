@@ -21,6 +21,10 @@ export function setUserId (state, userId) {
 // }
 
 // 검색시 방 리스트 업데이트
-export function UPDATE_ROOMLIST(state, payload){
+export function UPDATE_ROOMLIST (state, payload) {
   state.roomList = payload
+}
+
+export function setUserSide (state, payload) {
+  state.userSide = payload
 }

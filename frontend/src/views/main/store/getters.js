@@ -26,3 +26,7 @@ export function getUserId (state) {
 // export function getIsChecked (state) {
 //   return state.checked ? true : false
 // }
+
+export function getUserSide (state) {
+  return state.userSide
+}

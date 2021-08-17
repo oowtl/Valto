@@ -249,7 +249,7 @@ export default {
     const clickCreateRoom = function () {
       if (!state.isInvalid) {
         store.dispatch('root/requestCreateRoom', {
-          userId: state.userId,              // string
+          userId: state.userId,                   // string
           title: state.form.title,                // string
           topicAgree: state.form.topicAgree,      // string
           topicOpposite: state.form.topicOpposite,// string

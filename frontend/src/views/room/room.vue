@@ -116,7 +116,7 @@ export default{
       buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
       chatButton: { color: 'grey' },
       memberButton: { color: 'grey' },
-
+      userSide: computed(() => store.getters['root/getUserSide'])
     })
 
     const subsTest = function () {
@@ -150,7 +150,11 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = route.path.split('/')[2]
-      store.dispatch('root/requestRoomToken', state.roomId)
+      const payload = {
+        roomId: state.roomId,
+        userSide: state.userSide,
+      }
+      store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           state.token = result.data[0]
           console.log('@@@@@@@@@@')

@@ -34,6 +34,7 @@ export default {
   activeMenu: 'home',
   menus: menuData,
   userId: '',
+  userSide: '',
   // roomData: {},
 }
 
