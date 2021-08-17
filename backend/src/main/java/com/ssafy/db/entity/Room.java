@@ -56,4 +56,6 @@ public class Room extends BaseEntity{
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String roomPassword; // 방 비밀번호 (null 이면 없음)
 	
+	private Boolean playing; // 게임 중
+	
 }
