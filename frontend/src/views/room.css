@@ -18,11 +18,20 @@
   display: flex;
   height: 100%;
 }
+.partition-left{
+  display: flex;
+  flex-wrap: wrap;
+  height: 90%;
+}
 
 .partition {
-
-  /* min-height: 400px; */
   flex: 5;
+}
+
+.partition-right {
+  display: flex;
+  flex-wrap: wrap;
+  height: 90%;
 }
 
 .panel {
@@ -71,3 +80,21 @@
   align-items: center;
   margin-right: 22px;
 }
+#main-video {
+  display: flex;
+}
+
+#video-container {
+  display: flex;
+  flex-wrap: wrap;
+  height: 50%;
+
+
+}
+
+.candidates {
+  /* display: flex; */
+  /* flex: 1; */
+  margin: 0px 10px 5px 10px;
+}
+
