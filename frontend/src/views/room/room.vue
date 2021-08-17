@@ -3,30 +3,32 @@
     <div id="session" v-if="state.session">
       <div class="divider">
         <!-- 왼쪽 값을 가져와서 있으면 보여주는 쪽으로?? -->
-          <div class="partition left" v-if="state">
+          <div class="partition-left" v-if="state.side === 'left'">
             왼쪽
-            <div class="container">
-              <!-- <div id="main-video" class="col-md-6">
+
+              <div id="main-video" class="col-md-6">
                 <user-video :stream-manager="state.mainStreamManager" />
-              </div> -->
-              <div id="video-container" class="col-md-6">
-                <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" />
-                <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
               </div>
-            </div>
+
+              <div id="video-container" class="col-md-6">
+                <!-- <user-video :stream-manager="state.publisher" @click="updateMain+VideoStreamManager(state.publisher)" /> -->
+                <user-video class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+              </div>
+
           </div>
           <!-- left end -->
-          <div class="partition right">
+          <!--  v-if="state.side === 'right'" -->
+          <div class="partition-right">
             오른쪽
-            <div class="container">
-              <!-- <div id="main-video" class="col-md-6">
+            <!-- <div class="container"> -->
+              <div id="main-video" class="col-md-6">
                 <user-video :stream-manager="state.mainStreamManager" />
-              </div> -->
-              <div id="video-container" class="col-md-6">
-                <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" />
-                <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
               </div>
-            </div>
+              <div id="video-container" class="col-md-6">
+                <!-- <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" /> -->
+                <user-video  class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+              </div>
+            <!-- </div> -->
           </div>
           <!-- right end -->
           <!-- chat start -->
@@ -52,7 +54,7 @@
       <mute :style="[state.buttonBase, {color: 'red'}]" />
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
-      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="leaveSession"/>
     </div>
     <div class="footer-child communication">
       <bell-filled :style="[state.buttonBase]" />
@@ -224,6 +226,9 @@ export default{
           state.token = result.data[0]
           console.log('@@@@@@@@@@')
           console.log(result.data)
+          console.log('@!!!!!!!!!!!!')
+          state.side = result.data[1]
+          console.log(state.side)
           connectSession()
         })
         .catch((err) => {
@@ -290,7 +295,12 @@ export default{
     }
 
     const leaveSession = function(){
-      console.log('test')
+      // state.session.disconnect();
+      // state.session = undefined
+      // state.mainStreamManager = undefined
+      // state.publisher = undefined
+      // state.subscribers = []
+      // state.OV = undefined
     }
 
      const onClickMember = function () {
