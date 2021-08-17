@@ -20,4 +20,5 @@ public interface UserService {
 	
 	// rank
 	List<User> getRankList();
+	User addRankPoint(String userId);
 }

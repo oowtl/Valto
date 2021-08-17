@@ -34,7 +34,7 @@ public class UserRankListRes extends BaseResponseBody{
 			userHashMap.put("nickName", user.getNickName());
 			userHashMap.put("name", user.getName());
 			userHashMap.put("point", user.getPoint());
-			
+
 			rankListRes.add(userHashMap);
 		}
 		

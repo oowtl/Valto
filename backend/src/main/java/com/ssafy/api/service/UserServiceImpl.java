@@ -100,8 +100,20 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		
 		List<User> rankList = userRepository.findTop10ByOrderByPointDesc();
-		
 		return rankList;
+	}
+	
+	@Override
+	public User addRankPoint(String userId) {
+		// TODO Auto-generated method stub
+		
+		// 유효성 검사 이후
+		User user = userRepositorySupport.findUserByUserId(userId).get();
+		
+		Integer userPoint = user.getPoint();
+		user.setPoint(userPoint + 10);
+		
+		return userRepository.save(user);
 	}
 	
 }
