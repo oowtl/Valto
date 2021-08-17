@@ -155,9 +155,6 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = computed(() => route.path.split('/')[2])
-      // state.username
-      console.log(state.session)
-      //localStorage.setItem('roomId', state.roomId)
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
           state.token = result.data[0]

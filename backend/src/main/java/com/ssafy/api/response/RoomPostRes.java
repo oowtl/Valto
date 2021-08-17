@@ -68,7 +68,7 @@ public class RoomPostRes extends BaseResponseBody {
 		res.setPrivateRoom(room.getPrivateRoom());
 		// res.setUserSide(userRoom.getUserSide());
 		// 임시로 observer 넣어둠
-		res.setUserSide("observer");
+//		res.setUserSide("observer");
 		return res;
 	}
 

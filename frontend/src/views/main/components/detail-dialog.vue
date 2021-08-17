@@ -130,11 +130,10 @@ export default {
           })
           .catch(function (err) {
             console.log(err)
-            handleClose();
+            handleClose()
           })
         } else if (newVal === false) {
-          // console.log('detail dialog closed');
-          handleClose();
+          handleClose()
         }
       }
     );

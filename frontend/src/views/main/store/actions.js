@@ -110,7 +110,7 @@ export function requestUpdateProfile({ commit }, payload) {
 
 // 방 목록 요청 (비로그인 상태에서도 가능)
 export function requestRoomList({ commit }, payload) {
-  const url = '/room?size=4&page=1'
+  const url = '/room'
   const body = { params: payload }
   return $axios.get(url, body)
 }
@@ -128,7 +128,7 @@ export function requestDetail({ state }, payload) {
 
 export function requestRoomToken({ state }, payload) {
   // 추후 'api/v1/room/{roomId}/admission' 으로 변경
-  const url = '/room/' + payload + '/admission'
+  const url = `/room/${payload}/admission`
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',
@@ -150,6 +150,10 @@ export function requestDeleteRoom({ commit }, payload) {
   return util.commonAxios(request)
 }
 
-
-
-
+// 검색 및 검색조건 업데이트
+export function queryUpdate({ commit }, query) {
+  router.push({
+    name: 'home',
+    query: query,
+  })
+}
