@@ -260,17 +260,17 @@ export default {
       },
       rules: {
         title: [
-          { validator: dummyValidation, trigger: 'change' },
+          // { validator: dummyValidation, trigger: 'change' },
           { validator : checkTitle, trigger: 'blur'},
           { required: true },
         ],
         topicAgree: [
-          { validator: dummyValidation, trigger: 'change' },
+          // { validator: dummyValidation, trigger: 'change' },
           { validator: checkTopicAgree, trigger: 'blur' },
           { required: true },
         ],
         topicOpposite: [
-          { validator: dummyValidation, trigger: 'change' },
+          // { validator: dummyValidation, trigger: 'change' },
           { validator: checkTopicOpposite, trigger: 'blur' },
           { required: true },
         ],
