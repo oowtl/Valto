@@ -14,6 +14,9 @@
           <span>{{ state.form.topicOpposite }}</span>
           <hr>
         </span>
+        <el-form-item label="아이디 :" :label-width="state.formLabelWidth">
+          {{ state.form.userId}}
+        </el-form-item>
 
         <el-form-item label="토론 시간: " :label-width="state.formLabelWidth">
           {{ state.form.times }}분
@@ -56,12 +59,12 @@
   </div>
 </template>
 <script>
-import { reactive, computed, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { reactive, computed, ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
-  name: "detail-dialog",
+  name: 'detail-dialog',
 
   props: {
     open: {
@@ -94,6 +97,7 @@ export default {
     const detailForm = ref(null);
     const state = reactive({
       form: null,
+
       userSide: '',
       roomPassword: '',
       divide_participants: '',
@@ -111,30 +115,33 @@ export default {
     // 닫기
     const handleClose = function() {
       state.form = null;
-      emit("closeDetailDialog");
+      emit('closeDetailDialog');
     };
 
     // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
+    // 여기 수정해야할거 같다. 내 프로필이 아니라 방을 만든 사람의 프로필 정보를 넣기 때문에 이상한거 같음.
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
-            console.log("result는", result)
             state.form = result.data
             state.divide_participants = result.data.participants/2
+            console.log(state.form.userId);
           })
           .catch(function (err) {
             console.log(err)
+            handleClose();
           })
         } else if (newVal === false) {
-          console.log("detail dialog closed");
+          // console.log('detail dialog closed');
+          handleClose();
         }
       }
     );
 
     const clickEnter = function(roomId) {
       router.push({
-        name: "room",
+        name: 'room',
         params: {
           roomId: roomId
         }

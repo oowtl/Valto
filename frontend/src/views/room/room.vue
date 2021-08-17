@@ -1,19 +1,70 @@
 <template>
-  <div id="main-container" class="container">
+  <div class="room-wrapper">
     <div id="session" v-if="state.session">
-			<div id="session-header">
-				<h1 id="session-title">{{ state.nickname }}</h1>
-				<input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-			</div>
-			<div id="main-video" class="col-md-6">
-				<user-video :stream-manager="state.mainStreamManager" />
-			</div>
-			<div id="video-container" class="col-md-6">
-				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" />
-				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-			</div>
+      <div class="divider">
+        <!-- 왼쪽 값을 가져와서 있으면 보여주는 쪽으로?? -->
+          <div class="partition left" v-if="state">
+            왼쪽
+            <div class="container">
+              <!-- <div id="main-video" class="col-md-6">
+                <user-video :stream-manager="state.mainStreamManager" />
+              </div> -->
+              <div id="video-container" class="col-md-6">
+                <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" />
+                <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+              </div>
+            </div>
+          </div>
+          <!-- left end -->
+          <div class="partition right">
+            오른쪽
+            <div class="container">
+              <!-- <div id="main-video" class="col-md-6">
+                <user-video :stream-manager="state.mainStreamManager" />
+              </div> -->
+              <div id="video-container" class="col-md-6">
+                <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" />
+                <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+              </div>
+            </div>
+          </div>
+          <!-- right end -->
+          <!-- chat start -->
+          <transition name="slide">
+          <div class="panel" v-if="state.openPanel">
+            <div class="panelChild chat" v-if="state.openChat">
+              <p>채팅창</p>
+            </div>
+            <div class="panelChild member" v-if="state.openMember">
+              <p>멤버</p>
+            </div>
+          </div>
+        </transition>
+        <!-- chat end -->
+      </div>
 		</div>
+
   </div>
+  <!-- footer start -->
+  <div class="footer">
+    <div class="footer-child controller">
+      <microphone :style="[state.buttonBase]" />
+      <mute :style="[state.buttonBase, {color: 'red'}]" />
+      <video-camera :style="[state.buttonBase]" />
+      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <close-bold :style="[state.buttonBase, {color: 'red'}]" />
+    </div>
+    <div class="footer-child communication">
+      <bell-filled :style="[state.buttonBase]" />
+      <opportunity :style="[state.buttonBase]" />
+      <mic :style="[state.buttonBase]" />
+      <chat-dot-round :style="[state.buttonBase, state.chatButton]" @click="onClickChat" />
+      <user :style="[state.buttonBase, state.memberButton]" @click="onClickMember" />
+    </div>
+  </div>
+    <!-- footer end -->
+<!-- 세션 나가기 버튼  -->
+  <!-- <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session"> -->
 </template>
 
 <script>
@@ -22,6 +73,7 @@ import { useRoute } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
 
 // 12: state.publisher, 13:state.sub?
 
@@ -29,9 +81,18 @@ export default{
   name: 'room',
 
   components: {
-    UserVideo
+    UserVideo,
+    Mic,
+    Mute,
+    User,
+    BellFilled,
+    CloseBold,
+    Microphone,
+    VideoCamera,
+    ChatDotRound,
+    Opportunity,
   },
-  setup () {
+  setup (){
     const store = useStore()
     const route = useRoute()
     const getToken = function(){
@@ -45,8 +106,8 @@ export default{
         .catch((err) => {
           console.log(err)
         })
-
     }
+
     const state = reactive({
       OV: undefined,
       session: undefined,
@@ -54,11 +115,19 @@ export default{
       publisher: undefined,
       subscribers: [],
       //user nickname 으로 수정해야함
-      nickname: 'publisher1',
+      nickname: '',
       //username 으로 수정해야함
-      username: 'participant1',
+      username: '',
       roomId: '',
       token: null,
+      // footer menu setting
+      openChat: false,
+      openMember: false,
+      openPanel: computed(() => state.openChat || state.openMember),
+      buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
+      chatButton: { color: 'grey' },
+      memberButton: { color: 'grey' },
+
     })
 
     const connectSession = function () {
@@ -70,7 +139,7 @@ export default{
             videoSource: undefined, // The source of video. If undefined default webcam
             publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
             publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-            resolution: '640x480',  // The resolution of your video
+            resolution: '320x240',  // The resolution of your video
             frameRate: 30,			// The frame rate of your video
             insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
             mirror: false       	// Whether to mirror your local video or not
@@ -86,6 +155,8 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = computed(() => route.path.split('/')[2])
+      // state.username
+      console.log(state.session)
       //localStorage.setItem('roomId', state.roomId)
       store.dispatch('root/requestRoomToken', state.roomId)
         .then((result) => {
@@ -95,13 +166,16 @@ export default{
         .catch((err) => {
           console.log(err)
         })
+      store.dispatch('root/')
+
       // OpenVidu 객체 할당
       state.OV = new OpenVidu()
       // init session
-      console.log('before session :' + state.session)
+      // console.log('before session :' + state.session)
       state.session = state.OV.initSession()
-      console.log('room onBeforeMount session : ')
-      console.log(state.session)
+      // console.log('room onBeforeMount session : ')
+      // console.log(state.session)
+
 
       // session.on으로 웹소켓 수신에 대한 동작 맵핑
 			// On every new Stream received...
@@ -126,7 +200,6 @@ export default{
 			})
 
       // 토큰과 클라이언트의 정보를 전달하며 세션에 연결함
-
     })
 
     //세션 나가기
@@ -154,12 +227,35 @@ export default{
       console.log('test')
     }
 
+
+    const onClickChat = function () {
+      state.memberButton.color = 'grey'
+      state.openMember = false
+      state.openChat = !state.openChat
+      if (state.openChat) {
+        state.chatButton.color = 'white'
+      } else {
+        state.chatButton.color = 'grey'
+      }
+    }
+
+    const onClickMember = function () {
+      state.chatButton.color = 'grey'
+      state.openChat = false
+      state.openMember = !state.openMember
+      if (state.openMember) {
+        state.memberButton.color = 'white'
+      } else {
+        state.memberButton.color = 'grey'
+      }
+    }
+
     //disconnect로 세션 leave
 
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession , onClickChat, onClickMember}
   }
-
 }
-
-
 </script>
+<style scoped>
+  @import '../room.css';
+</style>

@@ -149,23 +149,7 @@ export function requestDeleteRoom({ commit }, payload) {
   }
   return util.commonAxios(request)
 }
-// export function requestDetail({ commit }, payload){
-//   console.log('payload는', payload)
-//   const roomId = String(payload)
-//   // const url = `/room/${ roomId }`
-//   console.log('action 도착')
-//   const url = '/room/' + roomId
-//   $axios.get(url)
-//     console.log('axios 보내기')
-//     .then(function (result) {
-//       console.log('result는', result.data)
-//       commit('mutationDetail', result.data)
-//     })
-//     .catch(function (err) {
-//       console.log('에러발생')
-//       alert(err)
-//     })
-// }
+
 
 
 

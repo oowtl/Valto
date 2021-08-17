@@ -317,10 +317,10 @@ export default {
             console.log(result)
             emit('closeCreateRoomDialog')
             router.push({
-            name: 'room',
-            params: {
-              roomId: result.data.roomId
-            }
+              name: 'room',
+              params: {
+                roomId: result.data.roomId
+              }
             })
           })
           .catch(function (err) {
