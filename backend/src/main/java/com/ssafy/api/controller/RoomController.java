@@ -357,6 +357,9 @@ public class RoomController {
 			System.out.println("side" + side);
 			responseJson.put(0, token);
 			responseJson.put(1, side);
+			responseJson.put(2, room.getUserId().getNickName());
+			responseJson.put(3, room.getUserId().getUserId());
+			responseJson.put(4, userId);
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
@@ -451,6 +454,20 @@ public class RoomController {
 		// return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 
+	@PostMapping("{roomId}/start")
+	@ApiOperation(value = "토론 시작", notes = "토론을 시작하기위해 토론시간을 응답해준다.")
+	public ResponseEntity<?> startRoom(
+			@ApiIgnore Authentication authentication,
+			@PathVariable("roomId") String roomId) {
+
+		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
+		String userId = userDetails.getUsername();
+
+		String msg = roomService.updateRoomStart(roomId);
+
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, msg));
+	}
+	
 	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {
 		JSONObject json = new JSONObject();
 		json.put("cause", e.getCause());

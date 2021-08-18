@@ -1,33 +1,23 @@
 <template>
   <div class="room-wrapper">
-    <div id="session" v-if="state.session">
+    <div id="session" v-if="state.publisher">
       <div class="divider">
-        <!-- 왼쪽 값을 가져와서 있으면 보여주는 쪽으로?? -->
-          <div class="partition-left">
-            왼쪽
-              <div id="main-video" class="col-md-6">
-                <user-video :stream-manager="state.mainStreamManager" />
-              </div>
-
-              <div id="video-container" class="col-md-6">
-                <!-- <user-video :stream-manager="state.publisher" @click="updateMain+VideoStreamManager(state.publisher)" /> -->
-                <user-video class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-              </div>
-
+          <div class="partition partition-left">
+            <div class="main-video">
+              <user-video :stream-manager="state.mainStreamManager" />
+            </div>
+            <div class="sub-video">
+              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+            </div>
           </div>
-          <!-- left end -->
-          <!--  v-if="state.side === 'right'" -->
-          <div class="partition-right">
-            오른쪽
-              <div id="main-video" class="col-md-6">
-                <user-video :stream-manager="state.mainStreamManager" />
-              </div>
-              <div id="video-container" class="col-md-6">
-                <!-- <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" /> -->
-                <user-video  class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-              </div>
+          <div class="partition partition-right">
+            <div class="main-video">
+              <user-video :stream-manager="state.mainStreamManager" />
+            </div>
+            <div class="sub-video">
+              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+            </div>
           </div>
-          <!-- right end -->
           <!-- chat start -->
           <transition name="slide">
           <div class="panel" v-if="state.openPanel">
@@ -55,8 +45,16 @@
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <!-- 방장, 토론 시작 버튼 -->
+
+      <span v-if="ownerId === userId">
+        <button @click="onClickStart">토론시작</button>
+      </span>
     </div>
     <div class="footer-child communication">
+
+      <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
+      <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -94,7 +92,7 @@ import { useRoute } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, SwitchButton } from '@element-plus/icons'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, SwitchButton, VideoPlay, DArrowRight } from '@element-plus/icons'
 // import Stomp from 'webstomp-client'
 // import SockJS from 'sockjs-client'
 
@@ -115,6 +113,8 @@ export default{
     ChatDotRound,
     Opportunity,
     SwitchButton,
+    VideoPlay,
+    DArrowRight,
   },
   setup (){
     const store = useStore()
@@ -147,6 +147,9 @@ export default{
       // RightRecvList: [],
       recvList: [],
       stompClient: '',
+      // 방장 id
+      ownerId:'',
+      start:false
     })
 
     const subsTest = function () {
@@ -187,9 +190,16 @@ export default{
       }
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
+          console.log(result)
           state.token = result.data[0]
           state.side = result.data[1]
+          state.nickname = result.data[2]
+          state.ownerId = result.data[3]
+          state.userId = result.data[4]
           connectSession()
+            .then(() => {
+
+            })
         })
         .catch((err) => {
           console.log(err)
@@ -199,7 +209,6 @@ export default{
       state.OV = new OpenVidu()
       // init session
       state.session = state.OV.initSession()
-
 
       // session.on으로 웹소켓 수신에 대한 동작 맵핑
 			// On every new Stream received...
@@ -230,7 +239,7 @@ export default{
     })
 
     //세션 나가기
-      onBeforeUnmount(() => {
+    onBeforeUnmount(() => {
       state.session.disconnect();
       state.session = undefined
       state.mainStreamManager = undefined
@@ -252,6 +261,7 @@ export default{
     const updateMainVideoStreamManager = function (stream) {
       if (state.mainStreamManager === stream) return;
       state.mainStreamManager = stream
+      console.log(state.mainStreamManager)
     }
 
     const leaveSession = function(){
@@ -298,6 +308,19 @@ export default{
       } else {
         state.chatButton.color = 'grey'
       }
+    }
+
+//  토론 시작
+    const onClickStart = function(){
+      console.log('토론시작@@@@@@')
+      store.dispatch('root/startDebate', state.roomId)
+        .then((result) => {
+          console.log(result)
+          if(state.start) state.start = false;
+          else state.start = true;
+        }).catch((err) =>{
+          console.log(err)
+        })
     }
     ///////////////////////// 채팅 관련 ////////////////////////////
 
@@ -360,7 +383,7 @@ export default{
 
     //disconnect로 세션 leave
   // chatConnect, send, sendMessage,
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest,onClickStart }
   }
 
 }
