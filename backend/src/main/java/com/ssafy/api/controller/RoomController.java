@@ -38,9 +38,11 @@ import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
 import com.ssafy.api.service.UserRoomService;
+import com.ssafy.api.service.UserService;
 import com.ssafy.common.auth.SsafyUserDetails;
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
+import com.ssafy.db.entity.User;
 import com.ssafy.db.entity.User_Room;
 
 import io.openvidu.java.client.ConnectionProperties;
@@ -64,6 +66,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("api/v1/room")
 public class RoomController {
 
+	@Autowired
+	UserService userService;
+	
 	@Autowired
 	RoomService roomService;
 
@@ -296,7 +301,7 @@ public class RoomController {
 //		System.out.println(mapSessions);
 //		System.out.println(mapSessionNamesTokens);
 		
-		System.out.println(userRoomPostReq);
+//		System.out.println(userRoomPostReq);
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
@@ -346,10 +351,8 @@ public class RoomController {
 			this.mapSessionNamesTokens.get(sessionName).put(token, role);
 
 			// Prepare the response with the token
-			String side = userRoom.getUserSide().equals("agree")? "left" : "right";
 			responseJson.put(0, token);
 
-			responseJson.put(1, side);
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
@@ -425,6 +428,10 @@ public class RoomController {
 
 					// room 삭제
 					String roomMessage = roomService.deleteRoom(roomId);
+					
+					// rank point 더해주기
+					User addPointUser = userService.addRankPoint(userId);
+					
 				}
 				return new ResponseEntity<>(HttpStatus.OK);
 			} else {

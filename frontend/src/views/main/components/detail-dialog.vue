@@ -23,42 +23,30 @@
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
-        <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
-          <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
-          <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
+        <el-form-item prop="userSide" label="포지션" :label-width="state.formLabelWidth">
+          <span class="dialog-position1">
+            <el-button type="primary" @click="clickPosition1" :disabled="state.posi1">주제1</el-button>
+          </span>
+          <span class="dialog-position2">
+            <el-button type="primary" @click="clickPosition2" :disabled="state.posi2">주제2</el-button>
+          </span>
         </el-form-item>
       </el-form>
       <template #footer>
-        <span class="dialog-footer1">
+        <span class="dialog-footer">
           <el-button
             type="primary"
-            @click="clickEnter1(state.form.roomId)"
-            :disabled="state.isInvalid1"
-            >주제1로 입장</el-button
-          >
-        </span>
-        <span class="dialog-footer2">
-          <el-button
-            type="primary"
-            @click="clickEnter2(state.form.roomId)"
-            :disabled="state.isInvalid2"
-            >주제2로 입장</el-button
+            @click="clickEnter(state.form.roomId)"
+            v-model="state.dialogVisible"
+            :disabled="state.isInvalid"
+            >입장</el-button
           >
         </span>
       </template>
     </el-dialog>
   </div>
 </template>
-<!--<template #footer>
-        <span class="dialog-footer">
-          <el-button
-            type="primary"
-            @click="clickEnter(state.form.roomId)"
-            v-model="state.dialogVisible"
-            >입장</el-button
-          >
-        </span>
-      </template>-->
+
 <script>
 import { reactive, computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -83,20 +71,30 @@ export default {
     const detailForm = ref(null);
     const state = reactive({
       form: null,
-      roomPassword: '',
+      posi1: false,
+      posi2: false,
+      isInvalid: true,
       divide_participants: '',
       dialogVisible: computed(() => props.open),
       formLabelWidth: '250px',
       align: 'left',
       token: null,
-      rules: {
-        roomPassword: [
-          { required: true, message: '방 비밀번호 입력하세요' }
-        ],
-      },
-      isInvalid1: false,
-      isInvalide2: false
+
     })
+
+    const clickPosition1 = function () {
+      state.posi1 = true
+      state.posi2 = false
+      state.isInvalid = false
+      state.form.userside = 'agree'
+    }
+
+    const clickPosition2 = function () {
+      state.posi1 = false
+      state.posi2 = true
+      state.isInvalid = false
+      state.form.userside = 'opposite'
+    }
 
     // 닫기
     const handleClose = function() {
@@ -113,10 +111,10 @@ export default {
             state.form = result.data
             state.divide_participants = result.data.participants/2
             if ( state.form.agreeUsers.length == state.divide_participants ) {
-              state.isInvalid1 = true
+              state.posi1 = true
             }
             if ( state.form.oppositeUsers.length == state.divide_participants ) {
-              state.isInvalid2 = true
+              state.posi2 = true
             }
             console.log(state.form.userId)
           })
@@ -130,65 +128,25 @@ export default {
       }
     );
 
-    const clickEnter1 = function(roomId) {
-      state.form.userSide = 'agree'
-      if (!state.isInvalid1) {
-        store.commit('root/setUserSide', state.form.userSide )
-        router.push({
-          name: 'room',
-          params: {
-            roomId: roomId
-          }
-        });
-      }
+    const clickEnter = function(roomId) {
+      store.commit('root/serUserSide', state.form.userSide)
+      router.push({
+        name: 'room',
+        params: {
+          roomId: roomId
+        }
+      });
     };
 
-    const clickEnter2 = function(roomId) {
-      state.form.userSide = 'agree'
-      if (!state.isInvalid2) {
-        store.commit('root/setUserSide', state.form.userSide )
-        router.push({
-          name: 'room',
-          params: {
-            roomId: roomId
-          }
-        });
-      }
-    };
 
-    // const clickEnter2 = function(roomId) {
-    //   state.form.userSide = 'opposite'
-    //   if (!state.isInvalid2) {
-    //     store.dispatch('root/requestRoomToken', {
-    //       roomId: roomId,
-    //       privateRoom: state.form.privateRoom,
-    //       roomPassword: state.roomPassword,
-    //       userSide: state.form.userSide,
-    //     })
-    //     .then(function (reuslt) {
-    //       emit('closeDetailDialog')
-    //       router.push({
-    //         name: 'room',
-    //         params: {
-    //           roomId: roomId
-    //         }
-    //       })
-    //     })
-    //     .catch(function (err) {
-    //       alert(err)
-    //     })
-    //   }
-    // };
-
-
-    return { state, handleClose, detailForm, clickEnter1, clickEnter2 };
+    return { state, handleClose, detailForm, clickEnter, clickPosition1, clickPosition2 };
   }
 };
 </script>
 <style>
 .detail-dialog {
   width: 600px !important;
-  height: 650px;
+  height: 700px;
 }
 .topics {
   text-align: center;
@@ -233,22 +191,25 @@ export default {
 /* .detail-dialog .el-input__suffix {
   display: none;
 } */
-
-.detail-dialog .dialog-footer .el-button {
-  width: 120px;
-  height: 100px;
-  font-size: 30px;
-}
-.detail-dialog .el-dialog__footer .dialog-footer1 {
+.detail-dialog .dialog-position1 {
   float: left;
   padding-top: 0;
   display: inline-block;
-  margin-left: 100px;
 }
-.detail-dialog .el-dialog__footer .dialog-footer2 {
+.detail-dialog .dialog-position2 {
   float: right;
   padding-top: 0;
   display: inline-block;
-  margin-right: 100px;
+  margin-right: 20px;
+}
+.detail-dialog .el-dialog__footer {
+  margin: 10px calc(50% - 80px);
+  padding-top: 0;
+  display: inline-block;
+}
+.detail-dialog .dialog-footer .el-button {
+  width: 120px;
+  height: 50px;
+  font-size: 25px;
 }
 </style>

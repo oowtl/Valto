@@ -34,17 +34,7 @@
       <div class="menu-icon-wrapper"><i class="el-icon-search"></i></div>
       <div class="mobile-sidebar-wrapper" v-if="!state.isCollapse">
         <div class="mobile-sidebar">
-          <div class="mobile-sidebar-tool-wrapper" v-if="!state.loginFlag">
-            <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button type="primary" class="mobile-sidebar-btn login-btn" icon="el-icon-circle-plus-outline" @click="clickLogin">로그인</el-button>
-            <el-button class="mobile-sidebar-btn register-btn" icon="el-icon-key" @click="clickJoin">회원가입</el-button>
-          </div>
-          <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
-            <div class="logo-wrapper"><div class="ic ic-logo"/></div>
-            <el-button @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성 </el-button>
-            <el-button @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
-            <el-button class="login-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
-          </div>
+          <div class="logo-wrapper"><div class="ic ic-logo"/></div>
           <el-menu
             :default-active="String(state.activeIndex)"
             active-text-color="#ffd04b"
@@ -55,6 +45,16 @@
               <span>{{ item.title }}</span>
             </el-menu-item>
           </el-menu>
+          <div class="mobile-sidebar-tool-wrapper" v-if="!state.loginFlag">
+            <el-button type="primary" class="mobile-sidebar-btn login-btn" icon="el-icon-circle-plus-outline" @click="clickLogin">로그인</el-button>
+            <el-button class="mobile-sidebar-btn register-btn" icon="el-icon-key" @click="clickJoin">회원가입</el-button>
+            <el-button class="mobile-sidebar-btn" @click="clickRanking" icon="el-icon-s-data">랭킹</el-button>
+          </div>
+          <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
+            <el-button class="mobile-sidebar-btn" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</el-button>
+            <el-button class="mobile-sidebar-btn" @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
+            <el-button class="mobile-sidebar-btn logout-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
+          </div>
         </div>
         <div class="mobile-sidebar-backdrop" @click="changeCollapse"></div>
       </div>
@@ -130,14 +130,6 @@ export default {
       console.log('click랭킹함')
       emit('openRankingDialog')
     }
-    // const clickLogo = () => {
-    //   store.commit('root/setMenuActive', 0)
-    //   const MenuItems = store.getters['root/getMenus']
-    //   let keys = Object.keys(MenuItems)
-    //   router.push({
-    //     name: keys[0]
-    //   })
-    // }
 
     // 로그인 클릭시
     const clickLogin = () => {
@@ -178,6 +170,7 @@ export default {
       clickLogout ,
       clickCreateRoom,
       clickHistory,
+      clickRanking
     }
   }
 }
@@ -212,6 +205,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 2;
   }
   .mobile-sidebar-wrapper .mobile-sidebar {
     width: 240px; height: calc(100vh - 1px);
@@ -233,8 +227,11 @@ export default {
   .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.login-btn {
     color: white;
   }
+  .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.logout-btn {
+    color: black;
+  }
   .mobile-sidebar-wrapper .mobile-sidebar .mobile-sidebar-btn.register-btn {
-    color: white;
+    color: black;
   }
   .mobile-sidebar-wrapper .mobile-sidebar .logo-wrapper {
     display: block
@@ -257,7 +254,6 @@ export default {
   .mobile-sidebar-wrapper .el-menu{
     margin-top: 0;
     padding-left: 0;
-    height: calc(100% - 235px);
   }
   .mobile-sidebar-wrapper .el-menu .el-menu-item {
     cursor: pointer;

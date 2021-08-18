@@ -158,3 +158,8 @@ export function queryUpdate({ commit }, query) {
     query: query,
   })
 }
+
+export function requestRanking({ commit }) {
+  const url = '/users/rank/list'
+  return $axios.get(url)
+}

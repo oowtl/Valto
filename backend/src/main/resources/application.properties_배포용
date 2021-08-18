@@ -18,7 +18,7 @@ build.date=@build.date@
 #trust.store=classpath:keystore/ssafy.p12
 ##trust store password
 #trust.store.password=t2438707!
-
+ 
 
 # server ec2 settings
 server.port=8080
