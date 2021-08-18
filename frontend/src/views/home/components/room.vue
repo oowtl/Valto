@@ -4,16 +4,16 @@
       <div class="cardBody">
         <span class="title" style="display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: flex-start;">
-              <!-- <span>{{ room.topicAgree }}</span> -->
+              <span>{{ room.topicAgree }}</span>
               <!-- 15 글자 / 12 글자 -->
-              <span>하하하하하하하하하하하하</span>
+              <!-- <span>하하하하하하하하하하하하</span> -->
             </div>
             <div style="display: flex; justify-content: center;">
               <span style="color: #6b6b6b;">VS</span>
             </div>
             <div style="display: flex; justify-content: flex-end;">
-              <!-- <span>{{ room.topicOpposite }}</span> -->
-              <span>딱복숭아가 맛있는가</span>
+              <span>{{ room.topicOpposite }}</span>
+              <!-- <span>딱복숭아가 맛있는가</span> -->
             </div>
         </span>
         <hr>

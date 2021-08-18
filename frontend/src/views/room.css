@@ -18,11 +18,17 @@
   display: flex;
   height: 100%;
 }
+.partition-left{
+  display: flex;
+  flex-wrap: wrap;
 
-.partition {
+}
 
-  /* min-height: 400px; */
-  flex: 5;
+
+.partition-right {
+  display: flex;
+  flex-wrap: wrap;
+
 }
 
 .panel {
@@ -39,10 +45,6 @@
   border-radius: 1rem;
   padding: 1rem;
   color: #000000;
-}
-
-.container {
-  display: flex;
 }
 
 .footer {
@@ -71,3 +73,21 @@
   align-items: center;
   margin-right: 22px;
 }
+#main-video {
+  display: flex;
+}
+
+#video-container {
+  display: flex;
+  flex-wrap: wrap;
+  height: 50%;
+}
+
+.candidates {
+  display: flex;
+  flex: 1;
+  height: 100px;
+  width: 100px;
+
+}
+
