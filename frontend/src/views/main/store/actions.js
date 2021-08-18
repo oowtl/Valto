@@ -158,3 +158,14 @@ export function queryUpdate({ commit }, query) {
     query: query,
   })
 }
+
+
+// 토론 시작
+export function startDebate({ commit }, payload) {
+  const url = `/room/${payload}/start`
+  const request = {
+    method: 'post',
+    url: url
+  }
+  return util.commonAxios(request)
+}
