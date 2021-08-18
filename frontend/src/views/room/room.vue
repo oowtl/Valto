@@ -37,7 +37,7 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
-      <switchButton :style="[state.buttonBase, {color: 'red'}]" @click="onClickEndGame"/>
+      <switchButton v-if="state.userId == state.ownerId" @click="onClickEndGame" :style="[state.buttonBase, {color: 'red'}, state.endButton]"/>
     </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
@@ -52,7 +52,6 @@
       </span>
     </div>
     <div class="footer-child communication">
-
       <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
       <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />
       <bell-filled :style="[state.buttonBase]" />
@@ -88,7 +87,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
@@ -119,6 +118,7 @@ export default{
   setup (){
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const state = reactive({
       OV: undefined,
       session: undefined,
@@ -135,7 +135,7 @@ export default{
       openChat: false,
       openMember: false,
       openPanel: computed(() => state.openChat || state.openMember),
-      buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
+      buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer'},
       chatButton: { color: 'grey' },
       memberButton: { color: 'grey' },
       userSide: computed(() => store.getters['root/getUserSide']),
@@ -224,8 +224,20 @@ export default{
 				if (index >= 0) {
 					state.subscribers.splice(index, 1)
 				}
-			})
 
+        // 강퇴기능
+        const userData = stream.connection.data;
+        // String -> {"side":"left"}%/%{"serverData": "qaz2"}
+        const userDataStartIndex = userData.indexOf('serverData');
+        const disconnectedUser = userData.slice(userDataStartIndex+14, userData.length - 2);
+        // 방장이 나가면 다 나가는 걸로!
+        if (state.ownerId == disconnectedUser) {
+          state.session.disconnect();
+          router.push({
+          name : 'home'
+          });
+        }
+			})
 
 			// On every asynchronous exception...
 			state.session.on('exception', ({ exception }) => {
@@ -274,17 +286,19 @@ export default{
     }
 
     const onClickEndGame = function () {
+      if (state.userId == state.ownerId) {
 
-      /*
-      게임 종료 절차
-      1. 방장?
-      2. 종료가능 alert 같은 것 내어놓기
-      3. 종료 시 session을 없앤다.
-      4. api 로 요청한다.
-      5. route 해준다.
-       */
-
-
+        // 경고
+        if(confirm('게임을 종료하시겠습니까?') == true) {
+          alert('종료하겠습니다.')
+        } else {
+          return ;
+        }
+        state.session.disconnect();
+        router.push({
+          name : 'home'
+        });
+      }
     }
 
     const onClickMember = function () {
@@ -383,7 +397,7 @@ export default{
 
     //disconnect로 세션 leave
   // chatConnect, send, sendMessage,
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest,onClickStart }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest, onClickStart, onClickEndGame }
   }
 
 }
