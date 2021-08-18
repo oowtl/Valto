@@ -24,7 +24,6 @@
 
 }
 
-
 .partition-right {
   display: flex;
   flex-wrap: wrap;
@@ -52,7 +51,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  display: block !important;
+  /* display: block !important; */
   background-color: #202124;
   color: #ffffff;
 }
@@ -61,6 +60,12 @@
   display: flex;
   flex: 1;
   margin: 0px 0px 0px 0px;
+}
+
+.head-controller {
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 22px;
 }
 
 .controller {

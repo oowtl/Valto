@@ -46,6 +46,9 @@
   </div>
   <!-- footer start -->
   <div class="footer">
+    <div class="footer-child head-controller">
+      <switchButton :style="[state.buttonBase, {color: 'red'}]" @click="onClickEndGame"/>
+    </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
       <mute :style="[state.buttonBase, {color: 'red'}]" />
@@ -91,7 +94,7 @@ import { useRoute } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, SwitchButton } from '@element-plus/icons'
 // import Stomp from 'webstomp-client'
 // import SockJS from 'sockjs-client'
 
@@ -111,6 +114,7 @@ export default{
     VideoCamera,
     ChatDotRound,
     Opportunity,
+    SwitchButton,
   },
   setup (){
     const store = useStore()
@@ -259,7 +263,21 @@ export default{
       // state.OV = undefined
     }
 
-     const onClickMember = function () {
+    const onClickEndGame = function () {
+
+      /*
+      게임 종료 절차
+      1. 방장?
+      2. 종료가능 alert 같은 것 내어놓기
+      3. 종료 시 session을 없앤다.
+      4. api 로 요청한다.
+      5. route 해준다.
+       */
+
+
+    }
+
+    const onClickMember = function () {
       state.chatButton.color = 'grey'
       state.openChat = false
       state.openMember = !state.openMember
