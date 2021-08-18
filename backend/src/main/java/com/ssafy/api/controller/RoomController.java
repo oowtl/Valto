@@ -399,10 +399,9 @@ public class RoomController {
 		// result: 114
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
-		// if (existUserRoom.getUserId() == null) {
-		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
-		// enter room user"));
-		// }
+//		 if (existUserRoom.getUserId() == null) {
+//			 return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+//		 }
 
 		// 방에 속한 유저가 아니라면
 		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.
@@ -418,19 +417,19 @@ public class RoomController {
 			// If the token exists
 			if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
 				// User left the session
+				
+				// userRoom 삭제
+				String message = userRoomService.leaveRoom(existUserRoom);
+
+				// rank point 더해주기
+				User addPointUser = userService.addRankPoint(userId);
+				
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed
 					this.mapSessions.remove(sessionName);
-					// 방삭제.
-
-					// userRoom 삭제
-					String message = userRoomService.leaveRoom(existUserRoom);
 
 					// room 삭제
 					String roomMessage = roomService.deleteRoom(roomId);
-					
-					// rank point 더해주기
-					User addPointUser = userService.addRankPoint(userId);
 					
 				}
 				return new ResponseEntity<>(HttpStatus.OK);
