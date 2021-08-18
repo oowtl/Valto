@@ -42,6 +42,10 @@
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <!-- 방장, 토론 시작 버튼 -->
+      <span v-if="ownerId === userId">
+        <button @click="onClickStart">토론시작</button>
+      </span>
     </div>
     <div class="footer-child communication">
       <bell-filled :style="[state.buttonBase]" />
@@ -133,6 +137,9 @@ export default{
       // RightRecvList: [],
       recvList: [],
       stompClient: '',
+      // 방장 id
+      ownerId:'',
+      time:''
     })
 
     const subsTest = function () {
@@ -173,8 +180,12 @@ export default{
       }
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
+          console.log(result)
           state.token = result.data[0]
           state.side = result.data[1]
+          state.nickname = result.data[2]
+          state.ownerId = result.data[3]
+          state.userId = result.data[4]
           connectSession()
             .then(() => {
 
@@ -274,6 +285,18 @@ export default{
         state.chatButton.color = 'grey'
       }
     }
+
+//  토론 시작
+    const onClickStart = function(){
+      console.log('토론시작@@@@@@')
+      store.dispatch('root/startDebate', state.roomId)
+        .then((result) => {
+          console.log(result)
+          state.time = result
+        }).catch((err) =>{
+          console.log(err)
+        })
+    }
     ///////////////////////// 채팅 관련 ////////////////////////////
 
     // const sendMessage = function (e) {
@@ -335,7 +358,7 @@ export default{
 
     //disconnect로 세션 leave
   // chatConnect, send, sendMessage,
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest,onClickStart }
   }
 
 }
