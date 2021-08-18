@@ -26,8 +26,7 @@
     "vue-owl-carousel": "^2.0.3",
     "vue-router": "^4.0.6",
     "vue3-carousel": "^0.1.24",
-    "vuex": "^4.0.0",
-    "webstomp-client": "^1.2.6"
+    "vuex": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

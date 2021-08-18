@@ -21,17 +21,14 @@
 .partition-left{
   display: flex;
   flex-wrap: wrap;
-  height: 90%;
+
 }
 
-.partition {
-  flex: 5;
-}
 
 .partition-right {
   display: flex;
   flex-wrap: wrap;
-  height: 90%;
+
 }
 
 .panel {
@@ -48,10 +45,6 @@
   border-radius: 1rem;
   padding: 1rem;
   color: #000000;
-}
-
-.container {
-  display: flex;
 }
 
 .footer {
@@ -88,13 +81,13 @@
   display: flex;
   flex-wrap: wrap;
   height: 50%;
-
-
 }
 
 .candidates {
-  /* display: flex; */
-  /* flex: 1; */
-  margin: 0px 10px 5px 10px;
+  display: flex;
+  flex: 1;
+  height: 100px;
+  width: 100px;
+
 }
 
