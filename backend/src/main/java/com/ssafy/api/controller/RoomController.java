@@ -455,10 +455,9 @@ public class RoomController {
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
 
-		Room room = roomService.getRoomByRoomId(roomId);
+		String msg = roomService.updateRoomStart(roomId);
 
-
-		return new ResponseEntity<>(room.getTimes(), HttpStatus.OK);
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, msg));
 	}
 	
 	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {

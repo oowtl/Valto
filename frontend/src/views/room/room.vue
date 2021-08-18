@@ -43,11 +43,15 @@
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
       <!-- 방장, 토론 시작 버튼 -->
+      
       <span v-if="ownerId === userId">
         <button @click="onClickStart">토론시작</button>
       </span>
     </div>
     <div class="footer-child communication">
+    
+      <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
+      <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />     
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -85,7 +89,7 @@ import { useRoute } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, VideoPlay, DArrowRight } from '@element-plus/icons'
 // import Stomp from 'webstomp-client'
 // import SockJS from 'sockjs-client'
 
@@ -105,6 +109,8 @@ export default{
     VideoCamera,
     ChatDotRound,
     Opportunity,
+    VideoPlay,
+    DArrowRight
   },
   setup (){
     const store = useStore()
@@ -139,7 +145,7 @@ export default{
       stompClient: '',
       // 방장 id
       ownerId:'',
-      time:''
+      start:false
     })
 
     const subsTest = function () {
@@ -292,7 +298,8 @@ export default{
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
-          state.time = result
+          if(state.start) state.start = false;
+          else state.start = true;
         }).catch((err) =>{
           console.log(err)
         })
