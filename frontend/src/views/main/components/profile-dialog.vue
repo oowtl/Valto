@@ -10,13 +10,6 @@
       <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.name" autocomplete="off"></el-input>
       </el-form-item>
-      <!-- 비밀번호 부분은 생각 필요 -->
-      <el-form-item prop="oldPassword" label="비밀번호-개발중" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.oldPassword" autocomplete="off" show-password></el-input>
-      </el-form-item>
-      <!-- <el-form-item prop="point" label="포인트" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.point" autocomplete="off" ></el-input>
-      </el-form-item> -->
       <p>보유 포인트: {{ state.form.point }}</p>
       <p v-if="state.form.userRecord">전적:{{ state.form.userRecord.win }}승 {{ state.form.userRecord.lose }}패 {{ state.form.userRecord.draw }}무</p>
     </el-form>

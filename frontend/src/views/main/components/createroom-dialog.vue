@@ -267,33 +267,15 @@ export default {
           { required: true },
         ],
         participants: [
-<<<<<<< HEAD
-          { required: true, message: '참가자 인원수를 선택해 주세요.' }
-        ],
-        observers: [
-          { required: true, message: '관전자 인원수를 선택해 주세요.' }
-        ],
-        userSide: [
-          { required: true, message: '포지션을 선택해 주세요.' }
-        ],
-        times: [
-          { required: true, message: '토론시간을 선택해 주세요.' }
-        ],
-        privateRoom: [
-          { required: true, message: '비공개 여부를 체크해 주세요' }
-        ],
-        roomPassword: [
-          { required: true, message: '방 비밀번호를 입력해 주세요' }
-=======
           { validator: checkParticipants, trigger: 'change' },
           { required: true, message: '참가자 인원수를 선택해 주세요.' }
         ],
         times: [
           { validator: checkTimes, trigger: 'change' },
           { required: true, message: '토론시간을 선택해 주세요.' }
->>>>>>> front/ranking
         ],
       },
+
       dialogVisible: computed(() => props.open),
       formLabelWidth: '120px',
     })
@@ -315,24 +297,13 @@ export default {
     }
 
     const clickCreateRoom = function () {
-<<<<<<< HEAD
       if (!state.isInvalid) {
         store.dispatch('root/requestCreateRoom', {
           userId: state.userId,                   // string
-=======
-      console.log('방생성 버튼 누름')
-      if (!state.isInvalid) {
-        store.dispatch('root/requestCreateRoom', {
-          userId: state.userId,              // string
->>>>>>> front/ranking
           title: state.form.title,                // string
           topicAgree: state.form.topicAgree,      // string
           topicOpposite: state.form.topicOpposite,// string
           participants: state.form.participants,  // integer
-<<<<<<< HEAD
-          observers: state.form.observers,        // integer
-=======
->>>>>>> front/ranking
           userSide: state.form.userSide,          // string
           times: state.form.times,                // integer
           privateRoom: state.form.privateRoom,    // boolean

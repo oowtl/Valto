@@ -53,6 +53,7 @@
           <div class="mobile-sidebar-tool-wrapper" v-if="state.loginFlag">
             <el-button class="mobile-sidebar-btn" @click="clickCreateRoom" icon="el-icon-circle-plus-outline">방생성</el-button>
             <el-button class="mobile-sidebar-btn" @click="clickProfile" icon="el-icon-user-solid">프로필</el-button>
+            <el-button class="mobile-sidebar-btn" @click="clickRanking" icon="el-icon-s-data">랭킹</el-button>
             <el-button class="mobile-sidebar-btn logout-btn" icon="el-icon-switch-button" @click="clickLogout">로그아웃</el-button>
           </div>
         </div>

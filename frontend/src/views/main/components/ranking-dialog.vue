@@ -12,27 +12,27 @@ r<template>
 
 <style>
 .ranking-dialog {
-  width: 400px !important;
+  width: 500px !important;
   height: 650px;
 }
 .ranking-list .ranking-list-item {
   list-style: none;
-  font-size: 25px;
+  font-size: 15px;
   margin: 5px 20px;
 }
 .ranking-list .ranking-list-item:nth-child( -n+3 ) {
-  font-size: 35px;
+  font-size: 20px;
   color: red;
 } 
 .ranking-list .ranking-list-item ranking-form{
   float: left;
 }
 .ranking-list .ranking-list-item ranking-id{
-  margin-left: 40px;
+  margin-left: 30px;
 }
 .ranking-list .ranking-list-item ranking-point{
   float: right;
-  margin-right: 30px;
+  margin-right: 20px;
 }
 
 </style>

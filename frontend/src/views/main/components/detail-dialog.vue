@@ -23,21 +23,6 @@
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
-<<<<<<< HEAD
-        <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
-          <el-select class="positionSelect" v-model="state.form.userSide" placeholder="포지션">
-            <el-option
-              v-for="position in userSide"
-              :key="position.value"
-              :label="position.label"
-              :value="position.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
-          <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
-          <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
-=======
         <el-form-item prop="userSide" label="포지션" :label-width="state.formLabelWidth">
           <span class="dialog-position1">
             <el-button type="primary" @click="clickPosition1" :disabled="state.posi1">주제1</el-button>
@@ -45,7 +30,6 @@
           <span class="dialog-position2">
             <el-button type="primary" @click="clickPosition2" :disabled="state.posi2">주제2</el-button>
           </span>
->>>>>>> front/ranking
         </el-form-item>
       </el-form>
       <template #footer>
@@ -81,22 +65,6 @@ export default {
     }
   },
 
-<<<<<<< HEAD
-  data() {
-    return {
-      userSide: [{
-          value: 'agree',
-          label: '주제1(찬성)'
-        }, {
-          value: 'opposite',
-          label: '주제2(반대)'
-        },
-      ],
-    }
-  },
-
-=======
->>>>>>> front/ranking
   setup(props, { emit }) {
     const router = useRouter();
     const store = useStore();
@@ -142,15 +110,12 @@ export default {
           .then(function (result) {
             state.form = result.data
             state.divide_participants = result.data.participants/2
-<<<<<<< HEAD
-=======
             if ( state.form.agreeUsers.length == state.divide_participants ) {
               state.posi1 = true
             }
             if ( state.form.oppositeUsers.length == state.divide_participants ) {
               state.posi2 = true
             }
->>>>>>> front/ranking
             console.log(state.form.userId)
           })
           .catch(function (err) {
