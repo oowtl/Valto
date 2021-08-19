@@ -105,14 +105,15 @@ export default {
     // 방 정보 받아오기
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
+        console.log('@@@@@@@@@@@디테일열림@@@@@@@@@@')
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
             state.form = result.data
             state.divide_participants = result.data.participants/2
-            if ( state.form.agreeUsers.length == state.divide_participants ) {
+            if ( state.form.agreeUsers.length === state.divide_participants ) {
               state.posi1 = true
             }
-            if ( state.form.oppositeUsers.length == state.divide_participants ) {
+            if ( state.form.oppositeUsers.length === state.divide_participants ) {
               state.posi2 = true
             }
             console.log(state.form.userId)
@@ -121,8 +122,6 @@ export default {
             console.log(err)
             handleClose()
           })
-        } else if (newVal === false) {
-          handleClose()
         }
       }
     );

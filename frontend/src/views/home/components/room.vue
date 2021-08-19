@@ -68,8 +68,6 @@ div .cardBody {
 }
 div .closed {
   background-color: #000;
-  backdrop-filter: blur(8px);
-  z-index:990;
 }
 
 .el-card .bottom .roomInfo {
