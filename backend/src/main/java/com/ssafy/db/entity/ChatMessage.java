@@ -16,5 +16,6 @@ public class ChatMessage {
     private Integer roomId;	//방번호
     private String userId;
     private String message;
+    private String nickName;
     private MessageType type;
 }

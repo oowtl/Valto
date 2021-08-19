@@ -321,8 +321,8 @@ public class RoomController {
 		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
-		System.out.println("userside test");
-		System.out.println(userRoomPostReq.getUserSide());
+		//System.out.println("userside test");
+		//System.out.println(userRoomPostReq.getUserSide());
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
 		
 		
@@ -350,6 +350,7 @@ public class RoomController {
 			System.out.println(userRoom.getUserSide() + "!!!!!!");
 			String side = userRoom.getUserSide().equals("agree")? "left" : "right";
 			System.out.println("side" + side);
+			System.out.println(room.getUserId().getNickName());
 			responseJson.put(0, token);
 			responseJson.put(1, side);
 			responseJson.put(2, room.getUserId().getNickName());
