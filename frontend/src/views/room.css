@@ -146,3 +146,19 @@
   flex: 1;
   /* display: none; */
 }
+.chat {
+  height: 94%;
+}
+.chat-log {
+  height: calc(100% - 50px);
+}
+.chat-input {
+  height: 50px;
+  text-align: center;
+}
+.chat-input-window {
+  width: calc(80% - 15px);
+}
+#session > div > div.panel > div > div > div > div.el-scrollbar__wrap.el-scrollbar__wrap--hidden-default > div {
+  height: 100%;
+}

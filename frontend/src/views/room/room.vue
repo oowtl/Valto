@@ -21,24 +21,32 @@
           <!-- chat start -->
           <transition name="slide">
           <div class="panel" v-if="state.openPanel">
-            <div class="panelChild chat" v-if="state.openChat">
+            <div class="panelChild" v-if="state.openChat">
               <p>채팅창</p>
-              <el-scrollbar height="50pc">
-                <div v-if="state.side === 'left'">
-                  <div v-for="(item, idx) in state.leftRecvList" :key="idx">
-                    <span>{{ item.nickName}} ({{ item.userId }})</span>
-                    <span> : {{ item.message }}</span>
-                  </div>
-                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                <div v-if="state.side === 'left'" class="chat">
+                  <el-scrollbar>
+                    <div class="chat-log">
+                      <span v-for="(item, idx) in state.leftRecvList" :key="idx">
+                        {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
+                      </span>
+                    </div>
+                    <div class="chat-input">
+                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                    </div>
+                  </el-scrollbar>
                 </div>
-                <div v-else>
-                  <div v-for="(item, idx) in state.rightRecvList" :key="idx">
-                    <span>{{ item.nickName}} ({{ item.userId }})</span>
-                    <span> : {{ item.message }}</span>
-                  </div>
-                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                <div v-else class="chat">
+                  <el-scrollbar>
+                    <div class="chat-log">
+                      <span v-for="(item, idx) in state.leftRecvList" :key="idx">
+                        {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
+                      </span>
+                    </div>
+                    <div class="chat-input">
+                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage" class="chat-input-window">
+                    </div>
+                  </el-scrollbar>
                 </div>
-              </el-scrollbar>
             </div>
             <div class="panelChild member" v-if="state.openMember">
               <p>멤버</p>
@@ -154,7 +162,6 @@ export default{
       RightRecvList: [],
       recvList: [],
       stompClient: '',
-      speech: '',
       ownerId:'',
       start:false
     })
@@ -200,13 +207,13 @@ export default{
       state.mainStreamManager = stream
     }
 
-    // state.session.on('publisherStartSpeaking', ( event ) => {
-    //   state.speech = event.connection.connectionId
-    // })
+
 
 
     onBeforeMount(() => {
+      console.log('@@@@@@@@@@@@@@@@@@')
       state.roomId = route.path.split('/')[2]
+      console.log(state.roomId)
       const side = localStorage.getItem('userSide')
       console.log('@@@@@ 룸 입장 userside@@@@@')
       console.log(side)
@@ -215,6 +222,7 @@ export default{
         // userSide: state.userSide,
         userSide: localStorage.getItem('userSide')
       }
+      console.log(payload)
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           console.log(result)
@@ -294,21 +302,22 @@ export default{
 
       // 음성감지
       state.session.on('publisherStartSpeaking' , (event) => {
-        state.speech = event.connection.connectionId
-        console.log(state.publisher)
-        console.log(state.subscribers)
-        let sub = state.subscribers.find(function (s) {
+        // state.speech = event.connection.connectionId
+        let leftSub = state.subscribers.find(function (s) {
           return s.stream.connection.connectionId === event.connection.connectionId
         })
-        console.log(sub)
-        // updateMainVideoStreamManager 이 함수가 subscribers 배열에서 sub 이름으로 객체 하나를 뽑아서 실행되니까
-        // state.subscribers 배열에서 connectionId가 위의 event.connection.connectionId 랑 같은 걸 찾아서
-        // 아래에서 updateMainVideoStreamManager 함수에 해당하는 sub를 넣어주면 메인 비디오가 전환됨!
-        updateMainVideoStreamManager(sub)
+        let rightSub = state.subscribers.find(function (s) {
+          return s.stream.connection.connectionId === event.connection.connectionId
+        })
+
+        if (leftSub) {
+          updateMainVideoStreamManagerLeft(leftSub)
+        } else if (rightSub) {
+          updateMainVideoStreamManagerRight(rightSub)
+        }
         console.log('User ' + event.connection.connectionId + ' start speaking');
       })
       state.session.on('publisherStopSpeaking', (event) => {
-        state.speech = '';
         console.log('User ' + event.connection.connectionId + ' stop speaking');
       })
 
@@ -345,12 +354,21 @@ export default{
           console.log(err)
         })
     })
+
     const updateMainVideoStreamManagerLeft = function (stream) {
-      if (state.mainStreamManagerLeft === stream) return;
+      if (state.mainStreamManagerLeft === stream) return
+      // const idx = state.leftSubs.find(sub => sub === stream)
+      const idx = state.leftSubs.indexOf(stream)
+      state.leftSubs.splice(idx, 1)
+      state.leftSubs.push(state.mainStreamManagerLeft)
       state.mainStreamManagerLeft = stream
     }
+
     const updateMainVideoStreamManagerRight = function (stream) {
-      if (state.mainStreamManagerRight === stream) return;
+      if (state.mainStreamManagerRight === stream) return
+      const idx = state.leftSubs.indexOf(stream)
+      state.rightSubs.splice(idx, 1)
+      state.rightSubs.push(state.mainStreamManagerRight)
       state.mainStreamManagerRight = stream
     }
 

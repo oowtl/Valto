@@ -52,8 +52,8 @@
     </div>
 
     <ul class="room-list">
-      <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item">
-        <room :room="room"/>
+      <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item" :class="{ closed: true }">
+        <room :room="room" />
       </li>
     </ul>
 
@@ -91,10 +91,13 @@
 }
 
 .room-list {
-  padding-left: 0;
+  /* display: inline-block;
+  text-align: center;
+  width: 80%; */
   max-height: calc(100% - 35px);
   list-style: none;
-  margin-top: 20px;
+  margin: 20px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
 @media (min-width: 701px) and (max-width: 1269px) {
@@ -130,7 +133,9 @@
   text-align: right;
   z-index: 1;
 }
-
+.room-list .closed {
+  cursor: not-allowed;
+}
 
 </style>
 <script>
@@ -179,7 +184,9 @@ export default {
 
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
-      emit('openDetailDialog', roomId)
+      if (state.rooms.find(room => room.start === true)) {
+        emit('openDetailDialog', roomId)
+      }
     }
 
     // 방 목록 받아오는 함수
@@ -190,10 +197,8 @@ export default {
           ...state.query,
           page: state.currentPage,
           size: state.pageSize,
-          sort: state.sort,
+          sorting: state.sort,
         }
-        console.log(query)
-        console.log(state.pageSize)
         store.dispatch('root/requestRoomList', query)
           .then((result) => {
             state.rooms = result.data.content
@@ -254,7 +259,7 @@ export default {
         ...state.query,
         page: state.currentPage,
         size: state.pageSize,
-        sort: state.sort,
+        sorting: state.sort,
       }
       store.dispatch('root/queryUpdate', query)
     }

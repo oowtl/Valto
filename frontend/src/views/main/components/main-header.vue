@@ -9,7 +9,6 @@
           <div class="ic ic-logo"/>
         </div>
         <ul class="side-wrapper">
-          <li class="li-wrapper" @click="clickHistory">기록</li>
           <li class="li-wrapper" @click="clickRanking">랭킹</li>
         </ul>
       </div>
@@ -118,15 +117,6 @@ export default {
     }
 
 
-    const clickHistory = () => {
-      store.commit('root/setMenuActive', 1)
-      const MenuItems = store.getters['root/getMenus']
-      let keys = Object.keys(MenuItems)
-      router.push({
-        name: keys[1]
-      })
-    }
-
     const clickRanking = () => {
       console.log('click랭킹함')
       emit('openRankingDialog')
@@ -170,7 +160,6 @@ export default {
       clickProfile ,
       clickLogout ,
       clickCreateRoom,
-      clickHistory,
       clickRanking
     }
   }
