@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine as builder
-COPY --from=frontend /usr/share/nginx/html/homepage /src/main/resources/dist
+COPY --from=frontend:latest /usr/share/nginx/html/homepage /src/main/resources/dist
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
