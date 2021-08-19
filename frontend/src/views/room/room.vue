@@ -209,12 +209,18 @@ export default{
       state.roomId = route.path.split('/')[2]
       const side = localStorage.getItem('userSide')
       console.log('@@@@@ 룸 입장 userside@@@@@')
-      console.log(side)
+
+      console.log('userSide 1  : ' + side)
+
       const payload = {
         roomId: state.roomId,
         // userSide: state.userSide,
         userSide: localStorage.getItem('userSide')
       }
+
+      console.log('userSide 2  : ' + payload.userSide)
+      console.log(payload)
+
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           console.log(result)

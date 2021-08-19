@@ -140,7 +140,6 @@ export default {
       });
     };
 
-
     return { state, handleClose, detailForm, clickEnter, clickPosition1, clickPosition2 };
   }
 };

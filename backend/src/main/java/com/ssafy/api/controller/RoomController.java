@@ -301,15 +301,20 @@ public class RoomController {
 //		System.out.println(mapSessions);
 //		System.out.println(mapSessionNamesTokens);
 		
-//		System.out.println(userRoomPostReq);
-
+		System.out.println(roomId);
+		System.out.println(userRoomPostReq.toString());
+		
+		
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
+		
+		
 
 		Room room = roomService.getRoomByRoomId(roomId);
 //		System.out.println("Enter Room!");
 		// 방이 없을 경우
 		if (room == null) {
+			System.out.println("room");
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
 		
@@ -317,14 +322,15 @@ public class RoomController {
 		// 필요한 것: Room 정보, userRoom 갯수
 		if (!userRoomService.checkLimitRoom(room, userRoomPostReq.getUserSide())) {
 			// true 일때 가능하다.
+			System.out.println("check");
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "don't enter Room : maximum userside"));
 		}
 		
 		// user 가 이미 하나의 방에 접속한 경우
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
 		 
-		if (existUserRoom.getUserId() != null) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+		if (existUserRoom.getUserId() != null) {	
+			userRoomService.deleteUserRoom(existUserRoom);
 		}
 		 
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
