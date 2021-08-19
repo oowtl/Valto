@@ -168,3 +168,8 @@ export function startDebate({ commit }, payload) {
   }
   return util.commonAxios(request)
 }
+
+export function requestRanking({ commit }) {
+  const url = '/users/rank/list'
+  return $axios.get(url)
+}

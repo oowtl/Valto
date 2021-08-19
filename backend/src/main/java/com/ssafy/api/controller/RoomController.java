@@ -326,8 +326,7 @@ public class RoomController {
 		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
-		//System.out.println("userside test");
-		//System.out.println(userRoomPostReq.getUserSide());
+		 
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
 		
 		
