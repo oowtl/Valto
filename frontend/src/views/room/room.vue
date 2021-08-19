@@ -59,8 +59,8 @@
   </div>
   <!-- footer start -->
   <div class="footer">
-    <div class="footer-child head-controller">
-
+    <div class="footer-child head-controller" style="fontSize: 30px;">
+      {{ state.topicL}} <span style="color: red; margin: 0px 10px 0px 10px;"> vs </span> {{ state.topicR}}
     </div>
     <div class="footer-child controller">
       <div v-if="state.start">

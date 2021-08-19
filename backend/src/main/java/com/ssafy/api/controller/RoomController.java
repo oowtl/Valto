@@ -350,15 +350,19 @@ public class RoomController {
 				System.out.println(key + " : " + value);
 			});
 			// Prepare the response with the token
-			System.out.println(userRoom.getUserSide() + "!!!!!!");
+
 			String side = userRoom.getUserSide().equals("agree") ? "left" : "right";
-			System.out.println("side" + side);
-			System.out.println(room.getUserId().getNickName());
+			System.out.println(room.getTopicAgree());
+			System.out.println(room.getTopicOpposite());
+			
+			
 			responseJson.put(0, token);
 			responseJson.put(1, side);
 			responseJson.put(2, room.getUserId().getNickName());
 			responseJson.put(3, room.getUserId().getUserId());
 			responseJson.put(4, userId);
+			responseJson.put(5, room.getTopicAgree());
+			responseJson.put(6, room.getTopicOpposite());
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
