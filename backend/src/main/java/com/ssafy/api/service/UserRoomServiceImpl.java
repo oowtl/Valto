@@ -26,8 +26,8 @@ public class UserRoomServiceImpl implements UserRoomService {
 
 	@Override
 	public User_Room enterUserRoom(String UserId, Long RoomId, String userSide) {
-		// TODO Auto-generated method stub
-
+		System.out.println("@@@@@@");
+		System.out.println(userSide);
 		User_Room userRoom = new User_Room();
 
 		userRoom.setRoomId(roomRepository.findById(RoomId).get());
@@ -35,11 +35,22 @@ public class UserRoomServiceImpl implements UserRoomService {
 		userRoom.setUserId(userRepository.findByUserId(UserId).get());
 
 		// userSide 의 기본값 agree
+		// userSide F ||    F && T
 		if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
 			userRoom.setUserSide("agree");
-		} else {
+			System.out.println("test!!!!!!");
+			System.out.println(userSide==null);
+		} 
+		else if(userSide.equals("opposite")) { 
+			System.out.println("asda12112");
+		}
+		else {
+//			System.out.println(userSide + "@@@@!!!!!");
 			userRoom.setUserSide(userSide);
 		}
+		
+		
+		
 		
 		return userRoomRepository.save(userRoom);
 	}

@@ -1,4 +1,6 @@
 .room-wrapper {
+  max-width: 100%;
+  width: 100%;
   height: 90%;
   display: block !important;
   /* background-color: #ECECEC; */
@@ -6,43 +8,41 @@
   color: #ffffff;
 }
 
-.session {
+#session {
   height: 100%;
   /* min-height, max-height no inheritance */
   min-height: calc(100% - 60px);
   max-height: calc(100% - 60px);
   padding: 0 1rem;
 }
-
 .divider {
   display: flex;
   height: 100%;
 }
+.partition-left{
+  display: flex;
+  flex-wrap: wrap;
 
-.partition {
+}
 
-  /* min-height: 400px; */
-  flex: 5;
+.partition-right {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .panel {
   flex: 1;
   min-width: 20%;
-  height: 1000px;
   justify-content: center;
   padding-left: 1rem;
 }
 
 .panelChild {
   background-color: #ffffff;
-  height: 80%;
+  height: 100%;
   border-radius: 1rem;
   padding: 1rem;
   color: #000000;
-}
-
-.container {
-  display: flex;
 }
 
 .footer {
@@ -50,7 +50,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  display: block !important;
+  /* display: block !important; */
   background-color: #202124;
   color: #ffffff;
 }
@@ -59,6 +59,12 @@
   display: flex;
   flex: 1;
   margin: 0px 0px 0px 0px;
+}
+
+.head-controller {
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 22px;
 }
 
 .controller {
@@ -70,4 +76,89 @@
   justify-content: flex-end;
   align-items: center;
   margin-right: 22px;
+}
+.partition {
+  display: flex;
+  flex: 5;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+}
+.partition-left {
+  border-right: 1px solid rgb(119, 119, 119);
+}
+
+.main-video {
+  flex: 3;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  /* flex-wrap: wrap; */
+}
+.main-video .video-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.main-video .video-wrapper .video {
+  flex: 5;
+  align-self: stretch;
+  /* justify-self: stretch; */
+  /* width: auto; */
+  /* width: 10px; */
+  height: 10px;
+  max-height: 480px;
+  /* max-width: 500px; */
+  /* margin: 0 auto 0 auto; */
+}
+.main-video .userName {
+  flex: 1;
+}
+
+.sub-video {
+  flex: 2;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  /* flex-wrap: wrap; */
+}
+.sub-video .video-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sub-video .video-wrapper .video {
+  flex: 5;
+  align-self: stretch;
+  height: 10px;
+  max-height: 160px;
+  margin: 0 2px 0 2px;
+}
+.sub-video .userName {
+  flex: 1;
+  /* display: none; */
+}
+.chat {
+  height: 94%;
+}
+.chat-log {
+  height: calc(100% - 50px);
+}
+.chat-input {
+  height: 50px;
+  text-align: center;
+}
+.chat-input-window {
+  width: calc(80% - 15px);
+}
+#session > div > div.panel > div > div > div > div.el-scrollbar__wrap.el-scrollbar__wrap--hidden-default > div {
+  height: 100%;
 }

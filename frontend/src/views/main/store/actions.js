@@ -2,6 +2,7 @@
 import $axios from 'axios'
 import util from '../../../common/util.js'
 import router from '@/common/lib/vue-router.js'
+import { storeKey } from 'vuex'
 
 export function requestLogin ({ commit }, payload) {
   const url = '/auth/login'
@@ -78,6 +79,7 @@ export function setLogout({ commit }) {
 
 // 방 생성
 export function requestCreateRoom({ commit }, payload){
+  commit('setUserSide', payload.userSide)
   const url = '/room'
   const request = {
     method: 'post',
@@ -127,7 +129,7 @@ export function requestDetail({ state }, payload) {
 
 
 export function requestRoomToken({ state }, payload) {
-  const url = `/room/${payload}/admission`
+  const url = `/room/${payload.roomId}/admission`
   const body = { sessionName: `${payload}` }
   const request = {
     method: 'post',
@@ -138,7 +140,6 @@ export function requestRoomToken({ state }, payload) {
 }
 
 export function requestDeleteRoom({ commit }, payload) {
-  console.log(payload)
   const url = `/room/${payload.sessionName}/admission`
   const body = payload
   const request = {
@@ -155,4 +156,20 @@ export function queryUpdate({ commit }, query) {
     name: 'home',
     query: query,
   })
+}
+
+
+// 토론 시작
+export function startDebate({ commit }, payload) {
+  const url = `/room/${payload}/start`
+  const request = {
+    method: 'post',
+    url: url
+  }
+  return util.commonAxios(request)
+}
+
+export function requestRanking({ commit }) {
+  const url = '/users/rank/list'
+  return $axios.get(url)
 }

@@ -1,38 +1,36 @@
 <template>
   <li>
     <el-card :body-style="{ padding: '0px' }">
-      <div class="cardBody">
-        <span class="title" style="display: flex; flex-direction: column;">
-            <div style="display: flex; justify-content: flex-start;">
-              <span>{{ room.topicAgree }}</span>
-              <!-- 15 글자 / 12 글자 -->
-              <!-- <span>하하하하하하하하하하하하</span> -->
-            </div>
-            <div style="display: flex; justify-content: center;">
-              <span style="color: #6b6b6b;">VS</span>
-            </div>
-            <div style="display: flex; justify-content: flex-end;">
-              <span>{{ room.topicOpposite }}</span>
-              <!-- <span>딱복숭아가 맛있는가</span> -->
-            </div>
-        </span>
-        <hr>
-        <div class="bottom">
-          <div style="display: flex; justify-content: center;">
-            <!-- 15글자 -->
-            <span>{{ room.title }}</span>
-          </div>
-          <div class="roomInfo" style="display: flex; justify-content: space-between;">
-            <el-button type="primary" size="mini">Waiting</el-button>
-            <el-button type="danger" size="mini" v-if="false">Playing</el-button>
-            <div style="display: flex; align-items: center;">
-              <div style="display: flex; align-items: center; margin-right: 1rem;">
-                <UserFilled :style="[state.buttonBase]" style="color: grey; opacity: 0.8;"/>
-                <span style="color: grey; opacity: 0.8; font-size: 1rem;">{{ room.userTotalCount }} / {{ room.participants }}</span>
+      <div  :class="{ closed: true }">
+        <div class="cardBody">
+          <span class="title" style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: flex-start;">
+                <span>{{ room.topicAgree }}</span>
+                <!-- 15 글자 / 12 글자 -->
+                <!-- <span>하하하하하하하하하하하하</span> -->
               </div>
-              <div>
-                <Lock v-if="false" :style="[state.buttonBase]"/>
-                <Unlock :style="[state.buttonBase]"/>
+              <div style="display: flex; justify-content: center;">
+                <span style="color: #6b6b6b;">VS</span>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <span>{{ room.topicOpposite }}</span>
+                <!-- <span>딱복숭아가 맛있는가</span> -->
+              </div>
+          </span>
+          <hr>
+          <div class="bottom">
+            <div style="display: flex; justify-content: center;">
+              <!-- 15글자 -->
+              <span>{{ room.title }}</span>
+            </div>
+            <div class="roomInfo" style="display: flex; justify-content: space-between;">
+              <el-button type="primary" size="mini">Waiting</el-button>
+              <el-button type="danger" size="mini" v-if="false">Playing</el-button>
+              <div style="display: flex; align-items: center;">
+                <div style="display: flex; align-items: center; margin-right: 1rem;">
+                  <UserFilled :style="[state.buttonBase]" style="color: grey; opacity: 0.8;"/>
+                  <span style="color: grey; opacity: 0.8; font-size: 1rem;">{{ room.userTotalCount }} / {{ room.participants }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -67,6 +65,11 @@ div .cardBody {
   text-align: left;
   padding: 14px;
   background-color: #fafafa;
+}
+div .closed {
+  background-color: #000;
+  backdrop-filter: blur(8px);
+  z-index:990;
 }
 
 .el-card .bottom .roomInfo {

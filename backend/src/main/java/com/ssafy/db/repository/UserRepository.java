@@ -1,6 +1,8 @@
 package com.ssafy.db.repository;
 
 import com.ssafy.db.entity.User;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +18,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUserId(String userId);
     Optional<User> findByNickName(String nickName);
     List<User> findAllByUserId(String userId);
-
+    
+    //Rank
+    List<User> findTop10ByOrderByPointDesc();
 }

@@ -1,5 +1,7 @@
 package com.ssafy.api.service;
 
+import java.util.List;
+
 import com.ssafy.api.request.UserModifyPatchReq;
 import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
@@ -15,4 +17,8 @@ public interface UserService {
 	User modifyUser(UserModifyPatchReq userModifyInfo, String userId);
 //	UserRecord getUserByUserRecord(String userId);
 	int deleteUser(String userId);
+	
+	// rank
+	List<User> getRankList();
+	User addRankPoint(String userId);
 }

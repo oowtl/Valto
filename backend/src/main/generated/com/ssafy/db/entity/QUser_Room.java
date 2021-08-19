@@ -31,7 +31,7 @@ public class QUser_Room extends EntityPathBase<User_Room> {
 
     public final QUser userId;
 
-    public final BooleanPath userSide = createBoolean("userSide");
+    public final StringPath userSide = createString("userSide");
 
     public QUser_Room(String variable) {
         this(User_Room.class, forVariable(variable), INITS);
