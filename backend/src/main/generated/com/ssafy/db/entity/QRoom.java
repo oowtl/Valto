@@ -24,18 +24,22 @@ public class QRoom extends EntityPathBase<Room> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+
     //inherited
     public final NumberPath<Long> id = _super.id;
-
-    public final DateTimePath<java.util.Date> localDateTime = createDateTime("localDateTime", java.util.Date.class);
 
     public final NumberPath<Integer> observers = createNumber("observers", Integer.class);
 
     public final NumberPath<Integer> participants = createNumber("participants", Integer.class);
 
+    public final BooleanPath playing = createBoolean("playing");
+
     public final BooleanPath privateRoom = createBoolean("privateRoom");
 
     public final StringPath roomPassword = createString("roomPassword");
+
+    public final BooleanPath start = createBoolean("start");
 
     public final NumberPath<Integer> times = createNumber("times", Integer.class);
 
