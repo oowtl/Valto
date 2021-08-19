@@ -24,7 +24,7 @@
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
         <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
-          <el-select class="positionSelect" v-model="state.form.userSide" placeholder="포지션">
+          <el-select class="positionSelect" v-model="state.userSide" placeholder="포지션">
             <el-option
               v-for="position in userSide"
               :key="position.value"
@@ -129,8 +129,10 @@ export default {
     );
 
     const clickEnter = function(roomId) {
-      console.log(state.userSide+ 'state.userSide')
       store.commit('root/setUserSide', state.userSide)
+      localStorage.setItem('userSide', state.userSide)
+      console.log('@@@@@입장하기 userside@@@@@')
+      console.log(localStorage.getItem('userSide'))
       router.push({
         name: 'room',
         params: {

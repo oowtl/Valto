@@ -1,6 +1,8 @@
 <template>
-  <ov-video :stream-manager="this.streamManager" class="video"/>
-  <p class="userName">{{ state.clientData }}</p>
+  <div class="video-wrapper">
+    <ov-video :stream-manager="this.streamManager" class="video"/>
+    <p class="userName">{{ state.clientData }}</p>
+  </div>
 </template>
 
 <script>

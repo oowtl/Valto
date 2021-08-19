@@ -4,18 +4,18 @@
       <div class="divider">
           <div class="partition partition-left">
             <div class="main-video">
-              <user-video :stream-manager="state.mainStreamManager" />
+              <user-video :stream-manager="state.mainStreamManagerLeft" v-if="state.mainStreamManagerLeft" />
             </div>
             <div class="sub-video">
-              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+              <user-video v-for="sub in state.leftSubs" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManagerLeft(sub)"/>
             </div>
           </div>
           <div class="partition partition-right">
             <div class="main-video">
-              <user-video :stream-manager="state.mainStreamManager" />
+              <user-video :stream-manager="state.mainStreamManagerRight" v-if="state.mainStreamManagerRight" />
             </div>
             <div class="sub-video">
-              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+              <user-video v-for="sub in state.rightSubs" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManagerRight(sub)"/>
             </div>
           </div>
           <!-- chat start -->
@@ -78,7 +78,7 @@
 <script>
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
 import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
@@ -108,9 +108,12 @@ export default{
     const state = reactive({
       OV: undefined,
       session: undefined,
-      mainStreamManager: undefined,
+      mainStreamManagerLeft: undefined,
+      mainStreamManagerRight: undefined,
       publisher: undefined,
       subscribers: [],
+      leftSubs: [],
+      rightSubs: [],
       //user nickname 으로 수정해야함
       nickname: '',
       //username 으로 수정해야함
@@ -138,11 +141,15 @@ export default{
 
     const subsTest = function () {
       console.log(state.userSide)
-      console.log(state.subscribers)
+      console.log(state.leftSubs)
+      console.log(state.rightSubs)
     }
     const connectSession = function () {
       // state.session.connect(state.token, {})
-      state.session.connect(state.token, { side: state.side })
+      const side = localStorage.getItem('userSide')
+      console.log('@@@@@룸 connectsession userside@@@@@')
+      console.log(side)
+      state.session.connect(state.token, { side: side })
         .then(() => {
           // --- Get your own camera stream with the desired properties ---
           let publisher = state.OV.initPublisher('publisherStartSpeaking', {
@@ -155,7 +162,11 @@ export default{
             insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
             mirror: false       	// Whether to mirror your local video or not
           })
-          state.mainStreamManager = publisher
+          if (side === 'agree') {
+            state.mainStreamManagerLeft = publisher
+          } else if (side === 'opposite') {
+            state.mainStreamManagerRight = publisher
+          }
           state.publisher = publisher
           state.session.publish(state.publisher)
         })
@@ -176,18 +187,19 @@ export default{
 
     onBeforeMount(() => {
       state.roomId = route.path.split('/')[2]
+      const side = localStorage.getItem('userSide')
+      console.log('@@@@@ 룸 입장 userside@@@@@')
+      console.log(side)
       const payload = {
         roomId: state.roomId,
-        userSide: state.userSide,
+        // userSide: state.userSide,
+        userSide: localStorage.getItem('userSide')
       }
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           state.token = result.data[0]
-          state.side = result.data[1]
+          // state.side = result.data[1]
           connectSession()
-            .then(() => {
-
-            })
         })
         .catch((err) => {
           console.log(err)
@@ -202,16 +214,31 @@ export default{
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
-        console.log('room onBeforeMount subscriber : ' + subscriber)
-				state.subscribers.push(subscriber)
+        console.log('@@@@@@@@@@@@side정보 stream에서 추출하기@@@@@@@@@@@@@@@@')
+        console.log(subscriber)
+        try {
+          console.log(subscriber.stream.connection.data.split('%')[0].side)
+        } catch {
+          console.log('@@@@@failed to log subscriber.stream.connection.data@@@@@')
+        }
+        let side = JSON.parse(subscriber.stream.connection.data.split('%')[0]).side
+        if (side === 'agree') {
+          state.leftSubs.push(subscriber)
+        } else if (side === 'opposite') {
+          state.rightSubs.push(subscriber)
+        }
 			})
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
-				const index = state.subscribers.indexOf(stream.streamManager, 0)
-				if (index >= 0) {
-					state.subscribers.splice(index, 1)
-				}
+				const leftIndex = state.leftSubs.indexOf(stream.streamManager, 0)
+				const rightIndex = state.rightSubs.indexOf(stream.streamManager, 0)
+
+				if (leftIndex >= 0) {
+					state.leftSubs.splice(leftIndex, 1)
+				} else if (rightIndex >= 0) {
+          state.rightSubs.splice(rightIndex, 1)
+        }
 			})
       //음성 감지 이벤트 전역
       // state.OV.setAdvancedConfiguration({
@@ -257,9 +284,11 @@ export default{
     onBeforeUnmount(() => {
       state.session.disconnect();
       state.session = undefined
-      state.mainStreamManager = undefined
+      state.mainStreamManagerLeft = undefined
+      state.mainStreamManagerRight = undefined
       state.publisher = undefined
-      state.subscribers = []
+      state.leftSubs = []
+      state.rightSubs = []
       state.OV = undefined
 
       const payload = {
@@ -273,7 +302,14 @@ export default{
           console.log(err)
         })
     })
-
+    const updateMainVideoStreamManagerLeft = function (stream) {
+      if (state.mainStreamManagerLeft === stream) return;
+      state.mainStreamManagerLeft = stream
+    }
+    const updateMainVideoStreamManagerRight = function (stream) {
+      if (state.mainStreamManagerRight === stream) return;
+      state.mainStreamManagerRight = stream
+    }
 
     const leaveSession = function(){
       // state.session.disconnect();
@@ -367,7 +403,17 @@ export default{
 
     //disconnect로 세션 leave
   // chatConnect, send, sendMessage,
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest }
+    return {
+      state,
+      updateMainVideoStreamManager,
+      updateMainVideoStreamManagerLeft,
+      updateMainVideoStreamManagerRight,
+      leaveSession,
+      connectSession,
+      onClickChat,
+      onClickMember,
+      subsTest
+    }
   }
 
 }

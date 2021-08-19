@@ -261,6 +261,10 @@ export default {
           roomPassword: state.form.roomPassword,  // string
         })
           .then(function (result) {
+            store.commit('root/setUserSide', state.form.userSide)
+            localStorage.setItem('userSide', state.form.userSide)
+            console.log('@@@@@방만들기 userside@@@@@')
+            console.log(localStorage.getItem('userSide'))
             emit('closeCreateRoomDialog')
             router.push({
               name: 'room',

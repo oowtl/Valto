@@ -73,14 +73,21 @@
 
 .main-video {
   flex: 3;
-  flex-direction: column;
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 3rem;
   /* flex-wrap: wrap; */
 }
-.main-video .video {
+.main-video .video-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.main-video .video-wrapper .video {
   flex: 5;
   align-self: stretch;
   /* justify-self: stretch; */
@@ -104,14 +111,20 @@
   padding: 1.5rem;
   /* flex-wrap: wrap; */
 }
+.sub-video .video-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-.sub-video .video {
+.sub-video .video-wrapper .video {
   flex: 5;
-  justify-self: stretch;
-  width: 10px;
-  max-height: 180px;
+  align-self: stretch;
+  height: 10px;
+  max-height: 160px;
   margin: 0 2px 0 2px;
-  z-index: 100;
 }
 .sub-video .userName {
   flex: 1;
