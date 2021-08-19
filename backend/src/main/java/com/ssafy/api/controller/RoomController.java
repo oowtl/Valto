@@ -346,7 +346,9 @@ public class RoomController {
 
 			// Update our collection storing the new token
 			this.mapSessionNamesTokens.get(sessionName).put(token, role);
-
+			this.mapSessionNamesTokens.forEach((key, value) -> {
+				System.out.println(key + " : " + value);
+			});
 			// Prepare the response with the token
 			System.out.println(userRoom.getUserSide() + "!!!!!!");
 			String side = userRoom.getUserSide().equals("agree") ? "left" : "right";
@@ -428,6 +430,9 @@ public class RoomController {
 
 				// rank point 더해주기
 				User addPointUser = userService.addRankPoint(userId);
+				this.mapSessionNamesTokens.forEach((key, value) -> {
+					System.out.println(key + " : " + value);
+				});
 
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed

@@ -26,7 +26,7 @@
                 <div v-if="state.side === 'left'" class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                      <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
+                       <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
@@ -60,13 +60,13 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
+     
     </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
-      <!-- <mute :style="[state.buttonBase, {color: 'red'}]" /> -->
       <video-camera :style="[state.buttonBase]" />
-      <!-- <video-camera :style="[state.buttonBase, {color: 'red'}]" /> -->
-      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="onClickLeave"/>
     </div>
     <div class="footer-child communication">
       <div v-if="state.start">
@@ -76,7 +76,7 @@
         <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
         <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
       </div>
-
+      
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -359,7 +359,7 @@ export default{
           console.log(err)
         })
     })
-
+    
     const updateMainVideoStreamManagerLeft = function (stream) {
       if (state.mainStreamManagerLeft === stream) return
       // const idx = state.leftSubs.find(sub => sub === stream)
@@ -385,13 +385,10 @@ export default{
     //   state.mainStreamManagerRight = stream
     // }
 
-    const leaveSession = function(){
-      // state.session.disconnect();
-      // state.session = undefined
-      // state.mainStreamManager = undefined
-      // state.publisher = undefined
-      // state.subscribers = []
-      // state.OV = undefined
+    const onClickLeave = function(){
+        router.push({
+          name : 'home'
+        })
     }
 
     const onClickEndGame = function () {
@@ -435,7 +432,7 @@ export default{
 
     //  토론 시작
     const onClickStart = function(){
-
+      
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
@@ -472,7 +469,7 @@ export default{
 
     const chatConnect = function () {
       // 배포때봐야함
-      const serverURL = 'https://localhost:8443/'
+      const serverURL = 'https://i5d103.p.ssafy.io:8080'
       let socket = new SockJS(serverURL)
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect(
@@ -515,7 +512,7 @@ export default{
       updateMainVideoStreamManager,
       updateMainVideoStreamManagerLeft,
       updateMainVideoStreamManagerRight,
-      leaveSession,
+      onClickLeave,
       connectSession,
       onClickChat,
       onClickMember,
