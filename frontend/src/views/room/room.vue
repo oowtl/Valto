@@ -3,22 +3,18 @@
     <div id="session" v-if="state.session">
       <div class="divider">
         <!-- 왼쪽 값을 가져와서 있으면 보여주는 쪽으로?? -->
-          <div class="partition-left">
-            왼쪽
+          <div class="partition partition-left">
               <div id="main-video" class="col-md-6">
-                <user-video :stream-manager="state.mainStreamManager" />
+                <user-video class="videoBack" :stream-manager="state.mainStreamManager" />
               </div>
 
               <div id="video-container" class="col-md-6">
-                <!-- <user-video :stream-manager="state.publisher" @click="updateMain+VideoStreamManager(state.publisher)" /> -->
-                <user-video class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+                <user-video class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)" />
               </div>
-
           </div>
           <!-- left end -->
           <!--  v-if="state.side === 'right'" -->
-          <div class="partition-right">
-            오른쪽
+          <div class="partition partition-right">
               <div id="main-video" class="col-md-6">
                 <user-video :stream-manager="state.mainStreamManager" />
               </div>
@@ -143,20 +139,19 @@ export default{
       // RightRecvList: [],
       recvList: [],
       stompClient: '',
+      speech: '',
     })
 
     const subsTest = function () {
       console.log(state.userSide)
       console.log(state.subscribers)
     }
-
-
     const connectSession = function () {
       // state.session.connect(state.token, {})
       state.session.connect(state.token, { side: state.side })
         .then(() => {
           // --- Get your own camera stream with the desired properties ---
-          let publisher = state.OV.initPublisher(undefined, {
+          let publisher = state.OV.initPublisher('publisherStartSpeaking', {
             audioSource: undefined, // The source of audio. If undefined default microphone
             videoSource: undefined, // The source of video. If undefined default webcam
             publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
@@ -174,6 +169,16 @@ export default{
           console.log('There was an error connecting to the session:', error.code, error.message);
         })
     }
+
+    const updateMainVideoStreamManager = function (stream) {
+      if (state.mainStreamManager === stream) return;
+      state.mainStreamManager = stream
+    }
+
+    // state.session.on('publisherStartSpeaking', ( event ) => {
+    //   state.speech = event.connection.connectionId
+    // })
+
 
     onBeforeMount(() => {
       state.roomId = route.path.split('/')[2]
@@ -212,6 +217,33 @@ export default{
 					state.subscribers.splice(index, 1)
 				}
 			})
+      //음성 감지 이벤트 전역
+      // state.OV.setAdvancedConfiguration({
+      //   publisherSpeakingEventsOptions: {
+      //     interval: 100,
+      //     threshold: -50,
+      //   }
+      // })
+
+
+      state.session.on('publisherStartSpeaking' , (event) => {
+        state.speech = event.connection.connectionId
+        console.log(state.publisher)
+        console.log(state.subscribers)
+        let sub = state.subscribers.find(function (s) {
+          return s.stream.connection.connectionId === event.connection.connectionId
+        })
+        console.log(sub)
+        // updateMainVideoStreamManager 이 함수가 subscribers 배열에서 sub 이름으로 객체 하나를 뽑아서 실행되니까
+        // state.subscribers 배열에서 connectionId가 위의 event.connection.connectionId 랑 같은 걸 찾아서
+        // 아래에서 updateMainVideoStreamManager 함수에 해당하는 sub를 넣어주면 메인 비디오가 전환됨!
+        updateMainVideoStreamManager(sub)
+        console.log('User ' + event.connection.connectionId + ' start speaking');
+      })
+      state.session.on('publisherStopSpeaking', (event) => {
+        state.speech = '';
+        console.log('User ' + event.connection.connectionId + ' stop speaking');
+      })
 
 
 			// On every asynchronous exception...
@@ -245,10 +277,7 @@ export default{
           console.log(err)
         })
     })
-    const updateMainVideoStreamManager = function (stream) {
-      if (state.mainStreamManager === stream) return;
-      state.mainStreamManager = stream
-    }
+
 
     const leaveSession = function(){
       // state.session.disconnect();
@@ -259,7 +288,7 @@ export default{
       // state.OV = undefined
     }
 
-     const onClickMember = function () {
+    const onClickMember = function () {
       state.chatButton.color = 'grey'
       state.openChat = false
       state.openMember = !state.openMember
