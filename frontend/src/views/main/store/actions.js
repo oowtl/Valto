@@ -140,7 +140,6 @@ export function requestRoomToken({ state }, payload) {
 }
 
 export function requestDeleteRoom({ commit }, payload) {
-  console.log(payload)
   const url = `/room/${payload.sessionName}/admission`
   const body = payload
   const request = {
