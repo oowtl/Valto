@@ -31,6 +31,6 @@ module.exports = {
     'element-plus'
   ],
   lintOnSave: true,
-  outputDir: '../backend/src/main/resources/dist'
-  // outputDir: './dist'
+  // outputDir: '../backend/src/main/resources/dist'
+  outputDir: './dist'
 }
