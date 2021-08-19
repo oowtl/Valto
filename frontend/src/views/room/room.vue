@@ -23,13 +23,28 @@
           <div class="panel" v-if="state.openPanel">
             <div class="panelChild chat" v-if="state.openChat">
               <p>채팅창</p>
+              <el-scrollbar height="50pc">
+                <div v-if="state.side === 'left'">
+                  <div v-for="(item, idx) in state.leftRecvList" :key="idx">
+                    <span>{{ item.nickName}} ({{ item.userId }})</span>
+                    <span> : {{ item.message }}</span>
+                  </div>
+                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                </div>
+                <div v-else>
+                  <div v-for="(item, idx) in state.rightRecvList" :key="idx">
+                    <span>{{ item.nickName}} ({{ item.userId }})</span>
+                    <span> : {{ item.message }}</span>
+                  </div>
+                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                </div>
+              </el-scrollbar>
             </div>
             <div class="panelChild member" v-if="state.openMember">
               <p>멤버</p>
             </div>
           </div>
         </transition>
-        <!-- chat end -->
       </div>
 		</div>
 
@@ -66,17 +81,7 @@
   <!-- <el-container>
     <el-aside width="250px">
       <div id="socket">
-        <el-scrollbar height="50pc">
-          <div v-for="(item, idx) in state.recvList" :key="idx">
-            <span> {{ item.userId }}</span>
-            <span> : {{ item.message }}</span>
-          </div>
-          채팅: <input
-            v-model="state.message"
-            type="text"
-            @keyup="sendMessage"
-          >
-        </el-scrollbar>
+        
       </div>
     </el-aside>
     </el-container> -->
@@ -91,9 +96,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, SwitchButton, VideoPlay, DArrowRight } from '@element-plus/icons'
-// import Stomp from 'webstomp-client'
-// import SockJS from 'sockjs-client'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, VideoPlay, DArrowRight, SwitchButton } from '@element-plus/icons'
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 // 12: state.publisher, 13:state.sub?
 
@@ -140,14 +145,12 @@ export default{
       memberButton: { color: 'grey' },
       userSide: computed(() => store.getters['root/getUserSide']),
       side: '',
-      //임의 userId
-      userId:'test',
+      userId:'',
       message: '',
-      // leftRecvList: [],
-      // RightRecvList: [],
+      leftRecvList: [],
+      RightRecvList: [],
       recvList: [],
       stompClient: '',
-      // 방장 id
       ownerId:'',
       start:false
     })
@@ -198,8 +201,9 @@ export default{
           state.userId = result.data[4]
           connectSession()
             .then(() => {
-
+                
             })
+            
         })
         .catch((err) => {
           console.log(err)
@@ -247,7 +251,7 @@ export default{
       // 토큰과 클라이언트의 정보를 전달하며 세션에 연결함
 
       //chat connect
-      // chatConnect()
+      chatConnect()
     })
 
     //세션 나가기
@@ -264,7 +268,7 @@ export default{
         token: state.token,
       }
       store.dispatch('root/requestDeleteRoom', payload)
-        .then((res) => {
+        .then(() => {
         })
         .catch((err) => {
           console.log(err)
@@ -338,66 +342,73 @@ export default{
     }
     ///////////////////////// 채팅 관련 ////////////////////////////
 
-    // const sendMessage = function (e) {
-    //   console.log('eeeeee', e.keyCode, 'userId', state.userId, 'msg', state.message, 'recvList', state.recvList )
-    //   if(e.keyCode === 13 && state.userId !== '' && state.message !== ''){
-    //     console.log("send!@!@@@@@@@@")
-    //     send()
-    //     state.message = ''
-    //   }
-    // }
+    const sendMessage = function (e) {
+      console.log('eeeeee', e.keyCode, 'userId', state.userId, 'msg', state.message, 'recvList', state.recvList )
+      if(e.keyCode === 13 && state.userId !== '' && state.message !== ''){
+        console.log('send!@!@@@@@@@@')
+        send()
+        state.message = ''
+      }
+    }
 
-    // const send = function() {
-    //   console.log('Send message:' + state.message);
-    //   if (state.stompClient && state.stompClient.connected) {
-    //     const msg = {
-    //       type:'CHAT',
-    //       roomId: state.roomId,
-    //       // userName: state.form.userName,
-    //       message: state.message,
-    //       userId: state.userId
-    //       // recvList: state.form.recvList,
-    //     };
-    //     console.log('메세지확인', msg)
-    //     state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {});
-    //   }
-    // }
+    const send = function() {
+      console.log('Send message:' + state.message);
+      if (state.stompClient && state.stompClient.connected) {
+        const msg = {
+          type:'CHAT',
+          roomId: state.roomId,
+          // userName: state.form.userName,
+          message: state.message,
+          userId: state.userId,
+          nickName: state.nickname
+          // recvList: state.form.recvList,
+        };
+        console.log('메세지확인', msg)
+        state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {});
+      }
+    }
 
-    // const chatConnect = function() {
-    //   const serverURL = 'https://localhost:8443/'
-    //   let socket = new SockJS(serverURL);
-    //   state.stompClient = Stomp.over(socket);
-    //   console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
-    //   state.stompClient.connect(
-    //     {},
-    //     frame => {
-    //       // 소켓 연결 성공
-    //       state.stompClient.connected = true;
-    //       console.log('소켓 연결 성공', frame, 'id', state.roomId);
-    //       // 서버의 메시지 전송 endpoint를 구독합니다.
-    //       // 이런형태를 pub sub 구조라고 합니다.
-    //       state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
-    //       res => {
-    //         console.log('구독으로 받은 메시지 입니다.', res.body);
+    const chatConnect = function() {
+      const serverURL = 'https://localhost:8443/'
+      let socket = new SockJS(serverURL);
+      state.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
+      state.stompClient.connect(
+        {},
+        frame => {
+          // 소켓 연결 성공
+          state.stompClient.connected = true;
+          console.log('소켓 연결 성공', frame, 'id', state.roomId);
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
+          res => {
+            console.log('구독으로 받은 메시지 입니다.', res.body);
 
-    //         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-    //         if(state.userSid)
-    //         state.recvList.push(JSON.parse(res.body))
-    //       });
-    //     },
-    //     error => {
-    //       // 소켓 연결 실패
-    //       console.log('소켓 연결 실패', error);
-    //       state.stompClient.connected = false;
-    //     }
-    //   );
-    // }
+            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+            if(state.side === 'left'){
+              console.log('left chat push')
+              state.leftRecvList.push(JSON.parse(res.body)) 
+            }else{
+              console.log('right chat push')
+              state.rightRecvList.push(JSON.parse(res.body)) 
+            }
+            
+          });
+        },
+        error => {
+          // 소켓 연결 실패
+          console.log('소켓 연결 실패', error);
+          state.stompClient.connected = false;
+        }
+      );
+    }
 
 
 
     //disconnect로 세션 leave
   // chatConnect, send, sendMessage,
-    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest, onClickStart, onClickEndGame }
+    return { state, updateMainVideoStreamManager, leaveSession, connectSession, onClickChat,onClickMember, subsTest,onClickStart,chatConnect, send, sendMessage, onClickEndGame }
   }
 
 }
