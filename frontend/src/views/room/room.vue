@@ -298,37 +298,37 @@ export default{
       })
 
       // 음성감지
-      state.session.on('publisherStartSpeaking' , (event) => {
-        // state.speech = event.connection.connectionId
-        // console.log(state.publisher)
-        // console.log(state.subscribers)
-        // let sub = state.subscribers.find(function (s) {
-        //   return s.stream.connection.connectionId === event.connection.connectionId
-        // })
-        // console.log(sub)
-        // // updateMainVideoStreamManager 이 함수가 subscribers 배열에서 sub 이름으로 객체 하나를 뽑아서 실행되니까
-        // // state.subscribers 배열에서 connectionId가 위의 event.connection.connectionId 랑 같은 걸 찾아서
-        // // 아래에서 updateMainVideoStreamManager 함수에 해당하는 sub를 넣어주면 메인 비디오가 전환됨!
-        // updateMainVideoStreamManager(sub)
-        // state.speech = event.connection.connectionId
-        let leftSub = state.subscribers.find(function (s) {
-          return s.stream.connection.connectionId === event.connection.connectionId
-        })
-        let rightSub = state.subscribers.find(function (s) {
-          return s.stream.connection.connectionId === event.connection.connectionId
-        })
+      // state.session.on('publisherStartSpeaking' , (event) => {
+      //   // state.speech = event.connection.connectionId
+      //   // console.log(state.publisher)
+      //   // console.log(state.subscribers)
+      //   // let sub = state.subscribers.find(function (s) {
+      //   //   return s.stream.connection.connectionId === event.connection.connectionId
+      //   // })
+      //   // console.log(sub)
+      //   // // updateMainVideoStreamManager 이 함수가 subscribers 배열에서 sub 이름으로 객체 하나를 뽑아서 실행되니까
+      //   // // state.subscribers 배열에서 connectionId가 위의 event.connection.connectionId 랑 같은 걸 찾아서
+      //   // // 아래에서 updateMainVideoStreamManager 함수에 해당하는 sub를 넣어주면 메인 비디오가 전환됨!
+      //   // updateMainVideoStreamManager(sub)
+      //   // state.speech = event.connection.connectionId
+      //   let leftSub = state.subscribers.find(function (s) {
+      //     return s.stream.connection.connectionId === event.connection.connectionId
+      //   })
+      //   let rightSub = state.subscribers.find(function (s) {
+      //     return s.stream.connection.connectionId === event.connection.connectionId
+      //   })
 
-        if (leftSub) {
-          updateMainVideoStreamManagerLeft(leftSub)
-        } else if (rightSub) {
-          updateMainVideoStreamManagerRight(rightSub)
-        }
-        console.log('User ' + event.connection.connectionId + ' start speaking');
-      })
-      state.session.on('publisherStopSpeaking', (event) => {
-        state.speech = '';
-        console.log('User ' + event.connection.connectionId + ' stop speaking');
-      })
+      //   if (leftSub) {
+      //     updateMainVideoStreamManagerLeft(leftSub)
+      //   } else if (rightSub) {
+      //     updateMainVideoStreamManagerRight(rightSub)
+      //   }
+      //   console.log('User ' + event.connection.connectionId + ' start speaking');
+      // })
+      // state.session.on('publisherStopSpeaking', (event) => {
+      //   state.speech = '';
+      //   console.log('User ' + event.connection.connectionId + ' stop speaking');
+      // })
 
 			// On every asynchronous exception...
 			state.session.on('exception', ({ exception }) => {
