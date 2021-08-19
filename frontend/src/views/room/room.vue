@@ -232,6 +232,19 @@ export default{
         const disconnectedUser = userData.slice(userDataStartIndex+14, userData.length - 2);
         // 방장이 나가면 다 나가는 걸로!
         if (state.ownerId == disconnectedUser) {
+
+          // 방 나가기 요청
+          const payload = {
+            sessionName: state.roomId,
+            token: state.token,
+          }
+          store.dispatch('root/requestDeleteRoom', payload)
+            .then((res) => {
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+
           state.session.disconnect();
           router.push({
           name : 'home'
