@@ -23,19 +23,13 @@
         <el-form-item label="주제2(오른쪽) 인원수: " :label-width="state.formLabelWidth">
           {{ state.form.oppositeUsers.length }}/{{ state.divide_participants }}
         </el-form-item>
-        <el-form-item prop="userSide" label="userSide" :label-width="state.formLabelWidth">
-          <el-select class="positionSelect" v-model="state.userSide" placeholder="포지션">
-            <el-option
-              v-for="position in userSide"
-              :key="position.value"
-              :label="position.label"
-              :value="position.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="roomPassword" label="방 비밀번호: " :label-width="state.formLabelWidth">
-          <div v-if="!state.form.privateRoom" autocomplete="off">없음</div>
-          <el-input v-if="state.form.privateRoom" v-model="state.form.roomPassword" placeholder="방 비밀번호를 입력하시오" autocomplete="off"></el-input>
+        <el-form-item prop="userSide" label="포지션" :label-width="state.formLabelWidth">
+          <span class="dialog-position1">
+            <el-button type="primary" @click="clickPosition1" :disabled="state.posi1">주제1</el-button>
+          </span>
+          <span class="dialog-position2">
+            <el-button type="primary" @click="clickPosition2" :disabled="state.posi2">주제2</el-button>
+          </span>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -44,6 +38,7 @@
             type="primary"
             @click="clickEnter(state.form.roomId)"
             v-model="state.dialogVisible"
+            :disabled="state.isInvalid"
             >입장</el-button
           >
         </span>
@@ -51,6 +46,7 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 import { reactive, computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -69,38 +65,36 @@ export default {
     }
   },
 
-  data() {
-    return {
-      userSide: [{
-          value: 'agree',
-          label: '주제1(찬성)'
-        }, {
-          value: 'opposite',
-          label: '주제2(반대)'
-        },
-      ],
-    }
-  },
-
   setup(props, { emit }) {
     const router = useRouter();
     const store = useStore();
     const detailForm = ref(null);
     const state = reactive({
       form: null,
-      userSide: '',
-      roomPassword: '',
+      posi1: false,
+      posi2: false,
+      isInvalid: true,
       divide_participants: '',
       dialogVisible: computed(() => props.open),
       formLabelWidth: '250px',
       align: 'left',
       token: null,
-      rules: {
-        roomPassword: [
-          { required: true, message: '방 비밀번호 입력하세요' }
-        ],
-      }
+
     })
+
+    const clickPosition1 = function () {
+      state.posi1 = true
+      state.posi2 = false
+      state.isInvalid = false
+      state.form.userSide = 'agree'
+    }
+
+    const clickPosition2 = function () {
+      state.posi1 = false
+      state.posi2 = true
+      state.isInvalid = false
+      state.form.userSide = 'opposite'
+    }
 
     // 닫기
     const handleClose = function() {
@@ -108,14 +102,19 @@ export default {
       emit('closeDetailDialog')
     }
 
-    // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
-    // 여기 수정해야할거 같다. 내 프로필이 아니라 방을 만든 사람의 프로필 정보를 넣기 때문에 이상한거 같음.
+    // 방 정보 받아오기
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
             state.form = result.data
             state.divide_participants = result.data.participants/2
+            if ( state.form.agreeUsers.length == state.divide_participants ) {
+              state.posi1 = true
+            }
+            if ( state.form.oppositeUsers.length == state.divide_participants ) {
+              state.posi2 = true
+            }
             console.log(state.form.userId)
           })
           .catch(function (err) {
@@ -129,8 +128,8 @@ export default {
     );
 
     const clickEnter = function(roomId) {
-      store.commit('root/setUserSide', state.userSide)
-      localStorage.setItem('userSide', state.userSide)
+      store.commit('root/setUserSide', state.form.userSide)
+      localStorage.setItem('userSide', state.form.userSide)
       console.log('@@@@@입장하기 userside@@@@@')
       console.log(localStorage.getItem('userSide'))
       router.push({
@@ -140,14 +139,16 @@ export default {
         }
       });
     };
-    return { state, handleClose, detailForm, clickEnter };
+
+
+    return { state, handleClose, detailForm, clickEnter, clickPosition1, clickPosition2 };
   }
 };
 </script>
 <style>
 .detail-dialog {
   width: 600px !important;
-  height: 800px;
+  height: 700px;
 }
 .topics {
   text-align: center;
@@ -192,15 +193,25 @@ export default {
 /* .detail-dialog .el-input__suffix {
   display: none;
 } */
+.detail-dialog .dialog-position1 {
+  float: left;
+  padding-top: 0;
+  display: inline-block;
+}
+.detail-dialog .dialog-position2 {
+  float: right;
+  padding-top: 0;
+  display: inline-block;
+  margin-right: 20px;
+}
 .detail-dialog .el-dialog__footer {
-  margin: 20px calc(50% - 80px);
+  margin: 10px calc(50% - 80px);
   padding-top: 0;
   display: inline-block;
 }
 .detail-dialog .dialog-footer .el-button {
   width: 120px;
-  height: 100px;
-  font-size: 30px;
+  height: 50px;
+  font-size: 25px;
 }
 </style>
-p

@@ -74,7 +74,7 @@
 .el-carousel {
   margin: 0% auto 0%;
   width: 80%;
-
+  z-index: 1;
 }
 .el-carousel__item h3 {
   color: #1b1b1b;
@@ -128,6 +128,7 @@
   /* justify-content: space-between; */
   display: inline-block;
   text-align: right;
+  z-index: 1;
 }
 
 

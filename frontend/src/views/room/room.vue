@@ -23,27 +23,52 @@
           <div class="panel" v-if="state.openPanel">
             <div class="panelChild chat" v-if="state.openChat">
               <p>채팅창</p>
+              <el-scrollbar height="50pc">
+                <div v-if="state.side === 'left'">
+                  <div v-for="(item, idx) in state.leftRecvList" :key="idx">
+                    <span>{{ item.nickName}} ({{ item.userId }})</span>
+                    <span> : {{ item.message }}</span>
+                  </div>
+                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                </div>
+                <div v-else>
+                  <div v-for="(item, idx) in state.rightRecvList" :key="idx">
+                    <span>{{ item.nickName}} ({{ item.userId }})</span>
+                    <span> : {{ item.message }}</span>
+                  </div>
+                  채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                </div>
+              </el-scrollbar>
             </div>
             <div class="panelChild member" v-if="state.openMember">
               <p>멤버</p>
             </div>
           </div>
         </transition>
-        <!-- chat end -->
       </div>
 		</div>
 
   </div>
   <!-- footer start -->
   <div class="footer">
+    <div class="footer-child head-controller">
+      <switchButton v-if="state.userId == state.ownerId" @click="onClickEndGame" :style="[state.buttonBase, {color: 'red'}, state.endButton]"/>
+    </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
       <mute :style="[state.buttonBase, {color: 'red'}]" />
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <!-- 방장, 토론 시작 버튼 -->
+
+      <span v-if="ownerId === userId">
+        <button @click="onClickStart">토론시작</button>
+      </span>
     </div>
     <div class="footer-child communication">
+      <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
+      <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -56,17 +81,7 @@
   <!-- <el-container>
     <el-aside width="250px">
       <div id="socket">
-        <el-scrollbar height="50pc">
-          <div v-for="(item, idx) in state.recvList" :key="idx">
-            <span> {{ item.userId }}</span>
-            <span> : {{ item.message }}</span>
-          </div>
-          채팅: <input
-            v-model="state.message"
-            type="text"
-            @keyup="sendMessage"
-          >
-        </el-scrollbar>
+
       </div>
     </el-aside>
     </el-container> -->
@@ -77,13 +92,13 @@
 
 <script>
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
-import { OpenVidu, Subscriber } from 'openvidu-browser'
+import { useRoute, useRouter } from 'vue-router'
+import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
-import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity } from '@element-plus/icons'
-// import Stomp from 'webstomp-client'
-// import SockJS from 'sockjs-client'
+import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, VideoPlay, DArrowRight, SwitchButton } from '@element-plus/icons'
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 // 12: state.publisher, 13:state.sub?
 
@@ -101,10 +116,14 @@ export default{
     VideoCamera,
     ChatDotRound,
     Opportunity,
+    SwitchButton,
+    VideoPlay,
+    DArrowRight,
   },
   setup (){
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const state = reactive({
       OV: undefined,
       session: undefined,
@@ -124,19 +143,20 @@ export default{
       openChat: false,
       openMember: false,
       openPanel: computed(() => state.openChat || state.openMember),
-      buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer' },
+      buttonBase: { width: '2em', height: '3em', color: 'white', marginRight: '18px', cursor: 'pointer'},
       chatButton: { color: 'grey' },
       memberButton: { color: 'grey' },
       userSide: computed(() => store.getters['root/getUserSide']),
       side: '',
-      //임의 userId
-      userId:'test',
+      userId:'',
       message: '',
-      // leftRecvList: [],
-      // RightRecvList: [],
+      leftRecvList: [],
+      RightRecvList: [],
       recvList: [],
       stompClient: '',
       speech: '',
+      ownerId:'',
+      start:false
     })
 
     const subsTest = function () {
@@ -197,9 +217,17 @@ export default{
       }
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
+          console.log(result)
           state.token = result.data[0]
-          // state.side = result.data[1]
+          state.side = result.data[1]
+          state.nickname = result.data[2]
+          state.ownerId = result.data[3]
+          state.userId = result.data[4]
           connectSession()
+            .then(() => {
+
+            })
+
         })
         .catch((err) => {
           console.log(err)
@@ -239,16 +267,32 @@ export default{
 				} else if (rightIndex >= 0) {
           state.rightSubs.splice(rightIndex, 1)
         }
-			})
-      //음성 감지 이벤트 전역
-      // state.OV.setAdvancedConfiguration({
-      //   publisherSpeakingEventsOptions: {
-      //     interval: 100,
-      //     threshold: -50,
-      //   }
-      // })
+        // 강퇴기능
+        const userData = stream.connection.data
+        const userDataStartIndex = userData.indexOf('serverData')
+        const disconnectedUser = userData.slice(userDataStartIndex+14, userData.length - 2)
+        // 방장이 나가면 다 나가는 걸로!
+        if (state.ownerId == disconnectedUser) {
+          // 방 나가기 요청
+          const payload = {
+            sessionName: state.roomId,
+            token: state.token,
+          }
+          store.dispatch('root/requestDeleteRoom', payload)
+            .then((res) => {
+            })
+            .catch((err) => {
+              console.log(err)
+            })
 
+          state.session.disconnect();
+          router.push({
+            name : 'home'
+          })
+        }
+      })
 
+      // 음성감지
       state.session.on('publisherStartSpeaking' , (event) => {
         state.speech = event.connection.connectionId
         console.log(state.publisher)
@@ -268,7 +312,6 @@ export default{
         console.log('User ' + event.connection.connectionId + ' stop speaking');
       })
 
-
 			// On every asynchronous exception...
 			state.session.on('exception', ({ exception }) => {
         console.warn(exception);
@@ -277,7 +320,7 @@ export default{
       // 토큰과 클라이언트의 정보를 전달하며 세션에 연결함
 
       //chat connect
-      // chatConnect()
+      chatConnect()
     })
 
     //세션 나가기
@@ -296,7 +339,7 @@ export default{
         token: state.token,
       }
       store.dispatch('root/requestDeleteRoom', payload)
-        .then((res) => {
+        .then(() => {
         })
         .catch((err) => {
           console.log(err)
@@ -318,6 +361,21 @@ export default{
       // state.publisher = undefined
       // state.subscribers = []
       // state.OV = undefined
+    }
+
+    const onClickEndGame = function () {
+      if (state.userId === state.ownerId) {
+        if (confirm('게임을 종료하시겠습니까?') === true) {
+          alert('종료하겠습니다.')
+        } else {
+          return
+        }
+        // leavesession 함수화 및 호출 (아래3줄및 onBeforeUnmount 대체)
+        state.session.disconnect()
+        router.push({
+          name : 'home'
+        })
+      }
     }
 
     const onClickMember = function () {
@@ -342,62 +400,78 @@ export default{
         state.chatButton.color = 'grey'
       }
     }
+
+    //  토론 시작
+    const onClickStart = function(){
+      console.log('토론시작@@@@@@')
+      store.dispatch('root/startDebate', state.roomId)
+        .then((result) => {
+          console.log(result)
+          if(state.start) state.start = false;
+          else state.start = true;
+        }).catch((err) =>{
+          console.log(err)
+        })
+    }
+
     ///////////////////////// 채팅 관련 ////////////////////////////
+    const sendMessage = function (e) {
+      if(e.keyCode === 13 && state.userId !== '' && state.message !== '') {
+        console.log(state.message)
+        send()
+        state.message = ''
+      }
+    }
 
-    // const sendMessage = function (e) {
-    //   console.log('eeeeee', e.keyCode, 'userId', state.userId, 'msg', state.message, 'recvList', state.recvList )
-    //   if(e.keyCode === 13 && state.userId !== '' && state.message !== ''){
-    //     console.log("send!@!@@@@@@@@")
-    //     send()
-    //     state.message = ''
-    //   }
-    // }
+    const send = function () {
+      if (state.stompClient && state.stompClient.connected) {
+        const msg = {
+          type:'CHAT',
+          roomId: state.roomId,
+          message: state.message,
+          userId: state.userId,
+          nickName: state.nickname
+        }
+        console.log(msg)
+        state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {})
+      }
+    }
 
-    // const send = function() {
-    //   console.log('Send message:' + state.message);
-    //   if (state.stompClient && state.stompClient.connected) {
-    //     const msg = {
-    //       type:'CHAT',
-    //       roomId: state.roomId,
-    //       // userName: state.form.userName,
-    //       message: state.message,
-    //       userId: state.userId
-    //       // recvList: state.form.recvList,
-    //     };
-    //     console.log('메세지확인', msg)
-    //     state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {});
-    //   }
-    // }
+    const chatConnect = function () {
+      // 배포때봐야함
+      const serverURL = 'https://localhost:8443/'
+      let socket = new SockJS(serverURL)
+      state.stompClient = Stomp.over(socket)
+      state.stompClient.connect(
+        {},
+        frame => {
+          // 소켓 연결 성공
+          state.stompClient.connected = true
+          console.log('소켓 연결 성공', frame, 'id', state.roomId)
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
+          res => {
+            console.log('구독으로 받은 메시지 입니다.', res.body)
 
-    // const chatConnect = function() {
-    //   const serverURL = 'https://localhost:8443/'
-    //   let socket = new SockJS(serverURL);
-    //   state.stompClient = Stomp.over(socket);
-    //   console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
-    //   state.stompClient.connect(
-    //     {},
-    //     frame => {
-    //       // 소켓 연결 성공
-    //       state.stompClient.connected = true;
-    //       console.log('소켓 연결 성공', frame, 'id', state.roomId);
-    //       // 서버의 메시지 전송 endpoint를 구독합니다.
-    //       // 이런형태를 pub sub 구조라고 합니다.
-    //       state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
-    //       res => {
-    //         console.log('구독으로 받은 메시지 입니다.', res.body);
+            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+            if (state.side === 'left') {
+              console.log('left chat push')
+              state.leftRecvList.push(JSON.parse(res.body))
+            } else {
+              console.log('right chat push')
+              state.rightRecvList.push(JSON.parse(res.body))
+            }
 
-    //         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-    //         if(state.userSid)
-    //         state.recvList.push(JSON.parse(res.body))
-    //       });
-    //     },
-    //     error => {
-    //       // 소켓 연결 실패
-    //       console.log('소켓 연결 실패', error);
-    //       state.stompClient.connected = false;
-    //     }
-    //   );
-    // }
+          })
+        },
+        error => {
+          // 소켓 연결 실패
+          console.log('소켓 연결 실패', error)
+          state.stompClient.connected = false
+        }
+      )
+    }
 
 
 
@@ -412,7 +486,12 @@ export default{
       connectSession,
       onClickChat,
       onClickMember,
-      subsTest
+      subsTest,
+      onClickStart,
+      chatConnect,
+      send,
+      sendMessage,
+      onClickEndGame,
     }
   }
 
@@ -420,46 +499,4 @@ export default{
 </script>
 <style scoped>
   @import '../room.css';
-
-  /* #socket {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: left;
-    color: #2c3e50;
-    margin-top: 60px;
-    margin-left: 10px;
-  }
-  .el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 30px;
-  }
-
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 100px;
-  }
-  body > .el-container {
-    margin-bottom: 100px;
-  }
-
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  } */
 </style>

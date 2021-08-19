@@ -49,11 +49,15 @@ public class Room extends BaseEntity{
 	private String topicAgree; // 주제 1
 	@NotNull
 	private String topicOpposite; // 주제 2
+	@NotNull
+	private Boolean start; // 시작여부
 	
 	@NotNull
 	private Boolean privateRoom; // 비밀번호 방 True 이면 비밀번호검사
 	@JsonIgnore
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String roomPassword; // 방 비밀번호 (null 이면 없음)
+	
+	private Boolean playing; // 게임 중
 	
 }

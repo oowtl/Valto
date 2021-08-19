@@ -53,6 +53,7 @@ public class RoomServiceImpl implements RoomService {
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
 		room.setTopicOpposite(roomPostRequestInfo.getTopicOpposite());
+		room.setStart(false);
 
 		// private room 검사
 		if (roomPostRequestInfo.getPrivateRoom()) {
@@ -248,6 +249,16 @@ public class RoomServiceImpl implements RoomService {
 		roomInfo.put("room", room);
 		roomInfo.put("userCount", userRoomRepository.findAllByRoomId(room).size());
 		connectedUserRoomList.add(roomInfo);
+	}
+
+	// 시작여부 변경
+	@Override
+	public String updateRoomStart(String roomId) {
+		Room room = roomRepository.findById(Long.valueOf(roomId)).get();
+		Boolean start = room.getStart();
+		room.setStart(start? false: true);
+		roomRepository.save(room);
+		return "Success";
 	}
 
 }

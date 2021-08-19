@@ -38,9 +38,11 @@ import com.ssafy.api.response.RoomOneGetRes;
 import com.ssafy.api.response.RoomPostRes;
 import com.ssafy.api.service.RoomService;
 import com.ssafy.api.service.UserRoomService;
+import com.ssafy.api.service.UserService;
 import com.ssafy.common.auth.SsafyUserDetails;
 import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.db.entity.Room;
+import com.ssafy.db.entity.User;
 import com.ssafy.db.entity.User_Room;
 
 import io.openvidu.java.client.ConnectionProperties;
@@ -64,6 +66,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("api/v1/room")
 public class RoomController {
 
+	@Autowired
+	UserService userService;
+	
 	@Autowired
 	RoomService roomService;
 
@@ -296,7 +301,7 @@ public class RoomController {
 //		System.out.println(mapSessions);
 //		System.out.println(mapSessionNamesTokens);
 		
-		System.out.println(userRoomPostReq);
+//		System.out.println(userRoomPostReq);
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
@@ -321,8 +326,7 @@ public class RoomController {
 		if (existUserRoom.getUserId() != null) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
 		}
-		System.out.println("userside test");
-		System.out.println(userRoomPostReq.getUserSide());
+		 
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
 		
 		
@@ -350,8 +354,12 @@ public class RoomController {
 			System.out.println(userRoom.getUserSide() + "!!!!!!");
 			String side = userRoom.getUserSide().equals("agree")? "left" : "right";
 			System.out.println("side" + side);
+			System.out.println(room.getUserId().getNickName());
 			responseJson.put(0, token);
 			responseJson.put(1, side);
+			responseJson.put(2, room.getUserId().getNickName());
+			responseJson.put(3, room.getUserId().getUserId());
+			responseJson.put(4, userId);
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
@@ -398,10 +406,9 @@ public class RoomController {
 		// result: 114
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
-		// if (existUserRoom.getUserId() == null) {
-		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
-		// enter room user"));
-		// }
+//		 if (existUserRoom.getUserId() == null) {
+//			 return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+//		 }
 
 		// 방에 속한 유저가 아니라면
 		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.
@@ -417,16 +424,20 @@ public class RoomController {
 			// If the token exists
 			if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
 				// User left the session
+				
+				// userRoom 삭제
+				String message = userRoomService.leaveRoom(existUserRoom);
+
+				// rank point 더해주기
+				User addPointUser = userService.addRankPoint(userId);
+				
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed
 					this.mapSessions.remove(sessionName);
-					// 방삭제.
-
-					// userRoom 삭제
-					String message = userRoomService.leaveRoom(existUserRoom);
 
 					// room 삭제
 					String roomMessage = roomService.deleteRoom(roomId);
+					
 				}
 				return new ResponseEntity<>(HttpStatus.OK);
 			} else {
@@ -443,6 +454,20 @@ public class RoomController {
 		// return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 
+	@PostMapping("{roomId}/start")
+	@ApiOperation(value = "토론 시작", notes = "토론을 시작하기위해 토론시간을 응답해준다.")
+	public ResponseEntity<?> startRoom(
+			@ApiIgnore Authentication authentication,
+			@PathVariable("roomId") String roomId) {
+
+		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
+		String userId = userDetails.getUsername();
+
+		String msg = roomService.updateRoomStart(roomId);
+
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, msg));
+	}
+	
 	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {
 		JSONObject json = new JSONObject();
 		json.put("cause", e.getCause());
