@@ -52,7 +52,7 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
-      <switchButton v-if="state.userId == state.ownerId" @click="onClickEndGame" :style="[state.buttonBase, {color: 'red'}, state.endButton]"/>
+     
     </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
@@ -60,15 +60,16 @@
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
-      <!-- 방장, 토론 시작 버튼 -->
-
-      <span v-if="ownerId === userId">
-        <button @click="onClickStart">토론시작</button>
-      </span>
     </div>
     <div class="footer-child communication">
-      <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
-      <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />
+      <div v-if="state.start">
+        <switchButton :style="[state.buttonBase, {color: 'red'}, state.endButton]" @click="onClickEndGame"  v-if="state.userId === state.ownerId" />
+      </div>
+      <div v-else>
+        <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
+        <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
+      </div>
+      
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -156,7 +157,8 @@ export default{
       stompClient: '',
       speech: '',
       ownerId:'',
-      start:false
+      start:false,
+      end:false
     })
 
     const subsTest = function () {
@@ -278,7 +280,7 @@ export default{
         const userDataStartIndex = userData.indexOf('serverData')
         const disconnectedUser = userData.slice(userDataStartIndex+14, userData.length - 2)
         // 방장이 나가면 다 나가는 걸로!
-        if (state.ownerId == disconnectedUser) {
+        if (state.ownerId == disconnectedUser && state.end) {
           // 방 나가기 요청
           const payload = {
             sessionName: state.roomId,
@@ -373,6 +375,7 @@ export default{
       if (state.userId === state.ownerId) {
         if (confirm('게임을 종료하시겠습니까?') === true) {
           alert('종료하겠습니다.')
+          state.end = true
         } else {
           return
         }
@@ -409,12 +412,13 @@ export default{
 
     //  토론 시작
     const onClickStart = function(){
-      console.log('토론시작@@@@@@')
+      
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
           if(state.start) state.start = false;
           else state.start = true;
+          alert('토론 시작하였습니다.')
         }).catch((err) =>{
           console.log(err)
         })
