@@ -32,4 +32,5 @@ module.exports = {
   ],
   lintOnSave: true,
   outputDir: '../backend/src/main/resources/dist'
+  // outputDir: './dist'
 }
