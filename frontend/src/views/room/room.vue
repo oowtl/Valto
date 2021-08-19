@@ -1,29 +1,23 @@
 <template>
   <div class="room-wrapper">
-    <div id="session" v-if="state.session">
+    <div id="session" v-if="state.publisher">
       <div class="divider">
-        <!-- 왼쪽 값을 가져와서 있으면 보여주는 쪽으로?? -->
           <div class="partition partition-left">
-              <div id="main-video" class="col-md-6">
-                <user-video class="videoBack" :stream-manager="state.mainStreamManager" />
-              </div>
-
-              <div id="video-container" class="col-md-6">
-                <user-video class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)" />
-              </div>
+            <div class="main-video">
+              <user-video :stream-manager="state.mainStreamManager" />
+            </div>
+            <div class="sub-video">
+              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+            </div>
           </div>
-          <!-- left end -->
-          <!--  v-if="state.side === 'right'" -->
           <div class="partition partition-right">
-              <div id="main-video" class="col-md-6">
-                <user-video :stream-manager="state.mainStreamManager" />
-              </div>
-              <div id="video-container" class="col-md-6">
-                <!-- <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)" /> -->
-                <user-video  class="candidates" v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-              </div>
+            <div class="main-video">
+              <user-video :stream-manager="state.mainStreamManager" />
+            </div>
+            <div class="sub-video">
+              <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(state.publisher)"/>
+            </div>
           </div>
-          <!-- right end -->
           <!-- chat start -->
           <transition name="slide">
           <div class="panel" v-if="state.openPanel">
@@ -191,6 +185,9 @@ export default{
           state.token = result.data[0]
           state.side = result.data[1]
           connectSession()
+            .then(() => {
+
+            })
         })
         .catch((err) => {
           console.log(err)
@@ -200,7 +197,6 @@ export default{
       state.OV = new OpenVidu()
       // init session
       state.session = state.OV.initSession()
-
 
       // session.on으로 웹소켓 수신에 대한 동작 맵핑
 			// On every new Stream received...
@@ -258,7 +254,7 @@ export default{
     })
 
     //세션 나가기
-      onBeforeUnmount(() => {
+    onBeforeUnmount(() => {
       state.session.disconnect();
       state.session = undefined
       state.mainStreamManager = undefined

@@ -1,5 +1,6 @@
 <template>
-	<ov-video v-if="this.streamManager" :stream-manager="this.streamManager"/>
+  <ov-video :stream-manager="this.streamManager" class="video"/>
+  <p class="userName">{{ state.clientData }}</p>
 </template>
 
 <script>
@@ -23,14 +24,11 @@ export default {
   setup (props) {
     const getConnectionData = function () {
       const { connection } = props.streamManager.stream
-      // console.log('!UserVideo connection data : ' + connection.data) // << 이거는 출력됨?
-      // console.log('!UserVideo setup streamManager : ' + props.streamManager)
-			return connection.data
+			return JSON.parse(connection.data.split('%')[2])
     }
 
     const state = reactive({
-      // 이부분 확인 >>> unserialized된 json === object니까 괜찮을듯
-      clientData: computed(() => getConnectionData().clientData)
+      clientData: computed(() => getConnectionData().serverData)
     })
 
     return { state, getConnectionData }
