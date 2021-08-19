@@ -300,8 +300,7 @@ public class RoomController {
 //		System.out.println("session test");
 //		System.out.println(mapSessions);
 //		System.out.println(mapSessionNamesTokens);
-		
-//		System.out.println(userRoomPostReq);
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+userRoomPostReq.getUserSide());
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
@@ -321,11 +320,11 @@ public class RoomController {
 		}
 		
 		// user 가 이미 하나의 방에 접속한 경우
-		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
-		 
-		if (existUserRoom.getUserId() != null) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
-		}
+//		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
+//		 
+//		if (existUserRoom.getUserId() != null) {
+//			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+//		}
 		 
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
 		
