@@ -80,8 +80,8 @@ public class RoomServiceImpl implements RoomService {
 //		System.out.println();
 		
 		// sort 기준 : createdAt(생성 시간) - Desc
-		if (roomListGetInfo.getSorting().equals("createdAtDesc")) {
-
+//		if (roomListGetInfo.getSorting().equals("createdAtDesc")) {
+		if ("createdAtDesc".equals(roomListGetInfo.getSorting())) {
 			// topic and title
 			if (!(roomListGetInfo.getTitle().equals("null")) && (!roomListGetInfo.getTopic().equals("null"))) {
 				return roomRepository
@@ -103,7 +103,8 @@ public class RoomServiceImpl implements RoomService {
 		}
 
 		// sort 기준 : createdAt(생성 시간) - Asc
-		if (roomListGetInfo.getSorting().equals("createdAtAsc")) {
+		//if (roomListGetInfo.getSorting().equals("createdAtAsc")) {
+		if ("createdAtAsc".equals(roomListGetInfo.getSorting())) {
 			// topic and title
 			if (!(roomListGetInfo.getTitle().equals("null")) && (!roomListGetInfo.getTopic().equals("null"))) {
 				return roomRepository

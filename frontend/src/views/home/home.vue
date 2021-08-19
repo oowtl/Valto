@@ -193,6 +193,9 @@ export default {
     const getRoomList = function () {
       let loadingInstance = ElLoading.service({ target: homeContainer.value })
       setTimeout(() => {
+
+        console.log(state.query)
+
         let query = {
           ...state.query,
           page: state.currentPage,

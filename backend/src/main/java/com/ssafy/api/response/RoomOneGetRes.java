@@ -36,6 +36,8 @@ public class RoomOneGetRes extends BaseResponseBody{
 	String topicOpposite;
 	@ApiModelProperty(name="privateRoom")
 	Boolean privateRoom;
+	@ApiModelProperty(name="start")
+	Boolean start;
 	
 	// user side
 	@ApiModelProperty(name="AgreeeUsers")
@@ -60,7 +62,7 @@ public class RoomOneGetRes extends BaseResponseBody{
 		roomInfo.setTopicAgree(room.getTopicAgree());
 		roomInfo.setTopicOpposite(room.getTopicOpposite());
 		roomInfo.setPrivateRoom(room.getPrivateRoom());
-		
+		roomInfo.setStart(room.getStart());
 		// users 를 어떻게 넣어야 할지 모르겠다...
 		
 		List<HashMap>agreeUserList = new ArrayList<HashMap>();
