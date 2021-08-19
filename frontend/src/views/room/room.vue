@@ -457,7 +457,7 @@ export default{
 
     const chatConnect = function () {
       // 배포때봐야함
-      const serverURL = 'http://i5d103.p.ssafy.io:8080/'
+      const serverURL = 'https://i5d103.p.ssafy.io:8443/api'
       let socket = new SockJS(serverURL)
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect(
