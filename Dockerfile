@@ -5,8 +5,9 @@ COPY ./frontend .
 RUN npm run build
 
 FROM openjdk:8-jdk-alpine as builder
-COPY --from=build-stage /node_modules /src/main/resources/dist/node_modules
-COPY --from=build-stage /dist /src/main/resources/dist
+COPY frontend/package*.json ./src/main/resources/dist
+COPY --from=build-stage ./node_modules ./src/main/resources/dist/node_modules
+COPY --from=build-stage ./dist ./src/main/resources/dist
 COPY ./backend/gradlew .
 COPY ./backend/gradle gradle
 COPY ./backend/build.gradle .
