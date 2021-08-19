@@ -95,7 +95,7 @@
 <script>
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import UserVideo from './components/UserVideo';
 import { reactive, computed, onBeforeMount, onBeforeUnmount } from 'vue'
 import { Mic, Mute, User, BellFilled, CloseBold, Microphone, VideoCamera, ChatDotRound, Opportunity, VideoPlay, DArrowRight, SwitchButton } from '@element-plus/icons'
@@ -248,9 +248,17 @@ export default{
 				const subscriber = state.session.subscribe(stream)
         let side = JSON.parse(subscriber.stream.connection.data.split('%')[0]).side
         if (side === 'agree') {
-          state.leftSubs.push(subscriber)
+          if (state.mainStreamManagerLeft) {
+            state.leftSubs.push(subscriber)
+          } else {
+            state.mainStreamManagerLeft = subscriber
+          }
         } else if (side === 'opposite') {
-          state.rightSubs.push(subscriber)
+          if (state.mainStreamManagerRight) {
+            state.rightSubs.push(subscriber)
+          } else {
+            state.mainStreamManagerRight = subscriber
+          }
         }
 			})
 
