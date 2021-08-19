@@ -41,27 +41,16 @@ public class RoomServiceImpl implements RoomService {
 	public Room createRoom(RoomPostReq roomPostRequestInfo, String validatedUserId) {
 		Room room = new Room();
 
-//		if (validatedUserId.equals(roomPostRequestInfo.getUserId())) {
-//			room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
-//		}
+
 		room.setUserId(userRepositorySupport.findUserByUserId(validatedUserId).orElse(null));
-		// userId 도 중복검사를 진행할 것이라서 없을리는... 없을 것이다.
 
 		room.setParticipants(roomPostRequestInfo.getParticipants());
-//		room.setObservers(roomPostRequestInfo.getObservers());
 		room.setTimes(roomPostRequestInfo.getTimes());
 		room.setTitle(roomPostRequestInfo.getTitle());
 		room.setTopicAgree(roomPostRequestInfo.getTopicAgree());
 		room.setTopicOpposite(roomPostRequestInfo.getTopicOpposite());
 		room.setStart(false);
 
-		// private room 검사
-		if (roomPostRequestInfo.getPrivateRoom()) {
-			room.setPrivateRoom(true);
-			room.setRoomPassword(passwordEncoder.encode(roomPostRequestInfo.getRoomPassword()));
-		} else {
-			room.setPrivateRoom(false);
-		}
 
 		return roomRepository.save(room);
 	}
@@ -223,7 +212,6 @@ public class RoomServiceImpl implements RoomService {
 		Room room = roomRepository.findById(Long.valueOf(roomId)).get();
 
 		room.setParticipants(roomUpdateInfo.getParticipants());
-		room.setObservers(roomUpdateInfo.getObservers());
 		room.setTimes(roomUpdateInfo.getTimes());
 		room.setTitle(roomUpdateInfo.getTitle());
 		room.setTopicAgree(roomUpdateInfo.getTopicAgree());

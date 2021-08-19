@@ -113,11 +113,6 @@ public class RoomController {
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
 
-		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
-		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
-		}
-
 		// 방 생성하기
 		Room room = roomService.createRoom(roomCreateInfo, validatedUserId);
 		// User_Room userRoom = userRoomService.enterUserRoom(validatedUserId,
@@ -131,20 +126,6 @@ public class RoomController {
 		ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC)
 				.data(serverData).role(role).build();
 
-		// JSONObject responseJson = new JSONObject();
-
-		// userSide 유효성 검사
-		// if (roomCreateInfo.getUserSide()==null ||
-		// !(roomCreateInfo.getUserSide().equals("agree") ||
-		// roomCreateInfo.getUserSide().equals("opposite") ||
-		// roomCreateInfo.getUserSide().equals("observer"))) {
-		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "incorrect
-		// userSide"));
-		// }
-
-		// 방에 접속한 유저 정보 / User_Room 생성하기
-
-		// System.out.println("New session " + sessionName);
 		try {
 
 			// Create a new OpenVidu Session
@@ -155,15 +136,11 @@ public class RoomController {
 			// Store the session and the token in our collections
 			this.mapSessions.put(sessionName, session);
 			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
-			// this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
-			// this.mapSessionNamesTokens.get(sessionName).put(token, role);
+			
 
 			System.out.println("createRoom mapSession" + this.mapSessions);
 			System.out.println("createRoom mapSessionNamesTokens" + this.mapSessionNamesTokens);
-			// Prepare the response with the token
-			// responseJson.put(0, token);
-
-			// Return the response to the client
+			
 			return ResponseEntity.status(201).body(RoomPostRes.of(room));
 
 		} catch (Exception e) {
@@ -292,9 +269,7 @@ public class RoomController {
 			@RequestBody @ApiParam(value = "방 입장 정보", required = true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId) {
 
-		// System.out.println("session test");
-		// System.out.println(mapSessions);
-		// System.out.println(mapSessionNamesTokens);
+
 
 		System.out.println(roomId);
 		System.out.println(userRoomPostReq.toString());
@@ -310,16 +285,14 @@ public class RoomController {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
 
-		// room 별 userSide 정원 체크
-		// 필요한 것: Room 정보, userRoom 갯수
+
 		if (!userRoomService.checkLimitRoom(room, userRoomPostReq.getUserSide())) {
-			// true 일때 가능하다.
 			System.out.println("check");
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "don't enter Room : maximum userside"));
 		}
 
 		// user 가 이미 하나의 방에 접속한 경우
-		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
+		User_Room existUserRoom = userRoomService.getUserByUserId(userId); 
 
 		if (existUserRoom.getUserId() != null) {
 			userRoomService.deleteUserRoom(existUserRoom);
@@ -346,9 +319,6 @@ public class RoomController {
 
 			// Update our collection storing the new token
 			this.mapSessionNamesTokens.get(sessionName).put(token, role);
-			this.mapSessionNamesTokens.forEach((key, value) -> {
-				System.out.println(key + " : " + value);
-			});
 			// Prepare the response with the token
 
 			String side = userRoom.getUserSide().equals("agree") ? "left" : "right";
@@ -370,9 +340,7 @@ public class RoomController {
 			return getErrorResponse(e1);
 		} catch (OpenViduHttpException e2) {
 			if (404 == e2.getStatus()) {
-				// Invalid sessionId (user left unexpectedly). Session object is not valid
-				// anymore. Clean collections and continue as new session
-				// System.out.println("404!!!!!!!!!!!!!!!");
+				
 				this.mapSessions.remove(sessionName);
 				this.mapSessionNamesTokens.remove(sessionName);
 			}
@@ -404,9 +372,6 @@ public class RoomController {
 		}
 		// If the session exists
 
-		// 접속한 유저가 아니라면
-		// javax.persistence.NonUniqueResultException: query did not return a unique
-		// result: 114
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
 		// if (existUserRoom.getUserId() == null) {
@@ -434,10 +399,6 @@ public class RoomController {
 
 				// rank point 더해주기
 				User addPointUser = userService.addRankPoint(userId);
-				this.mapSessionNamesTokens.forEach((key, value) -> {
-					System.out.println(key + " : " + value);
-				});
-
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed
 					this.mapSessions.remove(sessionName);

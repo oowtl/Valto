@@ -38,12 +38,10 @@ public class RoomListGetRes extends BaseResponseBody{
 			mapRoom.put("roomId", curRoom.getId());
 			mapRoom.put("userId", curRoom.getUserId().getNickName());
 			mapRoom.put("participants", curRoom.getParticipants());
-//			mapRoom.put("observers", curRoom.getObservers());
 			mapRoom.put("times", curRoom.getTimes());
 			mapRoom.put("title", curRoom.getTitle());
 			mapRoom.put("topicAgree", curRoom.getTopicAgree());
 			mapRoom.put("topicOpposite", curRoom.getTopicOpposite());
-			mapRoom.put("privateRoom", curRoom.getPrivateRoom());
 			
 			mapRoom.put("userTotalCount", room.get("userCount"));
 			mapRoom.put("userAgreeCount", room.get("userAgreeCount"));

@@ -42,8 +42,6 @@ public class Room extends BaseEntity{
 	@NotNull
 	private Integer participants; // 참가자 수
 	@NotNull
-	private Integer observers; // 관전자 수
-	@NotNull
 	private Integer times; // 발언 시간 제한
 	@NotNull
 	private String topicAgree; // 주제 1
@@ -52,12 +50,5 @@ public class Room extends BaseEntity{
 	@NotNull
 	private Boolean start; // 시작여부
 	
-	@NotNull
-	private Boolean privateRoom; // 비밀번호 방 True 이면 비밀번호검사
-	@JsonIgnore
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String roomPassword; // 방 비밀번호 (null 이면 없음)
-	
-	private Boolean playing; // 게임 중
 	
 }

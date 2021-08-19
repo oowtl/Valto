@@ -22,8 +22,7 @@ public class RoomPostRes extends BaseResponseBody {
 	String userId;
 	@ApiModelProperty(name = "participants")
 	Integer participants;
-//	@ApiModelProperty(name = "observers")
-//	Integer observers;
+
 	@ApiModelProperty(name = "times")
 	Integer times;
 
@@ -34,26 +33,10 @@ public class RoomPostRes extends BaseResponseBody {
 	@ApiModelProperty(name = "topicOpposite")
 	String topicOpposite;
 
-	@ApiModelProperty(name = "privateRoom")
-	Boolean privateRoom;
 
 	 @ApiModelProperty(name = "userSide")
 	 String userSide;
 
-	// public static RoomPostRes of(Room room, User_Room userRoom) {
-	// RoomPostRes res = new RoomPostRes();
-	// res.setRoomId(room.getId());
-	// res.setUserId(room.getUserId().getUserId());
-	// res.setParticipants(room.getParticipants());
-	// res.setObservers(room.getObservers());
-	// res.setTimes(room.getTimes());
-	// res.setTitle(room.getTitle());
-	// res.setTopicAgree(room.getTopicAgree());
-	// res.setTopicOpposite(room.getTopicOpposite());
-	// res.setPrivateRoom(room.getPrivateRoom());
-	// res.setUserSide(userRoom.getUserSide());
-	// return res;
-	// }
 
 	public static RoomPostRes of(Room room) {
 		RoomPostRes res = new RoomPostRes();
@@ -61,17 +44,11 @@ public class RoomPostRes extends BaseResponseBody {
 		res.setRoomId(room.getId());
 		res.setUserId(room.getUserId().getUserId());
 		res.setParticipants(room.getParticipants());
-//		res.setObservers(room.getObservers());
 		res.setTimes(room.getTimes());
 		res.setTitle(room.getTitle());
 		res.setTopicAgree(room.getTopicAgree());
 		res.setTopicOpposite(room.getTopicOpposite());
 		
-		res.setPrivateRoom(room.getPrivateRoom());
-		
-		// res.setUserSide(userRoom.getUserSide());
-		// 임시로 observer 넣어둠
-//		res.setUserSide("observer");
 		return res;
 	}
 

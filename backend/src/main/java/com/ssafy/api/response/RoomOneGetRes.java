@@ -55,25 +55,20 @@ public class RoomOneGetRes extends BaseResponseBody{
 		
 		roomInfo.setRoomId(room.getId());
 		roomInfo.setParticipants(room.getParticipants());
-//		roomInfo.setObservers(room.getObservers());
 		roomInfo.setTimes(room.getTimes());
 		roomInfo.setUserId(room.getUserId().getUserId());
 		roomInfo.setTitle(room.getTitle());
 		roomInfo.setTopicAgree(room.getTopicAgree());
 		roomInfo.setTopicOpposite(room.getTopicOpposite());
-		roomInfo.setPrivateRoom(room.getPrivateRoom());
 		roomInfo.setStart(room.getStart());
-		// users 를 어떻게 넣어야 할지 모르겠다...
 		
 		List<HashMap>agreeUserList = new ArrayList<HashMap>();
 		List<HashMap>oppositeUserList = new ArrayList<HashMap>();
-//		List<HashMap>observerUserList = new ArrayList<HashMap>();
 		
 		// user 가 없는 방이라면
 		if (userRoomList.size() == 0) {
 			roomInfo.setAgreeUsers(agreeUserList);
 			roomInfo.setOppositeUsers(oppositeUserList);
-//			roomInfo.setObserverUsers(observerUserList);
 			return roomInfo;
 		}
 		
@@ -87,13 +82,10 @@ public class RoomOneGetRes extends BaseResponseBody{
 				agreeUserList.add(user);
 			} else {
 				oppositeUserList.add(user);
-				// 위 두개가 아닌 다른 것은 전부 observer 로 추가된다.
-//				observerUserList.add(user);
 			}
 		}
 		roomInfo.setAgreeUsers(agreeUserList);
 		roomInfo.setOppositeUsers(oppositeUserList);
-//		roomInfo.setObserverUsers(observerUserList);
 		
 		roomInfo.setTotalCountUsers(agreeUserList.size() + oppositeUserList.size());
 		
