@@ -1,7 +1,7 @@
 <template>
   <li>
     <el-card :body-style="{ padding: '0px' }">
-      <div  :class="{ closed: this.room.start }">
+      <div :class="{ closed: room.start }">
         <div class="cardBody">
           <span class="title" style="display: flex; flex-direction: column;">
               <div style="display: flex; justify-content: flex-start;">
@@ -24,7 +24,7 @@
               <span>{{ room.title }}</span>
             </div>
             <div class="roomInfo" style="display: flex; justify-content: space-between;">
-              <el-button type="primary" size="mini" v-if="!state.room.start" style="cursor: default;">Waiting</el-button>
+              <el-button type="primary" size="mini" v-if="!room.start" style="cursor: default;">Waiting</el-button>
               <el-button type="danger" size="mini" v-else style="cursor: default;">Playing</el-button>
               <div style="display: flex; align-items: center;">
                 <div style="display: flex; align-items: center; margin-right: 1rem;">

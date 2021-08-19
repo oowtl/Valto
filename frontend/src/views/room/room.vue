@@ -30,10 +30,10 @@
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
-                    <div class="chat-input">
-                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
-                    </div>
                   </el-scrollbar>
+                  <div class="chat-input">
+                    채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                  </div>
                 </div>
                 <div v-else class="chat">
                   <el-scrollbar>
@@ -42,10 +42,10 @@
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
-                    <div class="chat-input">
-                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage" class="chat-input-window">
-                    </div>
                   </el-scrollbar>
+                  <div class="chat-input">
+                    채팅: <input v-model="state.message" type="text" @keyup="sendMessage" class="chat-input-window">
+                  </div>
                 </div>
             </div>
             <div class="panelChild member" v-if="state.openMember">
@@ -60,9 +60,15 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
-     
+
     </div>
     <div class="footer-child controller">
+      <div v-if="state.start">
+        <switchButton :style="[state.buttonBase, {color: 'red'}, state.endButton]" @click="onClickEndGame"  v-if="state.userId === state.ownerId" />
+      </div>
+      <div v-else>
+        <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
+      </div>
       <microphone :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
@@ -76,12 +82,11 @@
         <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
         <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
       </div>
-      
+
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
       <chat-dot-round :style="[state.buttonBase, state.chatButton]" @click="onClickChat" />
-      <user :style="[state.buttonBase, state.memberButton]" @click="onClickMember" />
     </div>
   </div>
   <!-- footer end -->
@@ -164,7 +169,9 @@ export default{
       stompClient: '',
       ownerId:'',
       start:false,
-      end:false
+      end:false,
+      topicL: '',
+      topicR: '',
     })
 
     const subsTest = function () {
@@ -229,6 +236,8 @@ export default{
           state.nickname = result.data[2]
           state.ownerId = result.data[3]
           state.userId = result.data[4]
+          state.topicL = result.data[5]
+          state.topicR = result.data[6]
           connectSession()
             .then(() => {
 
@@ -359,7 +368,7 @@ export default{
           console.log(err)
         })
     })
-    
+
     const updateMainVideoStreamManagerLeft = function (stream) {
       if (state.mainStreamManagerLeft === stream) return
       // const idx = state.leftSubs.find(sub => sub === stream)
@@ -432,7 +441,7 @@ export default{
 
     //  토론 시작
     const onClickStart = function(){
-      
+
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
