@@ -17,4 +17,14 @@ public class UserRoomPostReq {
 	String roomPassword;
 	@ApiModelProperty(name = "user 팀 정보", example = "Agree")
 	String userSide;
+	@ApiModelProperty(name = "room Id", example = "1")
+	String roomId;
+	
+	@Override
+	public String toString() {
+		return "UserRoomPostReq [privateRoom=" + privateRoom + ", roomPassword=" + roomPassword + ", userSide="
+				+ userSide + ", roomId=" + roomId + "]";
+	}
+	
+	
 }

@@ -130,7 +130,7 @@ export function requestDetail({ state }, payload) {
 
 export function requestRoomToken({ state }, payload) {
   const url = `/room/${payload.roomId}/admission`
-  const body = { sessionName: `${payload}` }
+  const body = payload
   const request = {
     method: 'post',
     url: url,

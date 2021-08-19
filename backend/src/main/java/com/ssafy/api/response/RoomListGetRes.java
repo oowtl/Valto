@@ -49,6 +49,8 @@ public class RoomListGetRes extends BaseResponseBody{
 			mapRoom.put("userAgreeCount", room.get("userAgreeCount"));
 			mapRoom.put("userOppositeCount", room.get("userOppositeCount"));
 			
+			mapRoom.put("start", curRoom.getStart());
+			
 			roomListArray.add(mapRoom);
 		}
 		

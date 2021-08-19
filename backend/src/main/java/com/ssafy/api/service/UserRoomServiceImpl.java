@@ -26,8 +26,7 @@ public class UserRoomServiceImpl implements UserRoomService {
 
 	@Override
 	public User_Room enterUserRoom(String UserId, Long RoomId, String userSide) {
-		System.out.println("@@@@@@");
-		System.out.println(userSide);
+		
 		User_Room userRoom = new User_Room();
 
 		userRoom.setRoomId(roomRepository.findById(RoomId).get());
@@ -36,21 +35,16 @@ public class UserRoomServiceImpl implements UserRoomService {
 
 		// userSide 의 기본값 agree
 		// userSide F ||    F && T
-		if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
+		
+		System.out.println("userSide : " + userSide);
+		
+		//if ((userSide == null) || (!(userSide.equals("agree")) && !(userSide.equals("opposite")))) {
+		if ((userSide == null) || (!("agree".equals(userSide)) && !("opposite".equals(userSide)))) {
 			userRoom.setUserSide("agree");
-			System.out.println("test!!!!!!");
-			System.out.println(userSide==null);
-		} 
-		else if(userSide.equals("opposite")) { 
-			System.out.println("asda12112");
-		}
-		else {
+		} else {
 //			System.out.println(userSide + "@@@@!!!!!");
 			userRoom.setUserSide(userSide);
 		}
-		
-		
-		
 		
 		return userRoomRepository.save(userRoom);
 	}
@@ -73,7 +67,6 @@ public class UserRoomServiceImpl implements UserRoomService {
 			
 		// 입장가능 = true
 		if (checkUserRoom.size() + 1 <= room.getParticipants()) {
-			System.out.println("size : " + checkUserRoom.size());
 			return true;
 		}
 		return false;

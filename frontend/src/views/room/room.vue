@@ -38,7 +38,7 @@
                 <div v-else class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                      <span v-for="(item, idx) in state.leftRecvList" :key="idx">
+                      <span v-for="(item, idx) in state.rightRecvList" :key="idx">
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
@@ -60,7 +60,7 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
-      <switchButton v-if="state.userId == state.ownerId" @click="onClickEndGame" :style="[state.buttonBase, {color: 'red'}, state.endButton]"/>
+     
     </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
@@ -68,15 +68,16 @@
       <video-camera :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase, {color: 'red'}]" />
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
-      <!-- 방장, 토론 시작 버튼 -->
-
-      <span v-if="ownerId === userId">
-        <button @click="onClickStart">토론시작</button>
-      </span>
     </div>
     <div class="footer-child communication">
-      <d-arrow-right :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start"/>
-      <video-play :style="[state.buttonBase]" @click="onClickStart" v-if="state.ownerId === state.userId && !state.start" />
+      <div v-if="state.start">
+        <switchButton :style="[state.buttonBase, {color: 'red'}, state.endButton]" @click="onClickEndGame"  v-if="state.userId === state.ownerId" />
+      </div>
+      <div v-else>
+        <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
+        <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
+      </div>
+      
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -163,7 +164,8 @@ export default{
       recvList: [],
       stompClient: '',
       ownerId:'',
-      start:false
+      start:false,
+      end:false
     })
 
     const subsTest = function () {
@@ -211,9 +213,7 @@ export default{
 
 
     onBeforeMount(() => {
-      console.log('@@@@@@@@@@@@@@@@@@')
       state.roomId = route.path.split('/')[2]
-      console.log(state.roomId)
       const side = localStorage.getItem('userSide')
       console.log('@@@@@ 룸 입장 userside@@@@@')
       console.log(side)
@@ -222,7 +222,6 @@ export default{
         // userSide: state.userSide,
         userSide: localStorage.getItem('userSide')
       }
-      console.log(payload)
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
           console.log(result)
@@ -280,7 +279,7 @@ export default{
         const userDataStartIndex = userData.indexOf('serverData')
         const disconnectedUser = userData.slice(userDataStartIndex+14, userData.length - 2)
         // 방장이 나가면 다 나가는 걸로!
-        if (state.ownerId == disconnectedUser) {
+        if (state.ownerId == disconnectedUser && state.end) {
           // 방 나가기 요청
           const payload = {
             sessionName: state.roomId,
@@ -303,6 +302,17 @@ export default{
       // 음성감지
       state.session.on('publisherStartSpeaking' , (event) => {
         // state.speech = event.connection.connectionId
+        // console.log(state.publisher)
+        // console.log(state.subscribers)
+        // let sub = state.subscribers.find(function (s) {
+        //   return s.stream.connection.connectionId === event.connection.connectionId
+        // })
+        // console.log(sub)
+        // // updateMainVideoStreamManager 이 함수가 subscribers 배열에서 sub 이름으로 객체 하나를 뽑아서 실행되니까
+        // // state.subscribers 배열에서 connectionId가 위의 event.connection.connectionId 랑 같은 걸 찾아서
+        // // 아래에서 updateMainVideoStreamManager 함수에 해당하는 sub를 넣어주면 메인 비디오가 전환됨!
+        // updateMainVideoStreamManager(sub)
+        // state.speech = event.connection.connectionId
         let leftSub = state.subscribers.find(function (s) {
           return s.stream.connection.connectionId === event.connection.connectionId
         })
@@ -318,6 +328,7 @@ export default{
         console.log('User ' + event.connection.connectionId + ' start speaking');
       })
       state.session.on('publisherStopSpeaking', (event) => {
+        state.speech = '';
         console.log('User ' + event.connection.connectionId + ' stop speaking');
       })
 
@@ -334,6 +345,8 @@ export default{
 
     //세션 나가기
     onBeforeUnmount(() => {
+      if(state.ownerId === state.userId) state.end = true;
+
       state.session.disconnect();
       state.session = undefined
       state.mainStreamManagerLeft = undefined
@@ -354,7 +367,7 @@ export default{
           console.log(err)
         })
     })
-
+    
     const updateMainVideoStreamManagerLeft = function (stream) {
       if (state.mainStreamManagerLeft === stream) return
       // const idx = state.leftSubs.find(sub => sub === stream)
@@ -371,6 +384,14 @@ export default{
       state.rightSubs.push(state.mainStreamManagerRight)
       state.mainStreamManagerRight = stream
     }
+    // const updateMainVideoStreamManagerLeft = function (stream) {
+    //   if (state.mainStreamManagerLeft === stream) return;
+    //   state.mainStreamManagerLeft = stream
+    // }
+    // const updateMainVideoStreamManagerRight = function (stream) {
+    //   if (state.mainStreamManagerRight === stream) return;
+    //   state.mainStreamManagerRight = stream
+    // }
 
     const leaveSession = function(){
       // state.session.disconnect();
@@ -385,6 +406,7 @@ export default{
       if (state.userId === state.ownerId) {
         if (confirm('게임을 종료하시겠습니까?') === true) {
           alert('종료하겠습니다.')
+          state.end = true
         } else {
           return
         }
@@ -421,12 +443,13 @@ export default{
 
     //  토론 시작
     const onClickStart = function(){
-      console.log('토론시작@@@@@@')
+      
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
           if(state.start) state.start = false;
           else state.start = true;
+          alert('토론 시작하였습니다.')
         }).catch((err) =>{
           console.log(err)
         })

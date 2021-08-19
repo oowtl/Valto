@@ -68,7 +68,7 @@ public class RoomController {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	RoomService roomService;
 
@@ -112,7 +112,7 @@ public class RoomController {
 		 */
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String validatedUserId = userDetails.getUsername();
-		
+
 		// 비밀번호 방을 설정했는데 비밀번호를 안쳤다면?
 		if (roomCreateInfo.getPrivateRoom() && roomCreateInfo.getRoomPassword().isEmpty()) {
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no password private room"));
@@ -123,8 +123,7 @@ public class RoomController {
 		// User_Room userRoom = userRoomService.enterUserRoom(validatedUserId,
 		// room.getId(), roomCreateInfo.getUserSide());
 
-		
-		//Session
+		// Session
 		String sessionName = Long.toString(room.getId());
 		OpenViduRole role = OpenViduRole.PUBLISHER;
 		String serverData = "{\"serverData\": \"" + validatedUserId + "\"}";
@@ -145,7 +144,7 @@ public class RoomController {
 
 		// 방에 접속한 유저 정보 / User_Room 생성하기
 
-//		System.out.println("New session " + sessionName);
+		// System.out.println("New session " + sessionName);
 		try {
 
 			// Create a new OpenVidu Session
@@ -158,12 +157,12 @@ public class RoomController {
 			this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
 			// this.mapSessionNamesTokens.put(sessionName, new ConcurrentHashMap<>());
 			// this.mapSessionNamesTokens.get(sessionName).put(token, role);
-			
+
 			System.out.println("createRoom mapSession" + this.mapSessions);
 			System.out.println("createRoom mapSessionNamesTokens" + this.mapSessionNamesTokens);
 			// Prepare the response with the token
 			// responseJson.put(0, token);
-			
+
 			// Return the response to the client
 			return ResponseEntity.status(201).body(RoomPostRes.of(room));
 
@@ -185,7 +184,6 @@ public class RoomController {
 			@RequestParam(value = "topic", defaultValue = "null", required = false) @ApiParam(value = "주제로 조회") String IN_topic,
 			@RequestParam(value = "sorting", defaultValue = "participant", required = false) @ApiParam(value = "정렬 파라미터") String IN_sort) {
 
-		
 		RoomListGetReq roomListGetInfo = new RoomListGetReq();
 		roomListGetInfo.setTitle(IN_title);
 		roomListGetInfo.setTopic(IN_topic);
@@ -287,49 +285,48 @@ public class RoomController {
 
 	@PostMapping("/{roomId}/admission")
 	@ApiOperation(value = "방 입장하기", notes = "유저가 방에 입장한다.")
-	@ApiResponses({ 
-		@ApiResponse(code = 200, message = "Success"),
-		@ApiResponse(code = 400, message = "no Exist Room"),
-		@ApiResponse(code = 400, message = "already enter room user"),
-		@ApiResponse(code = 400, message = "don't enter Room : maximum userside")
-		})
+	@ApiResponses({ @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 400, message = "no Exist Room"),
+			@ApiResponse(code = 400, message = "already enter room user"),
+			@ApiResponse(code = 400, message = "don't enter Room : maximum userside") })
 	public ResponseEntity<?> enterRoom(@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "방 입장 정보", required = true) UserRoomPostReq userRoomPostReq,
 			@PathVariable("roomId") String roomId) {
 
-//		System.out.println("session test");
-//		System.out.println(mapSessions);
-//		System.out.println(mapSessionNamesTokens);
-		
-//		System.out.println(userRoomPostReq);
+		// System.out.println("session test");
+		// System.out.println(mapSessions);
+		// System.out.println(mapSessionNamesTokens);
+
+		System.out.println(roomId);
+		System.out.println(userRoomPostReq.toString());
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
 		String userId = userDetails.getUsername();
 
 		Room room = roomService.getRoomByRoomId(roomId);
-//		System.out.println("Enter Room!");
+		// System.out.println("Enter Room!");
 		// 방이 없을 경우
 		if (room == null) {
+			System.out.println("room");
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "no Exist Room"));
 		}
-		
+
 		// room 별 userSide 정원 체크
 		// 필요한 것: Room 정보, userRoom 갯수
 		if (!userRoomService.checkLimitRoom(room, userRoomPostReq.getUserSide())) {
 			// true 일때 가능하다.
+			System.out.println("check");
 			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "don't enter Room : maximum userside"));
 		}
-		
+
 		// user 가 이미 하나의 방에 접속한 경우
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId); // 어짜피 존재여부 체크, 있는지 없는지 확인
-		 
+
 		if (existUserRoom.getUserId() != null) {
-			return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
+			userRoomService.deleteUserRoom(existUserRoom);
 		}
-		 
+
 		User_Room userRoom = userRoomService.enterUserRoom(userId, room.getId(), userRoomPostReq.getUserSide());
-		
-		
+
 		// Session
 		String sessionName = Long.toString(room.getId());
 		OpenViduRole role = OpenViduRole.PUBLISHER;
@@ -352,7 +349,7 @@ public class RoomController {
 
 			// Prepare the response with the token
 			System.out.println(userRoom.getUserSide() + "!!!!!!");
-			String side = userRoom.getUserSide().equals("agree")? "left" : "right";
+			String side = userRoom.getUserSide().equals("agree") ? "left" : "right";
 			System.out.println("side" + side);
 			System.out.println(room.getUserId().getNickName());
 			responseJson.put(0, token);
@@ -369,7 +366,7 @@ public class RoomController {
 			if (404 == e2.getStatus()) {
 				// Invalid sessionId (user left unexpectedly). Session object is not valid
 				// anymore. Clean collections and continue as new session
-//				System.out.println("404!!!!!!!!!!!!!!!");
+				// System.out.println("404!!!!!!!!!!!!!!!");
 				this.mapSessions.remove(sessionName);
 				this.mapSessionNamesTokens.remove(sessionName);
 			}
@@ -406,9 +403,10 @@ public class RoomController {
 		// result: 114
 		User_Room existUserRoom = userRoomService.getUserByUserId(userId);
 
-//		 if (existUserRoom.getUserId() == null) {
-//			 return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already enter room user"));
-//		 }
+		// if (existUserRoom.getUserId() == null) {
+		// return ResponseEntity.status(400).body(BaseResponseBody.of(400, "already
+		// enter room user"));
+		// }
 
 		// 방에 속한 유저가 아니라면
 		// userRoom 에서 찾고, existUserRoom 를 가진 room id 를 비교한다.
@@ -424,20 +422,20 @@ public class RoomController {
 			// If the token exists
 			if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
 				// User left the session
-				
+
 				// userRoom 삭제
 				String message = userRoomService.leaveRoom(existUserRoom);
 
 				// rank point 더해주기
 				User addPointUser = userService.addRankPoint(userId);
-				
+
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed
 					this.mapSessions.remove(sessionName);
 
 					// room 삭제
 					String roomMessage = roomService.deleteRoom(roomId);
-					
+
 				}
 				return new ResponseEntity<>(HttpStatus.OK);
 			} else {
@@ -456,8 +454,7 @@ public class RoomController {
 
 	@PostMapping("{roomId}/start")
 	@ApiOperation(value = "토론 시작", notes = "토론을 시작하기위해 토론시간을 응답해준다.")
-	public ResponseEntity<?> startRoom(
-			@ApiIgnore Authentication authentication,
+	public ResponseEntity<?> startRoom(@ApiIgnore Authentication authentication,
 			@PathVariable("roomId") String roomId) {
 
 		SsafyUserDetails userDetails = (SsafyUserDetails) authentication.getDetails();
@@ -467,7 +464,7 @@ public class RoomController {
 
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, msg));
 	}
-	
+
 	private ResponseEntity<JSONObject> getErrorResponse(Exception e) {
 		JSONObject json = new JSONObject();
 		json.put("cause", e.getCause());
