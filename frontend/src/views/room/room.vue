@@ -26,8 +26,8 @@
                 <div v-if="state.side === 'left'" class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                       <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
-                        {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
+                      <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
+                        {{ item.userId }} : {{ item.message }}
                       </span>
                     </div>
                   </el-scrollbar>
@@ -71,21 +71,10 @@
       </div>
       <microphone :style="[state.buttonBase]" />
       <video-camera :style="[state.buttonBase]" />
-      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <!-- <video-camera :style="[state.buttonBase, {color: 'red'}]" /> -->
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="onClickLeave"/>
     </div>
     <div class="footer-child communication">
-      <div v-if="state.start">
-        <switchButton :style="[state.buttonBase, {color: 'red'}, state.endButton]" @click="onClickEndGame"  v-if="state.userId === state.ownerId" />
-      </div>
-      <div v-else>
-        <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
-        <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
-      </div>
-
-      <bell-filled :style="[state.buttonBase]" />
-      <opportunity :style="[state.buttonBase]" />
-      <mic :style="[state.buttonBase]" />
       <chat-dot-round :style="[state.buttonBase, state.chatButton]" @click="onClickChat" />
     </div>
   </div>

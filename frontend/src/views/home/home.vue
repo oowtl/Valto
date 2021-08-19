@@ -184,8 +184,11 @@ export default {
 
     // 방 상세보기 dialog 호출
     const clickRoom = function (roomId) {
-      if (state.rooms.find(room => room.start === true)) {
+      const room = state.rooms.find(room => room.roomId === roomId)
+      if (room.start === false) {
         emit('openDetailDialog', roomId)
+      } else {
+        console.log('already started room')
       }
     }
 
