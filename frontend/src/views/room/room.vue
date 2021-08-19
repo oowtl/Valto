@@ -26,7 +26,7 @@
                 <div v-if="state.side === 'left'" class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                      <span v-for="(item, idx) in state.leftRecvList" :key="idx">
+                      <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
@@ -38,7 +38,7 @@
                 <div v-else class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                      <span v-for="(item, idx) in state.rightRecvList" :key="idx">
+                      <span v-for="(item, idx) in state.rightRecvList" :key="idx" style="display: block;">
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
@@ -60,13 +60,12 @@
   <!-- footer start -->
   <div class="footer">
     <div class="footer-child head-controller">
-     
     </div>
     <div class="footer-child controller">
       <microphone :style="[state.buttonBase]" />
-      <mute :style="[state.buttonBase, {color: 'red'}]" />
+      <!-- <mute :style="[state.buttonBase, {color: 'red'}]" /> -->
       <video-camera :style="[state.buttonBase]" />
-      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <!-- <video-camera :style="[state.buttonBase, {color: 'red'}]" /> -->
       <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
     </div>
     <div class="footer-child communication">
@@ -77,7 +76,7 @@
         <!-- <d-arrow-right :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId"/> -->
         <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
       </div>
-      
+
       <bell-filled :style="[state.buttonBase]" />
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
@@ -249,13 +248,6 @@ export default{
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
-        console.log('@@@@@@@@@@@@side정보 stream에서 추출하기@@@@@@@@@@@@@@@@')
-        console.log(subscriber)
-        try {
-          console.log(subscriber.stream.connection.data.split('%')[0].side)
-        } catch {
-          console.log('@@@@@failed to log subscriber.stream.connection.data@@@@@')
-        }
         let side = JSON.parse(subscriber.stream.connection.data.split('%')[0]).side
         if (side === 'agree') {
           state.leftSubs.push(subscriber)
@@ -367,7 +359,7 @@ export default{
           console.log(err)
         })
     })
-    
+
     const updateMainVideoStreamManagerLeft = function (stream) {
       if (state.mainStreamManagerLeft === stream) return
       // const idx = state.leftSubs.find(sub => sub === stream)
@@ -443,7 +435,7 @@ export default{
 
     //  토론 시작
     const onClickStart = function(){
-      
+
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
           console.log(result)
