@@ -52,7 +52,7 @@
     </div>
 
     <ul class="room-list">
-      <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item" :class="{ closed: true }">
+      <li v-for="room in state.rooms" :key="room.roomId" @click="clickRoom(room.roomId)" class="room-list-item" :class="{ closed: room.start }">
         <room :room="room" />
       </li>
     </ul>

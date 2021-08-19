@@ -346,17 +346,23 @@ public class RoomController {
 
 			// Update our collection storing the new token
 			this.mapSessionNamesTokens.get(sessionName).put(token, role);
-
+			this.mapSessionNamesTokens.forEach((key, value) -> {
+				System.out.println(key + " : " + value);
+			});
 			// Prepare the response with the token
-			System.out.println(userRoom.getUserSide() + "!!!!!!");
+
 			String side = userRoom.getUserSide().equals("agree") ? "left" : "right";
-			System.out.println("side" + side);
-			System.out.println(room.getUserId().getNickName());
+			System.out.println(room.getTopicAgree());
+			System.out.println(room.getTopicOpposite());
+			
+			
 			responseJson.put(0, token);
 			responseJson.put(1, side);
 			responseJson.put(2, room.getUserId().getNickName());
 			responseJson.put(3, room.getUserId().getUserId());
 			responseJson.put(4, userId);
+			responseJson.put(5, room.getTopicAgree());
+			responseJson.put(6, room.getTopicOpposite());
 			// Return the response to the client
 			return new ResponseEntity<>(responseJson, HttpStatus.OK);
 		} catch (OpenViduJavaClientException e1) {
@@ -428,6 +434,9 @@ public class RoomController {
 
 				// rank point 더해주기
 				User addPointUser = userService.addRankPoint(userId);
+				this.mapSessionNamesTokens.forEach((key, value) -> {
+					System.out.println(key + " : " + value);
+				});
 
 				if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
 					// Last user left: session must be removed

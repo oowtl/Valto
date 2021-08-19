@@ -297,8 +297,6 @@ export default {
 
     const clickCreateRoom = function () {
       if (!state.isInvalid) {
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-        console.log(state.form)
         store.dispatch('root/requestCreateRoom', {
           userId: state.userId,                   // string
           title: state.form.title,                // string

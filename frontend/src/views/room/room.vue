@@ -26,14 +26,14 @@
                 <div v-if="state.side === 'left'" class="chat">
                   <el-scrollbar>
                     <div class="chat-log">
-                      <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
+                       <span v-for="(item, idx) in state.leftRecvList" :key="idx" style="display: block;">
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
-                    <div class="chat-input">
-                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
-                    </div>
                   </el-scrollbar>
+                  <div class="chat-input">
+                    채팅: <input v-model="state.message" type="text" @keyup="sendMessage">
+                  </div>
                 </div>
                 <div v-else class="chat">
                   <el-scrollbar>
@@ -42,10 +42,10 @@
                         {{ item.nickName}} ({{ item.userId }}) : {{ item.message }}
                       </span>
                     </div>
-                    <div class="chat-input">
-                      채팅: <input v-model="state.message" type="text" @keyup="sendMessage" class="chat-input-window">
-                    </div>
                   </el-scrollbar>
+                  <div class="chat-input">
+                    채팅: <input v-model="state.message" type="text" @keyup="sendMessage" class="chat-input-window">
+                  </div>
                 </div>
             </div>
             <div class="panelChild member" v-if="state.openMember">
@@ -59,14 +59,20 @@
   </div>
   <!-- footer start -->
   <div class="footer">
-    <div class="footer-child head-controller">
+    <div class="footer-child head-controller" style="fontSize: 30px;">
+      {{ state.topicL}} <span style="color: red; margin: 0px 10px 0px 10px;"> vs </span> {{ state.topicR}}
     </div>
     <div class="footer-child controller">
+      <div v-if="state.start">
+        <switchButton :style="[state.buttonBase, {color: 'red'}, state.endButton]" @click="onClickEndGame"  v-if="state.userId === state.ownerId" />
+      </div>
+      <div v-else>
+        <video-play :style="[state.buttonBase, {color: 'red'}]" @click="onClickStart" v-if="state.ownerId === state.userId" />
+      </div>
       <microphone :style="[state.buttonBase]" />
-      <!-- <mute :style="[state.buttonBase, {color: 'red'}]" /> -->
       <video-camera :style="[state.buttonBase]" />
-      <!-- <video-camera :style="[state.buttonBase, {color: 'red'}]" /> -->
-      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="subsTest"/>
+      <video-camera :style="[state.buttonBase, {color: 'red'}]" />
+      <close-bold :style="[state.buttonBase, {color: 'red'}]" @click="onClickLeave"/>
     </div>
     <div class="footer-child communication">
       <div v-if="state.start">
@@ -81,7 +87,6 @@
       <opportunity :style="[state.buttonBase]" />
       <mic :style="[state.buttonBase]" />
       <chat-dot-round :style="[state.buttonBase, state.chatButton]" @click="onClickChat" />
-      <user :style="[state.buttonBase, state.memberButton]" @click="onClickMember" />
     </div>
   </div>
   <!-- footer end -->
@@ -164,7 +169,9 @@ export default{
       stompClient: '',
       ownerId:'',
       start:false,
-      end:false
+      end:false,
+      topicL: '',
+      topicR: '',
     })
 
     const subsTest = function () {
@@ -229,6 +236,8 @@ export default{
           state.nickname = result.data[2]
           state.ownerId = result.data[3]
           state.userId = result.data[4]
+          state.topicL = result.data[5]
+          state.topicR = result.data[6]
           connectSession()
             .then(() => {
 
@@ -385,13 +394,10 @@ export default{
     //   state.mainStreamManagerRight = stream
     // }
 
-    const leaveSession = function(){
-      // state.session.disconnect();
-      // state.session = undefined
-      // state.mainStreamManager = undefined
-      // state.publisher = undefined
-      // state.subscribers = []
-      // state.OV = undefined
+    const onClickLeave = function(){
+        router.push({
+          name : 'home'
+        })
     }
 
     const onClickEndGame = function () {
@@ -515,7 +521,7 @@ export default{
       updateMainVideoStreamManager,
       updateMainVideoStreamManagerLeft,
       updateMainVideoStreamManagerRight,
-      leaveSession,
+      onClickLeave,
       connectSession,
       onClickChat,
       onClickMember,
