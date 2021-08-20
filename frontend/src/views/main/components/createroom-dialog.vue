@@ -283,7 +283,6 @@ export default {
       state.posi1 = true
       state.posi2 = false
       flag.value.userSide = true
-      console.log(flag)
       state.form.userSide = 'agree'
     }
 
@@ -291,7 +290,6 @@ export default {
       state.posi1 = false
       state.posi2 = true
       flag.value.userSide = true
-      console.log(flag)
       state.form.userSide = 'opposite'
     }
 
@@ -311,8 +309,6 @@ export default {
           .then(function (result) {
             store.commit('root/setUserSide', state.form.userSide)
             localStorage.setItem('userSide', state.form.userSide)
-            console.log('@@@@@방만들기 userside@@@@@')
-            console.log(localStorage.getItem('userSide'))
             emit('closeCreateRoomDialog')
             router.push({
               name: 'room',
