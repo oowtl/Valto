@@ -100,8 +100,6 @@ export default {
             if(result.status === 200){
               localStorage.setItem('jwt', result.data.accessToken)
               store.commit('root/setUserId', state.form.userId)
-              console.log(state.form.userId)
-              console.log('after commit, login dialog')
               ElMessage({ message: '로그인에 성공했습니다.', type: 'success', duration: 2000 })
               loadingInstance.close()
               handleClose()

@@ -164,15 +164,10 @@ export default{
     })
 
     const subsTest = function () {
-      console.log(state.userSide)
-      console.log(state.leftSubs)
-      console.log(state.rightSubs)
     }
     const connectSession = function () {
       // state.session.connect(state.token, {})
       const side = localStorage.getItem('userSide')
-      console.log('@@@@@룸 connectsession userside@@@@@')
-      console.log(side)
       state.session.connect(state.token, { side: side })
         .then(() => {
           // --- Get your own camera stream with the desired properties ---
@@ -210,8 +205,6 @@ export default{
     onBeforeMount(() => {
       state.roomId = route.path.split('/')[2]
       const side = localStorage.getItem('userSide')
-      console.log('@@@@@ 룸 입장 userside@@@@@')
-      console.log(side)
       const payload = {
         roomId: state.roomId,
         // userSide: state.userSide,
@@ -219,7 +212,6 @@ export default{
       }
       store.dispatch('root/requestRoomToken', payload)
         .then((result) => {
-          console.log(result)
           state.token = result.data[0]
           state.side = result.data[1]
           state.nickname = result.data[2]
@@ -441,7 +433,6 @@ export default{
 
       store.dispatch('root/startDebate', state.roomId)
         .then((result) => {
-          console.log(result)
           if(state.start) state.start = false;
           else state.start = true;
           alert('토론 시작하였습니다.')
@@ -453,7 +444,6 @@ export default{
     ///////////////////////// 채팅 관련 ////////////////////////////
     const sendMessage = function (e) {
       if(e.keyCode === 13 && state.userId !== '' && state.message !== '') {
-        console.log(state.message)
         send()
         state.message = ''
       }
@@ -468,7 +458,6 @@ export default{
           userId: state.userId,
           nickName: state.nickname
         }
-        console.log(msg)
         state.stompClient.send('/pub/chat/message', JSON.stringify(msg), {})
       }
     }
@@ -483,19 +472,15 @@ export default{
         frame => {
           // 소켓 연결 성공
           state.stompClient.connected = true
-          console.log('소켓 연결 성공', frame, 'id', state.roomId)
           // 서버의 메시지 전송 endpoint를 구독합니다.
           // 이런형태를 pub sub 구조라고 합니다.
           state.stompClient.subscribe('/sub/chat/room/' + state.roomId,
           res => {
-            console.log('구독으로 받은 메시지 입니다.', res.body)
 
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
             if (state.side === 'left') {
-              console.log('left chat push')
               state.leftRecvList.push(JSON.parse(res.body))
             } else {
-              console.log('right chat push')
               state.rightRecvList.push(JSON.parse(res.body))
             }
 

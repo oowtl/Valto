@@ -51,7 +51,6 @@ export default {
         return callback()
       } else {
         flag.value.nickName = false
-        console.log('wating for blur')
       }
     }
 
@@ -72,14 +71,12 @@ export default {
         store.dispatch('root/checkNickname', state.form.nickName)
         .then(function (result) {
           if (result.status === 200){
-            console.log('nickName is available')
             flag.value.nickName = true
             return callback()
           }
         })
         .catch(function (err) {
           // if (err.response.data.status === 409) {
-          console.log('닉네임중복')
           flag.value.nickName = false
           return callback(new Error('이미 존재하는 닉네임입니다.'))
         })
@@ -160,12 +157,9 @@ export default {
     // 모달 창이 열릴 때 내 프로필 받아오는 함수 호출
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
-        console.log('profile dialog opened')
         store.dispatch('root/requestMyProfile')
         // 전적, 포인트, 닉네임
           .then(function (result) {
-            console.log(result.data)
-            console.log('myprofile request successful')
             state.form = result.data
             currentNickName.value = result.data.nickName
           })
@@ -174,7 +168,6 @@ export default {
             handleClose()
           })
       } else if (newVal === false) {
-        console.log('profile dialog closed')
       }
     })
 

@@ -23,7 +23,7 @@ r<template>
 .ranking-list .ranking-list-item:nth-child( -n+3 ) {
   font-size: 20px;
   color: red;
-} 
+}
 .ranking-list .ranking-list-item ranking-form{
   float: left;
 }
@@ -55,7 +55,7 @@ export default {
     const router = useRouter()
 
     const state = reactive({
-      form: {    
+      form: {
         rankingList: [],
         align: 'left'
       },
@@ -68,7 +68,6 @@ export default {
         store.dispatch('root/requestRanking')
           .then(function (result) {
             state.form.rankingList = result.data.rank
-            console.log(state.form.rankingList)
           })
           .catch(function (err) {
             console.log(err)
