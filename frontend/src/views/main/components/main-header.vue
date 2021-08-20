@@ -118,7 +118,6 @@ export default {
 
 
     const clickRanking = () => {
-      console.log('click랭킹함')
       emit('openRankingDialog')
     }
 

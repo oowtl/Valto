@@ -197,7 +197,6 @@ export default {
       let loadingInstance = ElLoading.service({ target: homeContainer.value })
       setTimeout(() => {
 
-        console.log(state.query)
 
         let query = {
           ...state.query,
