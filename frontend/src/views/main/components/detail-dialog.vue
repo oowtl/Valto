@@ -105,7 +105,6 @@ export default {
     // 방 정보 받아오기
     watch(() => props.open, (newVal, oldVal) => {
       if (newVal === true) {
-        console.log('@@@@@@@@@@@디테일열림@@@@@@@@@@')
         store.dispatch('root/requestDetail', props.roomId)
           .then(function (result) {
             state.form = result.data
@@ -116,7 +115,6 @@ export default {
             if ( state.form.oppositeUsers.length === state.divide_participants ) {
               state.posi2 = true
             }
-            console.log(state.form.userId)
           })
           .catch(function (err) {
             console.log(err)
@@ -129,8 +127,6 @@ export default {
     const clickEnter = function(roomId) {
       store.commit('root/setUserSide', state.form.userSide)
       localStorage.setItem('userSide', state.form.userSide)
-      console.log('@@@@@입장하기 userside@@@@@')
-      console.log(localStorage.getItem('userSide'))
       router.push({
         name: 'room',
         params: {
