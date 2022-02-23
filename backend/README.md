@@ -45,6 +45,7 @@ gradle clean build
 
 # 프로젝트 디렉토리 구조 설명 (/src 하위 디렉토리 및 파일)
 [Back-end]
+
 ```bash
 .
 └── main
@@ -103,6 +104,7 @@ gradle clean build
 ```
 
 [Front-end]
+
 ```bash
 .
 └── main
