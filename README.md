@@ -250,15 +250,18 @@ WebRTC를 사용해서 화상회의 기능을 구현했고, WebSocket 을 사용
 ## Example
 
 - 메인페이지 ( 방 목록 / 주제 / 방 검색 )
+  ![1_mainPage](README.assets/1_mainPage.jpg)
 
-  ![1-1](README.assets/1-1.png)
-
+- 로그인 페이지
+  ![3_loginPage](README.assets/3_loginPage.jpg)
+  
 - 방 정보
+  ![2_detailPage](README.assets/2_detailPage.jpg)
 
   ![1-2](README.assets/1-2.png)
 
 - 토론방
-  ![1-3](README.assets/1-3.png)
+  ![4_roomPage](README.assets/4_roomPage.jpg)
 
 
 

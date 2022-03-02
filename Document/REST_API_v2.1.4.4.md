@@ -473,7 +473,7 @@
     ```json
     {
         "RoomCount" : Integer,
-    	"content": [
+    		"content": [
             {
                 "roomdId" : Integer,
                 "userId" : "String",   
@@ -533,7 +533,7 @@
         "roomId" : integer,
        	"participants" : integer,
         "observers" : integer,
-    	"times" : integer,
+    		"times" : integer,
         "userId" : "String",
         "title" : "String",
         "privateRoom" : Boolean,

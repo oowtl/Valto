@@ -14,10 +14,7 @@ public interface RoomRepository extends JpaRepository<Room, Long>{
 	
 	List<Room> findByTopicAgreeContainingOrTopicOppositeContainingOrTitleContaining(String topicAgree, String topicOpposite, String title);
 	List<Room> findByTopicAgreeContainingOrTopicOppositeContaining(String topicAgree, String topicOpposite);
-	List<Room> findByTitleContaining(String title);
-	
-	// 접속 유저 기준 정렬
-	
+	List<Room> findByTitleContaining(String title);	
 	
 	// 생성 시간 기준 Desc
 	List<Room> findByTopicAgreeContainingOrTopicOppositeContainingOrTitleContainingOrderByCreatedAtDesc(String topicAgree, String topicOpposite, String title, Pageable pageable);
