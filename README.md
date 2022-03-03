@@ -1,6 +1,6 @@
 # 밸런스토론 Valto!
 
-토론하면 떠오르는 것은 100분 토론 입니다.
+토론하면 떠오르는게 있나요? 아무래도 100분 토론이 떠오를 것입니다.
 100분 토론에서 다루는 주제들은 정치, 경제, 외교 등 다소 무거운 주제가 많습니다.
 Valto는 토론에 대한 무거운 이미지를 깨기 위해서 가벼운 주제로 가볍게 이야기할 수 있는 서비스 입니다.
 WebRTC를 사용해서 화상회의 기능을 구현했고, WebSocket 을 사용해서 채팅기능을 구현했습니다.
@@ -13,7 +13,7 @@ WebRTC를 사용해서 화상회의 기능을 구현했고, WebSocket 을 사용
 
 | Category           | Name                            |
 | ------------------ | ------------------------------- |
-| 언어               | JAVA / JavaScript / html / css  |
+| Language           | JAVA / JavaScript / html / css  |
 | Front-end          | Vue.js / VUEX / Node            |
 | Back-end           | Spring Boot, Gradle             |
 | Database           | MYSQL / JPA                     |
