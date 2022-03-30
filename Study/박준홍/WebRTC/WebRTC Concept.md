@@ -168,6 +168,4 @@
 
 https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket-server-allowed-origins
 
-
-
 https://webrtchacks.com/kurento/
